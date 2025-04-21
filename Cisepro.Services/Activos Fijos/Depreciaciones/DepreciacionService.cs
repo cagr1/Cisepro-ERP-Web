@@ -17,12 +17,12 @@ namespace Cisepro.Services.Activos_Fijos.Depreciaciones
             _contextFactory = contextFactory;
         }
 
-        public async Task<int> CrearDepreciacionGeneralAsync(TipoConexion tipoCon, DepreciacionesGeneral dto)
+        public async Task<int> NuevaDepreciacionGeneralAsync(TipoConexion tipoCon, DepreciacionesGeneral dto)
         {
-            using var _context = _contextFactory(tipoCon);
-                
+            using var _context = _contextFactory(tipoCon);                
 
             var parameters = new[] {
+                new SqlParameter("@ID_DEPRECIACION", dto.IdDepreciacion),
                 new SqlParameter ("@ID_ACTIVO_FIJO", dto.IdActivoFijo),
                 new SqlParameter("@PORCENTAJE", dto.Porcentaje),
                 new SqlParameter("@CUENTA_CONTABLE", dto.CuentaContable),
@@ -31,7 +31,9 @@ namespace Cisepro.Services.Activos_Fijos.Depreciaciones
             
             };
             
-           var result = await _context.Database.ExecuteSqlRawAsync("EXEC SP_CREAR_DEPRECIACION_GENERAL @ID_ACTIVO_FIJO, @PORCENTAJE, @CUENTA_CONTABLE, @TOPE_DEPRECIACIONES, @ESTADO", parameters);
+           var result = await _context.Database
+                .ExecuteSqlRawAsync("EXEC nuevaDepreciacionGeneral @ID_DEPRECIACION, @ID_ACTIVO_FIJO, @PORCENTAJE, @CUENTA_CONTABLE, @TOPE_DEPRECIACIONES, @ESTADO", parameters);
+           
             return result;
         }
 
@@ -39,7 +41,8 @@ namespace Cisepro.Services.Activos_Fijos.Depreciaciones
 
         {
             using var _context = _contextFactory(tipoCon);
-            return await _context.DepreciacionesGenerals.MaxAsync(d => (int?)d.IdDepreciacion) ?? 0;
+            return await _context.DepreciacionesGenerals
+                .MaxAsync(d => (int?)d.IdDepreciacion) ?? 0;
         }
 
         public async Task<List<DepreciacionesGeneral>> BuscarActivoFijoPorIdActivoEnDepreciacionGeneralAsync(TipoConexion tipoCon, string filtro, DateTime desde, DateTime hasta )
@@ -51,7 +54,9 @@ namespace Cisepro.Services.Activos_Fijos.Depreciaciones
                 new SqlParameter("@DESDE", desde),
                 new SqlParameter("@HASTA", hasta)
             };
-            return await _context.DepreciacionesGenerals.FromSqlRaw("EXEC sp_SeleccionDepreciacionGeneralxFiltro @filtro, @desde, @hasta", parameters).ToListAsync();
+            return await _context.DepreciacionesGenerals
+                .FromSqlRaw("EXEC sp_SeleccionDepreciacionGeneralxFiltro @filtro, @desde, @hasta", parameters)
+                .ToListAsync();
         }
 
         public async Task<DepreciacionCompletaDto> BuscardepreciacionporIdActivo(TipoConexion tipoCon, int idActivo)

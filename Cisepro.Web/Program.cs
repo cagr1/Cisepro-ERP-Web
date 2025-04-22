@@ -14,6 +14,17 @@ builder.Services.AddScoped<Func<TipoConexion, AppDbContext>>(provider => tipoCon
     
     return new AppDbContext(connectionString);
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("VueDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,6 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("VueDev");
 app.UseHttpsRedirection();
 
 var summaries = new[]

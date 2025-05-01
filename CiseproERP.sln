@@ -3,21 +3,39 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cisepro.Data", "Cisepro.Data\Cisepro.Data.csproj", "{9BB8E994-9AEF-43EE-BF03-A8FD89F7161F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cisepro.Data", "Cisepro.Data\Cisepro.Data.csproj", "{9BB8E994-9AEF-43EE-BF03-A8FD89F7161F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cisepro.Services", "Cisepro.Services\Cisepro.Services.csproj", "{90BD6228-7438-4C40-AC14-1D6BD5EDCBBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cisepro.Services", "Cisepro.Services\Cisepro.Services.csproj", "{90BD6228-7438-4C40-AC14-1D6BD5EDCBBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cisepro.Web", "Cisepro.Web\Cisepro.Web.csproj", "{151EBFBF-07BE-4171-B41C-53CF0490973E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cisepro.Web", "Cisepro.Web\Cisepro.Web.csproj", "{151EBFBF-07BE-4171-B41C-53CF0490973E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cisepro.Legacy", "Cisepro.Legacy\Cisepro.Legacy.csproj", "{E2277FA8-BC35-4106-92E2-9D42FC867EA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cisepro.Legacy", "Cisepro.Legacy\Cisepro.Legacy.csproj", "{E2277FA8-BC35-4106-92E2-9D42FC867EA8}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Cisepro.Client", "Cisepro.Client\", "{CD014527-0D64-42CE-AA80-2443C3D1B9F4}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_62386"
+		Debug.AspNetCompiler.PhysicalPath = "Cisepro.Client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62386\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_62386"
+		Release.AspNetCompiler.PhysicalPath = "Cisepro.Client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62386\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "62386"
+		SlnRelativePath = "Cisepro.Client\"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9BB8E994-9AEF-43EE-BF03-A8FD89F7161F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,5 +54,15 @@ Global
 		{E2277FA8-BC35-4106-92E2-9D42FC867EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2277FA8-BC35-4106-92E2-9D42FC867EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2277FA8-BC35-4106-92E2-9D42FC867EA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD014527-0D64-42CE-AA80-2443C3D1B9F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD014527-0D64-42CE-AA80-2443C3D1B9F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD014527-0D64-42CE-AA80-2443C3D1B9F4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD014527-0D64-42CE-AA80-2443C3D1B9F4}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A4CA141D-1123-484C-B13E-D68633E3AFD4}
 	EndGlobalSection
 EndGlobal

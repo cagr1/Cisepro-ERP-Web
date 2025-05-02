@@ -12,4 +12,14 @@
   .btn-danger {
     @apply bg-red-600 hover:bg-red-700 focus:ring-red-500;
   }
+   .material-input {
+    @apply bg-transparent border-0 border-b-2 border-gray-300 px-0 rounded-none;
+    @apply focus:ring-0 focus:border-blue-500;
+    @apply transition-colors duration-200;
+  }
+  
+  .material-input-label {
+    @apply transform origin-top-left transition-all duration-200;
+    @apply peer-focus:scale-75 peer-focus:-translate-y-6;
+  }
 }

@@ -1,83 +1,145 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-gray-50">
-      <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow">
-        <div class="text-center">
-          <img src="../public/Cisepro_Wall.png" alt="Logo" class="mx-auto h-16 w-auto">
-          <h2 class="mt-4 text-3xl font-bold text-gray-900">Iniciar Sesión</h2>
+  <div class="min-h-screen flex items-center justify-center bg-blue-600 p-4">
+    <!-- Card Container -->
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+     
+
+      <!-- Card Content -->
+      <div class="px-6 pb-6 pt-2">
+        <div class="mb-4">
+          <h4 class="text-xl font-semibold mb-1 text-gray-900">Bienvenido! 👋</h4>
+          <p class="text-gray-600">Inicie sesión en su cuenta para comenzar</p>
         </div>
-  
-        <!-- Selector de Base de Datos -->
-        <div class="space-y-4">
-          <h3 class="text-sm font-medium text-gray-700">Seleccione base de datos:</h3>
-          <div class="flex justify-center space-x-6">
-            <div 
-              v-for="(db, index) in databases" 
-              :key="index"
-              @click="selectDatabase(index)"
-              :class="[
-                'cursor-pointer transition-all duration-300',
-                'flex flex-col items-center',
-                selectedDb === index 
-                  ? 'ring-2 ring-blue-500 scale-105' 
-                  : 'opacity-80 hover:opacity-100'
-              ]"
-            >
-              <div class="h-16 w-16 rounded-full overflow-hidden border-2 border-gray-200">
-                <img 
-                  :src="db.image" 
-                  :alt="db.name"
-                  class="h-full w-full object-cover"
-                >
-              </div>
-              <span class="mt-2 text-sm font-medium">{{ db.name }}</span>
-            </div>
+        <div class="mt-8">
+        <RadioChoice 
+          v-model="selectedCompany" 
+          name="company"
+          :options="companies"
+          icon-border-color="border-gray-300"
+        />
+      </div>
+        <form @submit.prevent="handleLogin">
+          <!-- Email Input -->
+          <div class="mb-6">
+            <UiInput 
+              v-model="form.email"
+              label="Email"
+              type="email"
+              
+            />
           </div>
-        </div>
-  
-        <form @submit.prevent="handleLogin" class="space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Usuario</label>
-            <input
-              v-model="username"
-              type="text"
-              placeholder="Ingrese su usuario"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 data-[error=true]:border-red-500 data-[success=true]:border-green-500 "
-            >
-            
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Contraseña</label>
-            <input
-              v-model="password"
+
+          <!-- Password Input -->
+          <div class="mb-6">
+            <UiInput 
+              v-model="form.password"
+              label="Contraseña"
               type="password"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            >
+            />
           </div>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="flex items-center justify-between mb-6">
+            <label class="flex items-center text-gray-600">
+              <input 
+                v-model="form.remember" 
+                type="checkbox" 
+                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              >
+              <span class="ml-2 text-sm">Recordar sesión</span>
+            </label>
+            
+            <RouterLink 
+              to="/forgot-password" 
+              class="text-sm text-blue-600 hover:text-blue-800"
+            >
+              ¿Olvidó su contraseña?
+            </RouterLink>
+          </div>
+
+          <!-- Login Button -->
           <button
             type="submit"
-            class="w-full btn-primary"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-md transition duration-200"
           >
-            Ingresar
+            Iniciar Sesión
           </button>
+
+          <!-- Divider -->
+          <div class="flex items-center my-6">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <span class="mx-4 text-gray-500 text-sm">o</span>
+            <div class="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <!-- Social Auth -->
+          <div class="grid grid-cols-2 gap-4">
+            <button 
+              type="button"
+              class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-md transition"
+            >
+              <i class="ri-google-fill text-red-500"></i>
+              Google
+            </button>
+            <button 
+              type="button"
+              class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-md transition"
+            >
+              <i class="ri-microsoft-fill text-blue-500"></i>
+              Microsoft
+            </button>
+          </div>
         </form>
       </div>
+
+      <!-- Card Footer -->
+      <div class="bg-gray-50 px-6 py-4 text-center">
+        <span class="text-gray-600 text-sm">¿No tiene una cuenta?</span>
+        <RouterLink 
+          to="/register" 
+          class="text-blue-600 hover:text-blue-800 ml-2 text-sm font-medium"
+        >
+          Crear cuenta
+        </RouterLink>
+      </div>
     </div>
-  </template>
-    
+  </div>
+</template>
+
 <script setup>
-import {  ref } from 'vue'
-import { useAuthStore } from 'stores/auth.store'
-//import { initInputs} from '@material-tailwind/html'
+import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
+import UiInput from '@/components/Input.vue'
+import RadioChoice from '@/components/RadioChoice.vue'
 
+const selectedCompany = ref('cisepro')
 
-const authStore = useAuthStore()
-const username = ref('')
-const password = ref('')
+const companies = ref([
+  {
+    value: 'cisepro',
+    label: 'Cisepro',
+    logo: '/src/assets/Images/cisepro.png',
+    bgColor: '#0D47A1'
+  },
+  {
+    
+    value: 'seportpac',
+    label: 'Seportpac',
+    logo: '/src/assets/Images/seportpac.png',
+    bgColor: '#404040'
+  },
+  
+])
+
+const form = ref({
+  email: '',
+  password: '',
+  remember: false
+})
+
 
 
 const handleLogin = () => {
-  authStore.login(username.value, password.value)
+  console.log('Login attempt:', form.value)
 }
-
-
 </script>

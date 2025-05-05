@@ -1,7 +1,11 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-blue-600 p-4">
+  <div class="min-h-screen flex items-center justify-center p-4 
+  bg-[url('/src/assets/Images/login_bg.jpg')] bg-cover bg-center bg-no-repeat bg-opacity-50">
+    
     <!-- Card Container -->
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+    
+    
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden ">
      
 
       <!-- Card Content -->
@@ -15,7 +19,7 @@
           v-model="selectedCompany" 
           name="company"
           :options="companies"
-          icon-border-color="border-gray-300"
+          icon-border-color="border-gray-200"
         />
       </div>
         <form @submit.prevent="handleLogin">
@@ -36,6 +40,10 @@
               label="Contraseña"
               type="password"
             />
+          </div>
+
+          <div v-if="errorMessage" class="text-red-500 text-center mb-4">
+            {{ errorMessage }}
           </div>
 
           <!-- Remember Me & Forgot Password -->
@@ -108,7 +116,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth.store'  
 import UiInput from '@/components/Input.vue'
 import RadioChoice from '@/components/RadioChoice.vue'
 
@@ -116,14 +125,14 @@ const selectedCompany = ref('cisepro')
 
 const companies = ref([
   {
-    value: 'cisepro',
+    value: 'Cisepro',
     label: 'Cisepro',
     logo: '/src/assets/Images/cisepro.png',
     bgColor: '#0D47A1'
   },
   {
     
-    value: 'seportpac',
+    value: 'Seportpac',
     label: 'Seportpac',
     logo: '/src/assets/Images/seportpac.png',
     bgColor: '#404040'
@@ -132,14 +141,24 @@ const companies = ref([
 ])
 
 const form = ref({
+  tipoConexion: '',
   email: '',
   password: '',
-  remember: false
+  
 })
 
+const errorMessage = ref('')
 
-
-const handleLogin = () => {
-  console.log('Login attempt:', form.value)
+const handleLogin = async () => {
+  try {
+    const response = await authStore.login({
+      tipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
+      login: username.value,
+      password: password.value
+    });
+    // Redirigir a dashboard
+  } catch (error) {
+    // Manejar error
+  }
 }
 </script>

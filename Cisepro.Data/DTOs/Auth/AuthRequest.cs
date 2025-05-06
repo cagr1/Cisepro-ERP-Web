@@ -1,16 +1,16 @@
 ﻿using Cisepro.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+
 
 namespace Cisepro.Data.DTOs.Auth
 {
     public class AuthRequest
     {
+        [JsonPropertyName("tipoConexion")]
         public TipoConexion TipoConexion { get; set; }
+        [JsonPropertyName("login")]
         public string Login { get; set; }
+        [JsonPropertyName("password")]
         public string Password { get; set; }
     }
 }

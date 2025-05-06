@@ -3,12 +3,9 @@
   bg-[url('/src/assets/Images/login_bg.jpg')] bg-cover bg-center bg-no-repeat bg-opacity-50">
     
     <!-- Card Container -->
-    
-    
+        
     <div class="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden ">
-     
-
-      <!-- Card Content -->
+           <!-- Card Content -->
       <div class="px-6 pb-6 pt-2">
         <div class="mb-4">
           <h4 class="text-xl font-semibold mb-1 text-gray-900">Bienvenido! 👋</h4>
@@ -26,11 +23,13 @@
           <!-- Email Input -->
           <div class="mb-6">
             <UiInput 
-              v-model="form.email"
-              label="Email"
-              type="email"
-              
+              v-model="form.login"
+              label="Usuario"
+              type="text"
+              :class="{'border-red-500': errors.login} "
+              @input="errorMessage = ''"
             />
+            <FormErrorMessage :message="errors.login" />
           </div>
 
           <!-- Password Input -->
@@ -39,7 +38,10 @@
               v-model="form.password"
               label="Contraseña"
               type="password"
+              :class="{'border-red-500': errors.password} "
+              @input="errorMessage = ''"
             />
+            <FormErrorMessage :message="errors.password" />
           </div>
 
           <div v-if="errorMessage" class="text-red-500 text-center mb-4">
@@ -117,11 +119,21 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth.store'  
+import { useAuthStore } from '@/stores/auth.store'  
 import UiInput from '@/components/Input.vue'
 import RadioChoice from '@/components/RadioChoice.vue'
+import FormErrorMessage from '@/components/FormErrorMessage.vue'
+import { useFormValidation } from '@/validations/useFormValidation'
+import { useAuthValidations } from '@/validations/useAuthValidations'
 
-const selectedCompany = ref('cisepro')
+const authStore = useAuthStore()
+const router = useRouter()
+
+const { errors, validateRequire} = useFormValidation()
+const { validateLoginForm } = useAuthValidations()
+
+
+const selectedCompany = ref('Cisepro')
 
 const companies = ref([
   {
@@ -141,24 +153,43 @@ const companies = ref([
 ])
 
 const form = ref({
-  tipoConexion: '',
-  email: '',
+  tipoConexion: selectedCompany.value,
+  login: '',
   password: '',
   
 })
 
 const errorMessage = ref('')
 
+
 const handleLogin = async () => {
   try {
-    const response = await authStore.login({
-      tipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
-      login: username.value,
-      password: password.value
+    errorMessage.value = ''
+    
+    const isValid = validateRequire({
+      login: form.value.login,
+      password: form.value.password,
+    })
+
+    if (!isValid) return
+
+    const authErrors = validateLoginForm(form.value)
+    if (Object.keys(authErrors).length > 0) {
+      errors.value = authErrors
+      return
+    }
+
+    await authStore.login({
+      TipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
+      Login: form.value.login.toUpperCase(),
+      Password: form.value.password,
     });
+    
+    router.push({ name: 'Dashboard' }); // Redirigir a dashboard
     // Redirigir a dashboard
   } catch (error) {
-    // Manejar error
+    errorMessage.value = error.response?.data?.message || 'Error al iniciar sesión. Usuario o Contraseña incorrectos.';
+    console.error('Error de inicio de sesión:', error);
   }
 }
 </script>

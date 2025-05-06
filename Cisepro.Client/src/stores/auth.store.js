@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
   
     const login = async (credentials) => {
       try {
-        const response = await axios.post('http://localhost:5000/api/auth/login', credentials)
+        const response = await axios.post('http://localhost:5206/api/Auth/Login', credentials)
         
         // Guardar token y usuario
         token.value = response.data.token
@@ -23,8 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
         // Redirigir
         router.push(returnUrl.value || '/dashboard')
       } catch (error) {
-        console.error('Error de autenticación:', error)
-        throw error
+        throw new Error(error.response?.data?.message || 'Error de autenticación')
       }
     }
   

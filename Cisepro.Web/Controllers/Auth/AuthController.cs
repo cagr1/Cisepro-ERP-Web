@@ -1,4 +1,4 @@
-﻿using Cisepro.Services.Auth;
+﻿using Cisepro.Services.Usuario_General;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Cisepro.Data.Enums;
@@ -33,7 +33,10 @@ namespace Cisepro.Web.Controllers.Auth
             return Ok(new
                 {
                 success = true,
-                message = "Autenticación exitosa"
+                message = "Autenticación exitosa",
+                token = response.Token,
+                usuario = response.Usuario,
+
                 });
             }
         }

@@ -7,7 +7,6 @@ using Cisepro.Services.Configuration;
 using Microsoft.Data.SqlClient;
 using Cisepro.Data.Entities;
 using Cisepro.Data.Enums;
-using Cisepro.Services.Auth;
 using Cisepro.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Azure.Core;
@@ -17,7 +16,7 @@ using Cisepro.Data.DTOs.Auth;
 
 
 
-namespace Cisepro.Services.Auth
+namespace Cisepro.Services.Usuario_General
 {
     public class AuthService
     {
@@ -33,10 +32,13 @@ namespace Cisepro.Services.Auth
         {
             using var context = _contextFactory(tipoCon);
             
+            if (string.IsNullOrEmpty(request.Login) || string.IsNullOrEmpty(request.Password))
+                return null;
+
             var usuario = context.UsuarioGenerals
-                .FromSqlRaw("EXEC sp_SeleccionUsuarioGeneral @login, @password",
-                                   new SqlParameter("@login", request.Login),
-                                   new SqlParameter("@password", request.Password))
+                .FromSqlRaw("EXEC SeleccionarUsuarioxLoginYPassword @LOGIN, @PASSWORD",
+                                   new SqlParameter("@LOGIN", request.Login),
+                                   new SqlParameter("@PASSWORD", request.Password))
                 .AsEnumerable()
                 .FirstOrDefault();
             if (usuario == null || usuario.Estado != 1)

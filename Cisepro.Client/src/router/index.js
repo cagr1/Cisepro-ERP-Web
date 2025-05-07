@@ -1,27 +1,47 @@
 import { createRouter, createWebHistory } from "vue-router";    
-import Login from "../views/Auth/Login.vue";
 import { useAuthStore } from "../stores/auth.store";
 
 const routes = [
     {
-        path: '/',
-        name: 'Login',
-        component: () => import('../views/Auth/Login.vue'),
-        meta: {
-            requiresAuth: false
-        }
+      path: '/login',
+      name: 'Login',
+      component: () => import('../views/Auth/Login.vue'),
+      meta: { requiresAuth: false }
     },
     {
-        path: '/dashboard',
-        name: 'Dashboard',
-        component: () => import('../views/Dashboard.vue'),
-        meta: {
-            requiresAuth: true
-        }
+      path: '/',
+      component: () => import('@/layouts/MainLayout.vue'),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: '/dashboard',
+          name: 'Dashboard',
+          component: () => import('../views/Dashboard.vue')
+        },
+        {
+          path: '/administration',
+          name: 'Administración',
+          component: () => import('../views/Administracion/EstructuraAdministrativa.vue')
+        },
+        {
+          path: '/contabilidad',
+          name: 'Contabilidad',
+          component: () => import('../views/Contabilidad/LibroDiario.vue')
+        },
+        // Agrega aquí el resto de las rutas del menú
+      ]
+    },
+    // Redirección por defecto
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/dashboard'
     }
+  ];        
 
-    ];
+        
+    
 
+        
     const router = createRouter({
         history: createWebHistory(),
         routes

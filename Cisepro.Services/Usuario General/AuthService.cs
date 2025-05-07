@@ -50,13 +50,26 @@ namespace Cisepro.Services.Usuario_General
                 Usuario = new UsuarioDTO
                 {
                     Id = usuario.IdUsuario,
-                    Nombre = usuario.Login,
-                    Email = usuario.Datos,
+                    Login = usuario.Login,
+                    Datos = usuario.Datos,
                     Rol = usuario.IdRol ?? 0
                 }
             
             };
 
+        }
+
+        public IEnumerable<UsuarioGeneral> GetUserByConnection(TipoConexion tipoCon)
+        {
+            using var context = _contextFactory(tipoCon);
+
+            var usuarios = context.UsuarioGenerals
+                .FromSqlRaw("EXEC seleccionarUsuarioGeneral")
+                .AsEnumerable()
+                .ToList();
+
+            return usuarios;
+            
         }
 
         private string GenerateJwtToken(UsuarioGeneral user)

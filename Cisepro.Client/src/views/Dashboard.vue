@@ -1,15 +1,22 @@
 <template>
-    <div class="min-h-screen bg-gray-100">
-      <header class="bg-white shadow">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-        </div>
-      </header>
+  <main-layout :selectedCompany="selectedCompany">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-2xl font-semibold mb-4">Bienvenido, {{ user.datos }}</h2>
+      <p class="mb-4 text-gray-600">Rol: {{ rolNombre }}</p>
+    </div>
+    <!-- Contenido principal del dashboard -->
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+      </div> -->
+  </main-layout>
+    
+    <!-- <div class="min-h-screen bg-gray-100">
+      
       <main>
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div class="px-4 py-6 sm:px-0">
             <div class="border-4 border-dashed border-gray-200 rounded-lg p-6">
-              <h2 class="text-xl font-semibold mb-4">Bienvenido, {{ user.nombre }}</h2>
+              <h2 class="text-xl font-semibold mb-4">Bienvenido, {{ user.datos }}</h2>
               <p class="mb-4">Rol: {{ rolNombre }}</p>
               <button 
                 @click="logout"
@@ -21,12 +28,13 @@
           </div>
         </div>
       </main>
-    </div>
+    </div> -->
   </template>
   
   <script setup>
   import { useAuthStore } from '@/stores/auth.store'
   import { computed } from 'vue'
+  import MainLayout from '../layouts/MainLayout.vue'
   
   const authStore = useAuthStore()
   const user = computed(() => authStore.user)

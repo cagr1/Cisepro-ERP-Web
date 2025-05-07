@@ -32,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = null
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      router.push('/login')
+      router.push('/')
     }
   
     // Verificar autenticación al cargar

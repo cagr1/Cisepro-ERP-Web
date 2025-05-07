@@ -30,15 +30,48 @@ namespace Cisepro.Web.Controllers.Auth
                     message = "Credenciales incorrectas"
                 });
 
-            return Ok(new
+                return Ok(new
                 {
-                success = true,
-                message = "Autenticación exitosa",
-                token = response.Token,
-                usuario = response.Usuario,
+                    success = true,
+                    message = "Autenticación exitosa",
+                    token = response.Token,
+                    usuario = response.Usuario,
 
                 });
+        }
+
+        [HttpGet("AvailableUsers")]
+        public IActionResult GetAvailableUsers([FromQuery] TipoConexion tipoConexion)
+        {
+            try
+            {
+                var users = _authService.GetUserByConnection(tipoConexion);
+
+                var result = users.Select(u => new
+                {
+                    displayName = u.Datos,
+                    value = u.Login
+                });
+
+                return Ok(new
+                {
+                    success = true,
+                    data = result
+                });                    
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Error al obtener usuarios:" + ex.Message
+                });
+            }
+            
+            
+
+            
         }
     }
+}
 

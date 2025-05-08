@@ -7,18 +7,29 @@ export const useAuthStore = defineStore('auth', () => {
     const user = ref(null)
     const token = ref(localStorage.getItem('token') || null)
     const returnUrl = ref(null)
-  
+    const selectedCompany = ref(localStorage.getItem('selectedCompany') || 'Cisepro');
     const login = async (credentials) => {
       try {
         const response = await axios.post('http://localhost:5206/api/Auth/Login', credentials)
         
         // Guardar token y usuario
+        
+
+        const userData = {
+          
+          login: response.data.usuario.login,
+          rol: response.data.usuario.rol
+        }
+        
+        console.log(userData)
+
         token.value = response.data.token
-        user.value = response.data.usuario
+        user.value = userData
         
         // Guardar en localStorage
         localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
+        localStorage.setItem('selectedCompany', credentials.c)
         
         // Redirigir
         router.push(returnUrl.value || '/dashboard')

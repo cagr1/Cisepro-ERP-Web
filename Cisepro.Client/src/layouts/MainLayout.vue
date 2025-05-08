@@ -1,36 +1,45 @@
 <template>
-    <div class="min-h-screen flex">
-      <!-- Sidebar -->
-      <aside 
-        class="w-64 fixed left-0 top-0 h-screen bg-white shadow-xl transition-all duration-300 z-40
-        border-r border-gray-200"
-        :style="sidebarStyle"
-      >
-        <div class="h-full flex flex-col">
-          <!-- Logo -->
-          <div class="p-4 border-b border-gray-200">
-            <div v-if="selectedCompany === 'Cisepro'" class="text-xl font-bold">
-              <img src="../assets/images/cisepro.png" alt="Seportpac" class="h-10 w-auto">
-            </div>
-            <div v-else class="text-xl font-bold">
-              <img src="../assets/images/seportpac.png" alt="Cisepro" class="h-10 w-auto">
-            </div>
+  <div class="min-h-screen flex">
+    <!-- Sidebar -->
+    <aside
+      class="w-64 fixed left-0 top-0 h-screen shadow-xl transition-all duration-300 z-40 border-r "
+      :style="sidebarStyle"
+    >
+      <div class="h-full flex flex-col">
+        <!-- Logo -->
+        <div class="p-4 border-b border-gray-200 flex items-center gap-3">
+          <div v-if="selectedCompany === 'Cisepro'" class="flex items-center gap-3">
+            <img
+              src="../assets/images/cisepro.png"
+              alt="Cispero"
+              class="h-10 w-auto"              
+            />
+          <span class="text-white font-semibold text-lg">CISEPRO</span>
           </div>
-  
-          <!-- Menu Items -->
-          <nav class="flex-1 overflow-y-auto px-2 py-4">
+          <div v-else class="flex items-center gap-3">
+            <img
+              src="../assets/images/seportpac.png"
+              alt="Seportpac"
+              class="h-10 w-auto"
+            />
+            <span class="text-white font-semibold text-lg">SEPORTPAC</span>
+          </div>
+        </div>
+
+        <!-- Menu Items -->
+        <nav class="flex-1 overflow-y-auto px-2 py-4">
           <ul class="space-y-1">
             <li v-for="item in menuItems" :key="item.name">
               <template v-if="item.children">
-                <button 
+                <button
                   @click="toggleSubmenu(item)"
-                  class="w-full flex items-center justify-between p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  class="w-full flex items-center justify-between p-2 text-white hover:bg-blue-600 rounded-lg transition-colors"
                 >
                   <div class="flex items-center">
-                    <i :class="`${item.icon} text-gray-500 text-lg mr-3`"></i>
+                    <i :class="`${item.icon} text-white text-lg mr-3`"></i>
                     <span class="text-sm font-medium">{{ item.name }}</span>
                   </div>
-                  <i 
+                  <i
                     :class="`ri-arrow-down-s-line transition-transform ${
                       openSubmenus[item.name] ? 'rotate-180' : ''
                     }`"
@@ -48,9 +57,11 @@
                     <li v-for="child in item.children" :key="child.name">
                       <RouterLink
                         :to="child.path"
-                        class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
+                        class="flex items-center p-2 text-white hover:bg-blue-500 rounded-lg text-sm"
                       >
-                        <i :class="`${child.icon} text-gray-400 text-base mr-3`"></i>
+                        <i
+                          :class="`${child.icon} text-white text-base mr-3`"
+                        ></i>
                         {{ child.name }}
                       </RouterLink>
                     </li>
@@ -60,36 +71,39 @@
               <RouterLink
                 v-else
                 :to="item.path"
-                class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                class="flex items-center p-2 text-white hover:bg-[var(--hover-color)] rounded-lg transition-colors"
               >
-                <i :class="`${item.icon} text-gray-500 text-lg mr-3`"></i>
+                <i :class="`${item.icon} text-white text-lg mr-3`"></i>
                 <span class="text-sm font-medium">{{ item.name }}</span>
               </RouterLink>
             </li>
           </ul>
         </nav>
-        </div>
-      </aside>
-  
-      <!-- Main Content -->
-      <div class="flex-1 ml-64">
-        <!-- Navbar -->
-        <header class="bg-white border-b border-gray-200">
-        <div class="flex justify-between items-center px-6 py-4">
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-64">
+      <!-- Navbar -->
+      <header class="bg-white border-b border-gray-200">
+        <div class="flex justify-between items-center px-6 py-3">
           <div></div>
-          
+
           <!-- User Profile -->
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
-              <img 
-                :src="user.photo || 'https://via.placeholder.com/40'" 
+              <img
+                :src="user.photo || 'https://via.placeholder.com/40'"
                 class="w-10 h-10 rounded-full object-cover"
                 alt="User photo"
-              >
+              />
               <div class="text-right">
-                <p class="text-sm font-medium text-gray-700">{{ user.name }}</p>
-                <p class="text-xs text-gray-500">{{ user.role }}</p>
+                <p class="text-sm font-medium text-gray-700">
+                  {{ user.datos }}
+                </p>
+                <p class="text-xs text-gray-500">{{ rolNombre }}</p>
               </div>
+              
             </div>
             <button
               @click="logout"
@@ -100,52 +114,58 @@
           </div>
         </div>
       </header>
-  
-        <!-- Content -->
-        
-      </div>
-    </div>
-  </template>
-  
-  <script setup>
-  import { computed } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useAuthStore } from '@/stores/auth.store';
-  
-  const authStore = useAuthStore();
-  const router = useRouter();
-  
-  //const openSubmenus = ref({});
 
-  const props = defineProps({
-    selectedCompany: {
-      type: String,
-      default: 'Cisepro'
-    }
-  });
-  
-  const menuItems = [
-  
-  { 
-    name: 'Dashboard',
-    path: '/dashboard',
-    icon: 'ri-dashboard-line'
+      <!-- Content -->
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth.store";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const openSubmenus = ref({});
+
+const props = defineProps({
+  selectedCompany: {
+    type: String,
+    default: "Cisepro",
   },
-  { 
-    name: 'Administración',
-    icon: 'ri-settings-5-line',
-    children: [
-      { name: 'Usuarios', path: '/admin/users', icon: 'ri-user-line' },
-      { name: 'Roles', path: '/admin/roles', icon: 'ri-shield-keyhole-line' }
-    ]
+});
+
+const menuItems = [
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+    icon: "ri-dashboard-line",
   },
-  { 
-    name: 'Contabilidad',
-    icon: 'ri-calculator-line',
+  {
+    name: "Administración",
+    icon: "ri-settings-5-line",
     children: [
-      { name: 'Balance General', path: '/contabilidad/balance', icon: 'ri-line-chart-line' },
-      { name: 'Estado de Resultados', path: '/contabilidad/resultados', icon: 'ri-bar-chart-2-line' }
-    ]
+      { name: "Usuarios", path: "/admin/users", icon: "ri-user-line" },
+      { name: "Roles", path: "/admin/roles", icon: "ri-shield-keyhole-line" },
+    ],
+  },
+  {
+    name: "Contabilidad",
+    icon: "ri-calculator-line",
+    children: [
+      {
+        name: "Balance General",
+        path: "/contabilidad/balance",
+        icon: "ri-line-chart-line",
+      },
+      {
+        name: "Estado de Resultados",
+        path: "/contabilidad/resultados",
+        icon: "ri-bar-chart-2-line",
+      },
+    ],
   },
   // Agrega el resto de los items siguiendo el mismo formato
 ];
@@ -153,26 +173,70 @@
 const toggleSubmenu = (item) => {
   openSubmenus.value[item.name] = !openSubmenus.value[item.name];
 };
+
+const sidebarStyle = computed(() => {
+  const colors = {
+    Seportpac: {
+      background: 'rgb(38, 50, 56)',
+      hover: 'rgba(255, 255, 255, 0.1)',
+      active: 'rgba(255, 255, 255, 0.2)'
+    },
+    Cisepro: {
+      background: 'rgb(13, 71, 161)',
+      hover: 'rgba(255, 255, 255, 0.1)',
+      active: 'rgba(255, 255, 255, 0.2)'
+    }
+};
+const companyColors = computed(() =>
+colors[props.selectedCompany] || colors.Cisepro
+  );
   
-  const sidebarStyle = computed(() => {
-    const colors = {
-      Seportpac: '38, 50, 56', // RGB
-      Cisepro: '13, 71, 161'
-    };
-    return {
-      backgroundColor: `rgb(${colors[props.selectedCompany]})`,
-      borderRight: `1px solid rgba(255, 255, 255, 0.1)`
-    };
-  });
-  
-  const user = computed(() => ({
-    name: authStore.user?.name || 'Usuario',
-    role: authStore.user?.role || 'Rol',
-    photo: authStore.user?.photo
-  }));
-  
-  const logout = () => {
-    authStore.logout();
-    router.push('/login');
+  return {
+    backgroundColor: companyColors.background,
+    '--hover-color': companyColors.hover,
+    '--active-color': companyColors.active
   };
-  </script>
+});
+
+const user = computed(() => ({
+  datos: authStore.user?.login || "Usuario",
+  rol: authStore.user?.rol || "Rol"
+  //photo: authStore.user?.photo
+}));
+
+const rolNombre = computed(() => {
+    switch(user.value?.rol) {
+      case 1: return 'Administrador'
+      case 2: return 'Usuario'
+      default: return 'Invitado'
+    }
+  })
+
+const logout = () => {
+  authStore.logout();
+  router.push("/login");
+};
+</script>
+
+<style scoped>
+.aside {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--sidebar-bg-rgb), 0.95) 0%,
+    rgba(var(--sidebar-bg-rgb), 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+</style>

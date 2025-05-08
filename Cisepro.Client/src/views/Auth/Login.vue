@@ -31,14 +31,13 @@
               v-model="form.login"
               label="Usuario"
               type="text"
+              autocomplete="username"
               :class="{'border-red-500': errors.login} "
               @input="errorMessage = ''"
             />
             <FormErrorMessage :message="errors.login" />
           </div>
-          <div v-if="isLoadingUsers" class="mt-2 text-sm text-gray-500">
-            Cargando usuarios...
-          </div>
+         
 
           <!-- Error state -->
           <div v-if="usersError" class="mt-2 text-sm text-red-500">
@@ -129,7 +128,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import UiInput from "@/components/Input.vue";
@@ -165,9 +164,16 @@ const companies = ref([
 
 const form = ref({
   tipoConexion: selectedCompany.value,
-  login: "",
+  login: localStorage.getItem('rememberedUsername') || "",
   password: "",
+  remember: localStorage.getItem('rememberUsername') === "true"
 });
+
+onMounted(() => {
+  if (form.value.remember) {
+    form.value.login = localStorage.getItem("rememberedUsername") || "";
+  } 
+})
 
 const errorMessage = ref("");
 
@@ -182,6 +188,14 @@ const handleLogin = async () => {
     });
 
     if (!isValid) return;
+
+    if (form.value.remember) {
+      localStorage.setItem("rememberedUsername", form.value.login);
+      localStorage.setItem("rememberUsername", 'true');
+    } else {
+      localStorage.removeItem("rememberedUsername");
+      localStorage.removeItem("rememberPassword");
+    }
 
     if (!form.value.login) {
       errors.value.login = "El campo usuario es requerido";

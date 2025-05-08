@@ -11,6 +11,7 @@ using Cisepro.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Azure.Core;
 using Cisepro.Data.DTOs.Auth;
+using System.Security.Cryptography;
 
 
 
@@ -27,7 +28,7 @@ namespace Cisepro.Services.Usuario_General
             _jwtSettings = jwtSettings.Value;
             _contextFactory = contextFactory;
         }
-
+        
         public AuthResponse Authenticate(TipoConexion tipoCon, AuthRequest request)
         {
             using var context = _contextFactory(tipoCon);

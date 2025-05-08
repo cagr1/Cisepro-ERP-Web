@@ -14,6 +14,11 @@ const routes = [
       meta: { requiresAuth: true },
       children: [
         {
+          path: '',
+          redirect: '/dashboard'          
+          
+        },
+        {
           path: '/dashboard',
           name: 'Dashboard',
           component: () => import('../views/Dashboard.vue')

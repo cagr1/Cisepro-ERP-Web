@@ -11,17 +11,16 @@ export const useAuthStore = defineStore('auth', () => {
     const login = async (credentials) => {
       try {
         const response = await axios.post('http://localhost:5206/api/Auth/Login', credentials)
-        
         // Guardar token y usuario
-        
-
         const userData = {
           
-          login: response.data.usuario.login,
+          datos: response.data.usuario.datos,
           rol: response.data.usuario.rol
         }
-        
+        selectedCompany.value = credentials.TipoConexion;
+        localStorage.setItem('selectedCompany', selectedCompany.value);
         console.log(userData)
+        console.log(selectedCompany.value)
 
         token.value = response.data.token
         user.value = userData
@@ -29,7 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
         // Guardar en localStorage
         localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
-        localStorage.setItem('selectedCompany', credentials.c)
+        
         
         // Redirigir
         router.push(returnUrl.value || '/dashboard')
@@ -52,7 +51,8 @@ export const useAuthStore = defineStore('auth', () => {
       if (storedUser) {
         user.value = JSON.parse(storedUser)
       }
+      
     }
   
-    return { user, token, returnUrl, login, logout, initialize }
+    return { user, token, returnUrl, selectedCompany, login, logout, initialize }
   })

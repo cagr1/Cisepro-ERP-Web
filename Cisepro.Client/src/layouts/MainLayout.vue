@@ -8,7 +8,7 @@
       <div class="h-full flex flex-col">
         <!-- Logo -->
         <div class="p-4 border-b border-gray-200 flex items-center gap-3">
-          <div v-if="selectedCompany === 'Cisepro'" class="flex items-center gap-3">
+          <div v-if=" selectedCompany === 'Cisepro'" class="flex items-center gap-3">
             <img
               src="../assets/images/cisepro.png"
               alt="Cispero"
@@ -56,13 +56,20 @@
                   <ul v-show="openSubmenus[item.name]" class="ml-8 space-y-1">
                     <li v-for="child in item.children" :key="child.name">
                       <RouterLink
-                        :to="child.path"
-                        class="flex items-center p-2 text-white hover:bg-blue-500 rounded-lg text-sm"
-                      >
+                        :to="{path :child.path}"
+                        custom
+                        v-slot="{ navigate, isActive }">
+                       <!-- class="flex items-center p-2 text-white hover:bg-blue-500 rounded-lg text-sm" -->
+                      <a
+                      @click="navigate"
+                      :class="['flex items-center p-2 text-white hover:bg-[var(--hover-color)] rounded-lg text-sm',
+                              {'bg-blue-600': isActive}]"
+                              >
                         <i
                           :class="`${child.icon} text-white text-base mr-3`"
                         ></i>
                         {{ child.name }}
+                      </a>
                       </RouterLink>
                     </li>
                   </ul>
@@ -121,21 +128,20 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
+import { storeToRefs } from "pinia";
 
 const authStore = useAuthStore();
 const router = useRouter();
-
 const openSubmenus = ref({});
+const {selectedCompany} = storeToRefs(authStore);
 
-const props = defineProps({
-  selectedCompany: {
-    type: String,
-    default: "Cisepro",
-  },
-});
+watch(() => router.currentRoute.value, (newRoute) => {
+  console.log('Ruta cambiada a:', newRoute.path);
+}, { immediate: true });
+
 
 const menuItems = [
   {
@@ -167,41 +173,53 @@ const menuItems = [
       },
     ],
   },
-  // Agrega el resto de los items siguiendo el mismo formato
+  {
+    name: "RRHH",
+    icon: "ri-group-line",
+    children: [
+      {
+        name: "Personal",
+        path: "/rrhh/personal",
+        icon: "ri-user-3-line",
+      },
+      
+    ],
+  },
+  
 ];
+
 
 const toggleSubmenu = (item) => {
   openSubmenus.value[item.name] = !openSubmenus.value[item.name];
 };
 
 const sidebarStyle = computed(() => {
+  
+  const company = selectedCompany.value;
+  console.log("Selected company:", company);
   const colors = {
     Seportpac: {
       background: 'rgb(38, 50, 56)',
-      hover: 'rgba(255, 255, 255, 0.1)',
-      active: 'rgba(255, 255, 255, 0.2)'
+      hover: 'rgba(255, 255, 255, 0.1)'
     },
     Cisepro: {
       background: 'rgb(13, 71, 161)',
-      hover: 'rgba(255, 255, 255, 0.1)',
-      active: 'rgba(255, 255, 255, 0.2)'
+      hover: 'rgba(255, 255, 255, 0.1)'
     }
-};
-const companyColors = computed(() =>
-colors[props.selectedCompany] || colors.Cisepro
-  );
+  };
   
   return {
-    backgroundColor: companyColors.background,
-    '--hover-color': companyColors.hover,
-    '--active-color': companyColors.active
+    backgroundColor: colors[company]?.background,
+    '--hover-color': colors[company]?.hover
   };
+
+
 });
 
 const user = computed(() => ({
-  datos: authStore.user?.login || "Usuario",
+  datos: authStore.user?.datos || "Usuario",
   rol: authStore.user?.rol || "Rol"
-  //photo: authStore.user?.photo
+  
 }));
 
 const rolNombre = computed(() => {

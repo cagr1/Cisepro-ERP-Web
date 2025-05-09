@@ -33,7 +33,18 @@ const routes = [
           name: 'Contabilidad',
           component: () => import('../views/Contabilidad/LibroDiario.vue')
         },
-        // Agrega aquí el resto de las rutas del menú
+        {
+          path: '/rrhh',
+  component: { render: () => h('router-view') }, // Layout anidado
+  children: [
+    {
+      path: 'personal',
+      name: 'Personal',
+      component: () => import('../views/rrhh/Personal.vue'),
+      meta: { title: 'Gestión de Personal' }
+    }
+  ]
+        }
       ]
     },
     // Redirección por defecto

@@ -5,6 +5,7 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   server:{
+    open: 'Brave',
     proxy:{
       '/api':{
         target:'http://localhost:5206',

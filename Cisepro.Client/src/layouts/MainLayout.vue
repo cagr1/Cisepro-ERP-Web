@@ -2,19 +2,23 @@
   <div class="min-h-screen flex">
     <!-- Sidebar -->
     <aside
-      class="w-64 fixed left-0 top-0 h-screen shadow-xl transition-all duration-300 z-40 border-r "
+      class="w-64 fixed left-0 top-0 h-screen shadow-xl transition-all duration-300 z-40 border-r"
+      :class="{'ml-[-16rem]': !sidebarOpen}"
       :style="sidebarStyle"
     >
       <div class="h-full flex flex-col">
         <!-- Logo -->
         <div class="p-4 border-b border-gray-200 flex items-center gap-3">
-          <div v-if=" selectedCompany === 'Cisepro'" class="flex items-center gap-3">
+          <div
+            v-if="selectedCompany === 'Cisepro'"
+            class="flex items-center gap-3"
+          >
             <img
               src="../assets/images/cisepro.png"
               alt="Cispero"
-              class="h-10 w-auto"              
+              class="h-10 w-auto"
             />
-          <span class="text-white font-semibold text-lg">CISEPRO</span>
+            <span class="text-white font-semibold text-lg">CISEPRO</span>
           </div>
           <div v-else class="flex items-center gap-3">
             <img
@@ -56,20 +60,24 @@
                   <ul v-show="openSubmenus[item.name]" class="ml-8 space-y-1">
                     <li v-for="child in item.children" :key="child.name">
                       <RouterLink
-                        :to="{path :child.path}"
+                        :to="child.path"
                         custom
-                        v-slot="{ navigate, isActive }">
-                       <!-- class="flex items-center p-2 text-white hover:bg-blue-500 rounded-lg text-sm" -->
-                      <a
-                      @click="navigate"
-                      :class="['flex items-center p-2 text-white hover:bg-[var(--hover-color)] rounded-lg text-sm',
-                              {'bg-blue-600': isActive}]"
-                              >
-                        <i
-                          :class="`${child.icon} text-white text-base mr-3`"
-                        ></i>
-                        {{ child.name }}
-                      </a>
+                        v-slot="{ navigate, isActive }"
+                      >
+                        <!-- class="flex items-center p-2 text-white hover:bg-blue-500 rounded-lg text-sm" -->
+                        <a
+                          @click="navigate"
+                          :href="child.path"
+                          :class="[
+                            'flex items-center p-2 text-white hover:bg-[var(--hover-color)] rounded-lg text-sm',
+                            { 'bg-blue-600': isActive },
+                          ]"
+                        >
+                          <i
+                            :class="`${child.icon} text-white text-base mr-3`"
+                          ></i>
+                          {{ child.name }}
+                        </a>
                       </RouterLink>
                     </li>
                   </ul>
@@ -90,12 +98,17 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="flex-1 ml-64">
+    <div class="flex-1 transition-all duration-300" :class="{'ml-0': !sidebarOpen, 'ml-64': sidebarOpen}">
       <!-- Navbar -->
       <header class="bg-white border-b border-gray-200">
         <div class="flex justify-between items-center px-6 py-3">
-          <div></div>
-
+          
+          <button 
+            @click="toggleSidebar"
+            class="p-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            <i :class="sidebarOpen ? 'ri-menu-fold-line' : 'ri-menu-unfold-line'" class="text-lg"></i>
+          </button>
           <!-- User Profile -->
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
@@ -110,7 +123,6 @@
                 </p>
                 <p class="text-xs text-gray-500">{{ rolNombre }}</p>
               </div>
-              
             </div>
             <button
               @click="logout"
@@ -123,6 +135,9 @@
       </header>
 
       <!-- Content -->
+      <div class="p-6">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
@@ -136,12 +151,16 @@ import { storeToRefs } from "pinia";
 const authStore = useAuthStore();
 const router = useRouter();
 const openSubmenus = ref({});
-const {selectedCompany} = storeToRefs(authStore);
+const sidebarOpen = ref(true);
+const { selectedCompany } = storeToRefs(authStore);
 
-watch(() => router.currentRoute.value, (newRoute) => {
-  console.log('Ruta cambiada a:', newRoute.path);
-}, { immediate: true });
-
+watch(
+  () => router.currentRoute.value,
+  (newRoute) => {
+    console.log("Ruta cambiada a:", newRoute.path);
+  },
+  { immediate: true }
+);
 
 const menuItems = [
   {
@@ -182,53 +201,53 @@ const menuItems = [
         path: "/rrhh/personal",
         icon: "ri-user-3-line",
       },
-      
     ],
   },
-  
 ];
 
+const toggleSidebar = () => {
+  sidebarOpen.value = !sidebarOpen.value;
+};
 
 const toggleSubmenu = (item) => {
   openSubmenus.value[item.name] = !openSubmenus.value[item.name];
 };
 
 const sidebarStyle = computed(() => {
-  
   const company = selectedCompany.value;
   console.log("Selected company:", company);
   const colors = {
     Seportpac: {
-      background: 'rgb(38, 50, 56)',
-      hover: 'rgba(255, 255, 255, 0.1)'
+      background: "rgb(38, 50, 56)",
+      hover: "rgba(255, 255, 255, 0.1)",
     },
     Cisepro: {
-      background: 'rgb(13, 71, 161)',
-      hover: 'rgba(255, 255, 255, 0.1)'
-    }
+      background: "rgb(13, 71, 161)",
+      hover: "rgba(255, 255, 255, 0.1)",
+    },
   };
-  
+
   return {
     backgroundColor: colors[company]?.background,
-    '--hover-color': colors[company]?.hover
+    "--hover-color": colors[company]?.hover,
   };
-
-
 });
 
 const user = computed(() => ({
   datos: authStore.user?.datos || "Usuario",
-  rol: authStore.user?.rol || "Rol"
-  
+  rol: authStore.user?.rol || "Rol",
 }));
 
 const rolNombre = computed(() => {
-    switch(user.value?.rol) {
-      case 1: return 'Administrador'
-      case 2: return 'Usuario'
-      default: return 'Invitado'
-    }
-  })
+  switch (user.value?.rol) {
+    case 1:
+      return "Administrador";
+    case 2:
+      return "Usuario";
+    default:
+      return "Invitado";
+  }
+});
 
 const logout = () => {
   authStore.logout();
@@ -237,6 +256,21 @@ const logout = () => {
 </script>
 
 <style scoped>
+button.rounded-full {
+  border-radius: 9999px;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Transición suave para el sidebar */
+.aside {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Estilos adicionales existentes */
 .aside {
   background: linear-gradient(
     135deg,

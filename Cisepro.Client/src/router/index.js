@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "../stores/auth.store";
-import { h } from "vue";
+
 
 const routes = [
   {
     path: "/login",
     name: "Login",
     component: () => import("../views/Auth/Login.vue"),
-    meta: { requiresAuth: false },
+    meta: { requiresAuth: false, isLoginPage: true },
   },
   {
     path: "/",
@@ -52,13 +52,18 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
   // Inicializar el store
   authStore.initialize();
 
-  if (to.meta.requiresAuth && !authStore.token) {
+  if (to.meta.isLoginPage && authStore.isAuthenticated) {
+    next("/dashboard");
+  }
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     authStore.returnUrl = to.fullPath;
     next("/login");
   } else {

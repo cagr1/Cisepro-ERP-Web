@@ -380,165 +380,342 @@
             <h2 class="text-lg font-medium text-gray-900 mb-2">
               Información Operativa
             </h2>
-            
           </div>
           <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb4">
-           
-
             <!-- Columna 1 -->
             <div class="space-y-2">
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Ingreso</label>
-                    <input type="date" v-model="formData.fechaIngreso" 
-                          class="form-field w-full">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Ubicacion</label>
-                    <input type="text" v-model="formData.pagoRol" 
-                          class="form-field w-full h-20">
-                </div>
-                
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Ingreso</label
+                >
+                <input
+                  type="date"
+                  v-model="formData.fechaIngreso"
+                  class="form-field w-full"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Ubicacion</label
+                >
+                <input
+                  type="text"
+                  v-model="formData.pagoRol"
+                  class="form-field w-full h-20"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Proyecto</label
+                >
+                <select v-model="formData.proyecto" class="form-field w-full">
+                  <option>Cisepro</option>
+                  <option>Proyecto X</option>
+                </select>
+              </div>
             </div>
 
             <!-- Columna 2 -->
             <div class="space-y-2">
               <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Salida</label>
-                    <input type="date" v-model="formData.fechaSalida" 
-                          class="form-field w-full">
-                </div>  
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Salida</label
+                >
+                <input
+                  type="date"
+                  v-model="formData.fechaSalida"
+                  class="form-field w-full"
+                />
+              </div>
               <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Área</label>
-                    <select v-model="formData.area" class="form-field w-full">
-                        <option>Sistemas</option>
-                        <option>RRHH</option>
-                        <option>Contabilidad</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Proyecto</label>
-                    <select v-model="formData.proyecto" class="form-field w-full">
-                        <option>Cisepro</option>
-                        <option>Proyecto X</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Inicio Pro</label>
-                    <input type="date" v-model="formData.inicioProyecto" 
-                          class="form-field w-full">
-                </div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Área</label
+                >
+                <select v-model="formData.area" class="form-field w-full">
+                  <option>Sistemas</option>
+                  <option>RRHH</option>
+                  <option>Contabilidad</option>
+                </select>
+              </div>
+
+              
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Inicio Pro</label
+                >
+                <input
+                  type="date"
+                  v-model="formData.inicioProyecto"
+                  class="form-field w-full"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Fin Pro</label
+                >
+                <input
+                  type="date"
+                  v-model="formData.inicioProyecto"
+                  class="form-field w-full"
+                />
+              </div>
             </div>
 
             <!-- Columna 4 -->
             <div class="space-y-2">
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Motivo</label>
-                    <input type="text" v-model="formData.ubicacion" 
-                          class="form-field w-full">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Cargo</label>
-                    <select v-model="formData.cargo" class="form-field w-full">
-                        <option>Analista de Sistema</option>
-                        <option>Asistente</option>
-                        <option>Contador</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Observación</label>
-                    <textarea v-model="formData.observacion" 
-                              class="form-field w-full h-20"></textarea>
-                </div>
-                
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Motivo</label
+                >
+                <input
+                  type="text"
+                  v-model="formData.ubicacion"
+                  class="form-field w-full"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Cargo</label
+                >
+                <select v-model="formData.cargo" class="form-field w-full">
+                  <option>Analista de Sistema</option>
+                  <option>Asistente</option>
+                  <option>Contador</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Observación</label
+                >
+                <textarea
+                  v-model="formData.observacion"
+                  class="form-field w-full h-20"
+                ></textarea>
+              </div>
             </div>
 
             <!-- Columna 4 -->
             <div class="space-y-2">
-              
               <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Tipo Contrato</label>
-                    <select v-model="formData.tipoContrato" class="form-field w-full">
-                        <option>Indefinido</option>
-                        <option>Temporal</option>
-                        <option>Por obra</option>
-                    </select>
-                </div>
-              
-                <div class="flex items-center gap-2">
-                  <input type="checkbox" v-model="formData.xiii" 
-                          class="h-3 w-3 text-blue-600 border-gray-300 rounded" id="XIII">  
-                  <label class="block text-xs font-medium text-gray-600 mb-1" for="XIII">XIII</label>
-                    
-                </div>
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" v-model="formData.historiaClinica" 
-                          class="h-3 w-3 text-blue-600 border-gray-300 rounded" id="historiaClinica">
-                    <label class="text-xs font-medium text-gray-600" for="historiaClinica" >Historia Clínica</label>
-                    
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">XIV</label>
-                    <input type="text" v-model="formData.xiv" 
-                          class="form-field w-full">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Fondo Re.</label>
-                    <input type="text" v-model="formData.fondoReserva" 
-                          class="form-field w-full">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Acum F. Res</label>
-                    <input type="text" v-model="formData.acumFondoReserva" 
-                          class="form-field w-full">
-                </div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Tipo Contrato</label
+                >
+                <select
+                  v-model="formData.tipoContrato"
+                  class="form-field w-full"
+                >
+                  <option>Indefinido</option>
+                  <option>Temporal</option>
+                  <option>Por obra</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  v-model="formData.afiliadoIESS"
+                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  id="afiliadoIESS"
+                />
+                <label
+                  class="text-xs font-medium text-gray-600 cursor-pointer"
+                  for="afiliadoIESS"
+                >
+                  Afiliado IESS
+                </label>
+              </div>
+              <!-- Fecha de Afiliación (siempre visible) -->
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Fecha Afiliación</label
+                >
+                <input
+                  type="date"
+                  v-model="formData.fechaAfiliacionIESS"
+                  :disabled="!formData.afiliadoIESS"
+                  class="form-field w-full"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                  }"
+                />
+              </div>
+
+              <!-- XIII Sueldo (siempre visible) -->
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  v-model="formData.xiii"
+                  :disabled="!formData.afiliadoIESS"
+                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                  }"
+                  id="XIII"
+                />
+                <label
+                  class="text-xs font-medium text-gray-600 cursor-pointer"
+                  for="XIII"
+                >
+                  XIII Sueldo
+                </label>
+              </div>
+
+              <!-- XIV Sueldo (siempre visible) -->
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  v-model="formData.xiv"
+                  :disabled="!formData.afiliadoIESS"
+                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                  }"
+                  id="XIV"
+                />
+                <label
+                  class="text-xs font-medium text-gray-600 cursor-pointer"
+                  for="XIV"
+                >
+                  XIV Sueldo
+                </label>
+              </div>
+
+              <!-- Fondo de Reserva (siempre visible) -->
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  v-model="formData.fondoReserva"
+                  :disabled="!formData.afiliadoIESS"
+                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                  }"
+                  id="fondoReserva"
+                />
+                <label
+                  class="text-xs font-medium text-gray-600 cursor-pointer"
+                  for="fondoReserva"
+                >
+                  Fondo de Reserva
+                </label>
+              </div>
+
+              <!-- Acumulado Fondo Reserva (siempre visible) -->
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  v-model="formData.acumFondoReserva"
+                  :disabled="!formData.afiliadoIESS"
+                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                  }"
+                  id="acumFondoReserva"
+                />
+                <label
+                  class="text-xs font-medium text-gray-600 cursor-pointer"
+                  for="acumFondoReserva"
+                >
+                  Acumulado F. Reserva
+                </label>
+              </div>
             </div>
-          
+
             <!-- Columna 5 -->
             <div class="space-y-2">
               <div>
-                    <label class="block text-xs font-medium text-gray-600 mb-1">Prueba Antidroga</label>
-                    <select v-model="formData.emisor" class="form-field w-full">
-                        <option>Negativo</option>
-                        <option>Positivo</option>
-                    </select>
-                </div>  
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Prueba Antidroga</label
+                >
+                <select v-model="formData.emisor" class="form-field w-full">
+                  <option>Negativo</option>
+                  <option>Positivo</option>
+                </select>
+              </div>
               <div class="flex items-center gap-2">
-                    <input type="checkbox" v-model="formData.historiaClinica" 
-                          class="h-3 w-3 text-blue-600 border-gray-300 rounded" id="historiaClinica">
-                    <label class="text-xs font-medium text-gray-600" for="historiaClinica" >Historia Clínica</label>
-                    
-                </div>
+                <input
+                  type="checkbox"
+                  v-model="formData.historiaClinica"
+                  class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                  id="historiaClinica"
+                />
+                <label
+                  class="text-xs font-medium text-gray-600"
+                  for="historiaClinica"
+                  >Historia Clínica</label
+                >
+              </div>
+              <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2">
-                    <input type="checkbox" v-model="formData.discapacitado" 
-                          class="h-4 w-4 text-blue-600 border-gray-300 rounded" id="discapacitado">
-                    <label class="text-xs font-medium text-gray-600" for="discapacitado">Discapacitado</label>
-                    <input type="text" 
-                          class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" >
+                  <input
+                    type="checkbox"
+                    v-model="formData.discapacitado"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    id="discapacitado"
+                  />
+                  <label
+                    class="text-xs font-medium text-gray-600 cursor-pointer"
+                    for="discapacitado"
+                    >Discapacitado</label
+                  >
                 </div>
+                <input
+                  v-if="formData.discapacitado"
+                  type="text"
+                  v-model="formData.discapacitadoDetalle"
+                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                  placeholder="Número o serie"
+                />
+              </div>
+
+              <!-- Examen Psicológico (checkbox + input condicional) -->
+              <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2">
-                    <input type="checkbox" v-model="formData.examenPsicologico" 
-                          class="h-4 w-4 text-blue-600 border-gray-300 rounded" id="examenPsicologico">
-                    <label class="text-xs font-medium text-gray-600" for="examenPsicologico">Examen Psicológico</label>
-                    <input type="text" 
-                          class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" >
+                  <input
+                    type="checkbox"
+                    v-model="formData.examenPsicologico"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    id="examenPsicologico"
+                  />
+                  <label
+                    class="text-xs font-medium text-gray-600 cursor-pointer"
+                    for="examenPsicologico"
+                    >Examen Psicológico</label
+                  >
                 </div>
+                <input
+                  v-if="formData.examenPsicologico"
+                  type="text"
+                  v-model="formData.examenPsicologicoDetalle"
+                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                  placeholder="Número o serie"
+                />
+              </div>
+
+              <!-- Curso Vigilante (checkbox + input condicional) -->
+              <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2">
-                    <input type="checkbox" v-model="formData.cursoVigilante" 
-                          class="h-4 w-4 text-blue-600 border-gray-300 rounded" id="cursoVigilante">
-                    <label class="text-xs font-medium text-gray-600" for="cursoVigilante">Curso Vigilante</label>
-                    <input type="text" 
-                          class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" >
+                  <input
+                    type="checkbox"
+                    v-model="formData.cursoVigilante"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    id="cursoVigilante"
+                  />
+                  <label
+                    class="text-xs font-medium text-gray-600 cursor-pointer"
+                    for="cursoVigilante"
+                    >Curso Vigilante</label
+                  >
                 </div>
-                
+                <input
+                  v-if="formData.cursoVigilante"
+                  type="text"
+                  v-model="formData.cursoVigilanteDetalle"
+                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                  placeholder="Número o serie"
+                />
+              </div>
             </div>
-
-
           </div>
-            
-
-
-
 
           <!-- --- -->
         </div>
@@ -595,11 +772,19 @@
         </div>
       </div>
     </div>
+     <SearchModal 
+      :show="showSearchModal" 
+      :items="searchResults"
+      @close="showSearchModal = false"
+      @select="loadEmployee"
+      @terminate="terminateContract"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, watch } from "vue";
+import SearchModal from "@/components/Personal/SearchModal.vue";
 
 // Estado del formulario
 const formData = reactive({
@@ -740,68 +925,8 @@ const edad = computed(() => {
   return "";
 });
 
-const buscarPersonal = () => {
-  console.log("Buscando personal...");
-};
 
-const nuevoPersonal = () => {
-  console.log("Nuevo personal...");
-  // Resetear formulario
-  Object.assign(formData, {
-    cedula: "",
-    nombres: "",
-    apellidos: "",
-    sexo: "masculino",
-    estadoCivil: "soltero",
-    instruccion: "primaria",
-    tipoSangre: "O+",
-    provincia: "",
-    parroquia: "",
-    direccion: "",
-    email: "",
-    banco: "banco1",
-    cuenta: "",
-    contrato: "",
-    fechaNacimiento: "",
-    pasaporte: "",
-    libretaMilitar: "",
-    peso: "",
-    estatura: "",
-    ciudad: "",
-    telefono: "",
-    celular: "",
-    tipo: "tipo1",
-    imagenPerfil: null,
-    credencial: false,
-    fechaIngreso: "",
-    tipoContrato: "indefinido",
-    pagoRol: "",
-    fechaSalida: "",
-    area: "area1",
-    cargo: "cargo1",
-    proyecto: "proyecto1",
-    inicioProyecto: "",
-    ubicacion: "",
-    observacion: "",
-    historiaClinica: false,
-    discapacitado: false,
-    examenPsicologico: false,
-    cursoVigilante: false,
-    documentacion: false,
-    pruebaAntidroga: false,
-    conadis: false,
-    emisor: "si",
-    xiii: "",
-    xiv: "",
-    fondoReserva: "",
-    acumFondoReserva: "",
-    sueldo: "",
-    extra: "",
-    nombreProyecto: "",
-    finProyecto: "",
-    noEspecificado: "",
-  });
-};
+
 
 const guardarPersonal = () => {
   console.log("Guardando personal...", formData);
@@ -810,24 +935,52 @@ const guardarPersonal = () => {
 const cancelarEdicion = () => {
   console.log("Cancelando edición...");
 };
+
+// Estado del modal
+const showSearchModal = ref(false);
+const searchResults = ref([]);
+const isLoading = ref(false);
+
+// Estado del formulario (tu reactive existente)
+
+
+// Métodos del modal
+const buscarPersonal = async () => {
+  showSearchModal.value = true;
+  isLoading.value = true;
+  try {
+    searchResults.value = await $api.getPersonal();
+    showSearchModal.value = true;
+  } catch (error) {
+    console.error("Error buscando personal:", error);
+    // Usa tu sistema de notificaciones (ej: toast)
+  }
+};
+
+const loadEmployee = (employee) => {
+  Object.assign(formData, employee); // Actualiza formData
+  showSearchModal.value = false;
+  currentTab.value = 'datos';
+};
+
+const terminateContract = async (employee) => {
+  if (confirm(`¿Terminar contrato de ${employee.nombres}?`)) {
+    try {
+      await $api.terminateContract(employee.id);
+      // toast.success(`Contrato finalizado`);
+      await buscarPersonal(); // Refrescar
+    } catch (error) {
+      // toast.error("Error al terminar contrato");
+    }
+  }
+};
+
+
+
 </script>
 
 <style>
 /* Estilos para inputs de fecha */
-/* input[type="date"] {
-  appearance: none;
-  -webkit-appearance: none;
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-  color: #374151;
-  line-height: 1.5rem;
-  cursor: pointer;
-  background-color: #fff;
-} */
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   display: inline-block;
@@ -837,13 +990,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-left: 0.5rem;
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>');
 }
-
-/* input[type="date"]:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  outline: none;
-  right: inherit;
-} */
 
 /* Estilo para el icono del calendario */
 input[type="date"]::-webkit-calendar-picker-indicator {

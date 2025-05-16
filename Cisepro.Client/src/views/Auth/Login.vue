@@ -140,7 +140,7 @@ import { useAuthValidations } from "@/validations/useAuthValidations";
 
 
 const authStore = useAuthStore();
-const router = useRouter();
+
 
 const { errors, validateRequire } = useFormValidation();
 const { validateLoginForm } = useAuthValidations();
@@ -208,13 +208,16 @@ const handleLogin = async () => {
       return;
     }
 
-    await authStore.login({
-      TipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
-      Login: form.value.login.toUpperCase(),
-      Password: form.value.password,
-    });
+   
 
-    router.push({ name: "Dashboard" }); // Redirigir a dashboard
+     await authStore.login({
+       tipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
+       login: form.value.login.toUpperCase(),
+       password: form.value.password,
+     });
+
+   console.log("Login successful:", authStore.user);
+  
     // Redirigir a dashboard
   } catch (error) {
     errorMessage.value =

@@ -395,12 +395,12 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-600 mb-1">Ubicacion</label>
                     <input type="text" v-model="formData.pagoRol" 
-                          class="form-field w-full">
+                          class="form-field w-full h-20">
                 </div>
                 
             </div>
 
-            <!-- Columna 3 -->
+            <!-- Columna 2 -->
             <div class="space-y-2">
               <div>
                     <label class="block text-xs font-medium text-gray-600 mb-1">Salida</label>

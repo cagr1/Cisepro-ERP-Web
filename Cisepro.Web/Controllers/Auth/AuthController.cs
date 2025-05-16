@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Cisepro.Data.Enums;
 using Cisepro.Data.DTOs.Auth;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Cisepro.Web.Controllers.Auth
 {
@@ -39,6 +41,25 @@ namespace Cisepro.Web.Controllers.Auth
 
                 });
         }
+
+        [HttpGet("ValidateToken")]
+        [Authorize]
+        public IActionResult ValidateToken()
+        {
+
+            return Ok(new
+            {
+                success = true,
+                user = new
+                {
+                    id = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    name = User.Identity?.Name,
+                    email = User.FindFirstValue(ClaimTypes.Email),
+                    role = User.FindFirstValue(ClaimTypes.Role)
+                }
+            });
+        }
+
 
         [HttpGet("AvailableUsers")]
         public IActionResult GetAvailableUsers([FromQuery] TipoConexion tipoConexion)

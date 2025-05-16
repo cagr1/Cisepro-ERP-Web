@@ -53,21 +53,52 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+const secureNavigation = async (to, from, next) => {
   const authStore = useAuthStore();
-
-  // Inicializar el store
+  
   authStore.initialize();
+
+  await authStore.initialize();
 
   if (to.meta.isLoginPage && authStore.isAuthenticated) {
     next("/dashboard");
+    return;
   }
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    authStore.returnUrl = to.fullPath;
-    next("/login");
-  } else {
-    next();
+  if (to.meta.requiresAuth) {
+    if (!authStore.isAuthenticated) {
+      authStore.returnUrl = to.fullPath;
+       next("/login");
+    }
+   
+    if (to.meta.requiresTokenValidation) {
+      try {
+        await authStore.validateToken();
+      } catch (error) {
+        authStore.clearAuthData();
+        next("/login");
+      }
+    }
+
+
+    // try {
+    //   await authStore.validateToken();
+    //   return next();
+    // } catch (error) {
+    //   authStore.clearAuthData();
+    //   return next("/login");
+    // }
   }
+next();
+}
+
+
+router.beforeEach((to, from, next) => {
+    secureNavigation(to, from, next).catch(() => {
+    next("/login");
+  });
+  
+    
+  
 });
 export default router;

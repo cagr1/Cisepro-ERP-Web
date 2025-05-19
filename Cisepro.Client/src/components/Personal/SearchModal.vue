@@ -7,36 +7,62 @@
           <h3 class="text-white font-semibold text-lg">
             <i class="ri-team-line mr-2"></i> Búsqueda de Personal
           </h3>
-          
         </div>
 
         <!-- Cuerpo del modal -->
         <div class="modal-body">
           <!-- Barra de búsqueda y exportación -->
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 p-4 bg-gray-10 rounded-lg"
+          >
             <div class="relative flex-grow max-w-md">
-              <i class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <i
+                class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              ></i>
               <input
                 v-model="searchQuery"
                 placeholder="Buscar por cédula, nombres o apellidos..."
-                class="search-input pl-10 pr-4 py-2 w-full  rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                
+                class="search-input pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
-            <div class="flex gap-2 w-full sm:w-auto">
-              <button 
-                @click="exportToExcel"
-                class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+
+            <div class="relative" ref="exportMenuRef">
+              <button
+                @click="showExportMenu = !showExportMenu"
+                class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 transition-colors focus:outline-none"
+                aria-label="Opciones de exportación"
               >
-                <i class="ri-file-excel-2-line"></i> Excel
+                <i class="ri-more-2-fill text-gray-600 text-xl"></i>
               </button>
-              <button 
-                @click="exportToPDF"
-                class="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+
+              <transition
+                enter-active-class="transition duration-100 ease-out"
+                enter-from-class="transform scale-95 opacity-0"
+                enter-to-class="transform scale-100 opacity-100"
+                leave-active-class="transition duration-75 ease-in"
+                leave-from-class="transform scale-100 opacity-100"
+                leave-to-class="transform scale-95 opacity-0"
               >
-                <i class="ri-file-pdf-line"></i> PDF
-              </button>
+                <div
+                  v-if="showExportMenu"
+                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200"
+                >
+                  <button
+                    @click="exportToExcel(filteredItems)"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                  >
+                    <i class="ri-file-excel-2-line mr-2 text-green-600"></i>
+                    Exportar a Excel
+                  </button>
+                  <button
+                    @click="exportToPDF(filteredItems)"
+                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                  >
+                    <i class="ri-file-pdf-line mr-2 text-red-600"></i>
+                    Exportar a PDF
+                  </button>
+                </div>
+              </transition>
             </div>
           </div>
 
@@ -46,8 +72,8 @@
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                   <tr>
-                    <th 
-                      v-for="header in headers" 
+                    <th
+                      v-for="header in headers"
                       :key="header.key"
                       @click="sortBy(header.key)"
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -55,9 +81,13 @@
                     >
                       <div class="flex items-center justify-between">
                         {{ header.label }}
-                        <i 
+                        <i
                           v-if="sortKey === header.key"
-                          :class="sortDirection === 'asc' ? 'ri-arrow-up-line' : 'ri-arrow-down-line'"
+                          :class="
+                            sortDirection === 'asc'
+                              ? 'ri-arrow-up-line'
+                              : 'ri-arrow-down-line'
+                          "
                           class="ml-1"
                         ></i>
                       </div>
@@ -66,39 +96,56 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                   <tr v-if="filteredItems.length === 0">
-                    <td :colspan="headers.length" class="px-6 py-4 text-center text-gray-500">
+                    <td
+                      :colspan="headers.length"
+                      class="px-6 py-4 text-center text-gray-500"
+                    >
                       No se encontraron resultados
                     </td>
                   </tr>
-                  <tr 
-                    v-for="item in filteredItems" 
+                  <tr
+                    v-for="item in filteredItems"
                     :key="item.id"
                     class="hover:bg-blue-50 transition-colors"
                   >
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
                       {{ item.cedula }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
                       {{ item.nombres }} {{ item.apellidos }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
                       {{ item.cargo }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <span :class="`px-2 py-1 rounded-full text-xs font-semibold ${item.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`">
-                        {{ item.activo ? 'Activo' : 'Inactivo' }}
+                      <span
+                        :class="`px-2 py-1 rounded-full text-xs font-semibold ${
+                          item.activo
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`"
+                      >
+                        {{ item.activo ? "Activo" : "Inactivo" }}
                       </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
                       <div class="flex justify-end space-x-2">
-                        <button 
+                        <button
                           @click="$emit('select', item)"
                           class="text-blue-600 hover:text-blue-900"
                           title="Editar"
                         >
                           <i class="ri-edit-line text-lg"></i>
                         </button>
-                        <button 
+                        <button
                           @click="confirmTerminate(item)"
                           class="text-red-600 hover:text-red-900"
                           title="Terminar contrato"
@@ -116,13 +163,19 @@
           <!-- Paginación (opcional) -->
           <div class="flex justify-between items-center mt-4 px-4">
             <span class="text-sm text-gray-700">
-              Mostrando {{ filteredItems.length }} de {{ items.length }} registros
+              Mostrando {{ filteredItems.length }} de
+              {{ items.length }} registros
             </span>
             <div class="flex space-x-2">
-              <button class="px-3 py-1 border rounded-md text-sm disabled:opacity-50" disabled>
+              <button
+                class="px-3 py-1 border rounded-md text-sm disabled:opacity-50"
+                disabled
+              >
                 Anterior
               </button>
-              <button class="px-3 py-1 border rounded-md text-sm bg-blue-500 text-white">
+              <button
+                class="px-3 py-1 border rounded-md text-sm bg-blue-500 text-white"
+              >
                 1
               </button>
               <button class="px-3 py-1 border rounded-md text-sm">
@@ -134,8 +187,8 @@
 
         <!-- Pie de modal centrado -->
         <div class="modal-footer flex justify-center border-t border-gray-200">
-          <button 
-            @click="$emit('close')" 
+          <button
+            @click="$emit('close')"
             class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
           >
             Cerrar
@@ -147,118 +200,80 @@
 </template>
 
 <script>
-//import { jsPDF } from 'jspdf'
-//import 'jspdf-autotable'
-//import * as XLSX from 'xlsx'
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import ExcelJS from "exceljs";
+import { ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
 
 export default {
   props: {
     show: Boolean,
-    items: Array
+    items: Array,
   },
-  data() {
-    return {
-      searchQuery: '',
-      sortKey: '',
-      sortDirection: 'asc',
-      headers: [
-        { key: 'cedula', label: 'Cédula' },
-        { key: 'nombres', label: 'Nombres' },
-        { key: 'cargo', label: 'Cargo' },
-        { key: 'activo', label: 'Estado' },
-        { key: 'actions', label: 'Acciones' }
-      ]
-    }
-  },
-  computed: {
-    filteredItems() {
-      let result = [...this.items]
-      
-      // Filtrado
-      if (this.searchQuery) {
-        const query = this.searchQuery.toLowerCase()
-        result = result.filter(item => 
-          item.cedula.toLowerCase().includes(query) || 
-          item.nombres.toLowerCase().includes(query) ||
-          item.apellidos.toLowerCase().includes(query) ||
-          item.cargo.toLowerCase().includes(query)
-        )
-      }
-      
-      // Ordenamiento
-      if (this.sortKey) {
-        result.sort((a, b) => {
-          const valA = a[this.sortKey]
-          const valB = b[this.sortKey]
-          
-          if (valA < valB) return this.sortDirection === 'asc' ? -1 : 1
-          if (valA > valB) return this.sortDirection === 'asc' ? 1 : -1
-          return 0
-        })
-      }
-      
-      return result
-    }
-  },
-  methods: {
-    sortBy(key) {
-      if (this.sortKey === key) {
-        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'
-      } else {
-        this.sortKey = key
-        this.sortDirection = 'asc'
-      }
-    },
-    confirmTerminate(item) {
-      this.$confirm(
-        `¿Está seguro de terminar el contrato de ${item.nombres} ${item.apellidos}?`,
-        'Confirmar acción',
-        {
-          confirmButtonText: 'Sí, terminar',
-          cancelButtonText: 'Cancelar',
-          type: 'warning'
-        }
-      ).then(() => {
-        this.$emit('terminate', item)
-      }).catch(() => {})
-    },
-    exportToExcel() {
-      const data = this.filteredItems.map(item => ({
-        Cédula: item.cedula,
-        Nombres: item.nombres,
-        Apellidos: item.apellidos,
-        Cargo: item.cargo,
-        Estado: item.activo ? 'Activo' : 'Inactivo'
-      }))
-      
-      const worksheet = XLSX.utils.json_to_sheet(data)
-      const workbook = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Personal')
-      
-      const date = new Date().toISOString().split('T')[0]
-      XLSX.writeFile(workbook, `personal_${date}.xlsx`)
-    },
-    exportToPDF() {
-      const doc = new jsPDF()
-      const date = new Date().toLocaleDateString()
-      
-      // Título
-      doc.setFontSize(18)
-      doc.text('Listado de Personal', 14, 22)
-      doc.setFontSize(11)
-      doc.setTextColor(100)
-      doc.text(`Generado el: ${date}`, 14, 30)
-      
-      // Tabla
-      const headers = [['Cédula', 'Nombres', 'Apellidos', 'Cargo', 'Estado']]
-      const data = this.filteredItems.map(item => [
+  setup(props, { emit }) {
+    const showExportMenu = ref(false);
+    const exportMenuRef = ref(null);
+
+    onClickOutside(exportMenuRef, () => {
+      showExportMenu.value = false;
+    });
+
+    const exportToExcel = (filteredItems) => {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Personal");
+
+      worksheet.columns = [
+        { header: "Cédula", key: "cedula" },
+        { header: "Nombres", key: "nombres" },
+        { header: "Apellidos", key: "apellidos" },
+        { header: "Cargo", key: "cargo" },
+        { header: "Estado", key: "estado" },
+      ];
+
+      filteredItems.forEach((item) => {
+        worksheet.addRow({
+          cedula: item.cedula,
+          nombres: item.nombres,
+          apellidos: item.apellidos,
+          cargo: item.cargo,
+          estado: item.activo ? "Activo" : "Inactivo",
+        });
+      });
+
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        const blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `personal_${
+          new Date().toISOString().split("T")[0]
+        }.xlsx`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+      });
+    };
+
+    const exportToPDF = (filteredItems) => {
+      const doc = new jsPDF();
+      const date = new Date().toLocaleDateString();
+
+      doc.setFontSize(18);
+      doc.text("Listado de Personal", 14, 22);
+      doc.setFontSize(11);
+      doc.setTextColor(100);
+      doc.text(`Generado el: ${date}`, 14, 30);
+
+      const headers = [["Cédula", "Nombres", "Apellidos", "Cargo", "Estado"]];
+      const data = filteredItems.map((item) => [
         item.cedula,
         item.nombres,
         item.apellidos,
         item.cargo,
-        item.activo ? 'Activo' : 'Inactivo'
-      ])
-      
+        item.activo ? "Activo" : "Inactivo",
+      ]);
+
       doc.autoTable({
         head: headers,
         body: data,
@@ -266,24 +281,31 @@ export default {
         styles: {
           cellPadding: 3,
           fontSize: 9,
-          valign: 'middle',
-          halign: 'left'
+          valign: "middle",
+          halign: "left",
         },
         headStyles: {
           fillColor: [41, 128, 185],
           textColor: 255,
-          fontStyle: 'bold'
+          fontStyle: "bold",
         },
         alternateRowStyles: {
-          fillColor: [245, 245, 245]
+          fillColor: [245, 245, 245],
         },
-        margin: { top: 40 }
-      })
-      
-      doc.save(`personal_${new Date().toISOString().split('T')[0]}.pdf`)
-    }
-  }
-}
+        margin: { top: 40 },
+      });
+
+      doc.save(`personal_${new Date().toISOString().split("T")[0]}.pdf`);
+    };
+
+    return {
+      showExportMenu,
+      exportMenuRef,
+      exportToExcel,
+      exportToPDF,
+    };
+  },
+};
 </script>
 
 <style scoped>

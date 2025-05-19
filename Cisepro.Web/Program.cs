@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Cisepro.Services.Configuration;
-using Cisepro.Services.Usuario_General;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -15,7 +14,8 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secret = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]); 
 
 builder.Services.Configure<JwtSettings>(jwtSettings);
-builder.Services.AddScoped<AuthService>();
+ServiceRegistration.RegisterServices(builder.Services, builder.Configuration);
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -49,19 +49,6 @@ builder.Services.AddAuthentication(options =>
     });
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-builder.Services.AddScoped<Func<TipoConexion, AppDbContext>>(provider => tipoCon =>
-{
-    var connectionString = tipoCon == TipoConexion.Cisepro ?
-    builder.Configuration.GetConnectionString("Cisepro") :
-    builder.Configuration.GetConnectionString("Seportpac");
-
-    return new AppDbContext(connectionString);
-});
-
-
-
-
 
 builder.Services.AddCors(options =>
 {

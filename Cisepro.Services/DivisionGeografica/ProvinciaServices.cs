@@ -33,7 +33,39 @@ namespace Cisepro.Services.DivisionGeografica
                 .ToListAsync();
         }
 
-       
+        public async Task<int> NuevaProvinciaAsync(Provincia provincia, TipoConexion tipoCon)
+        {
+            using var context = _contextFactory(tipoCon);
+
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("@ID_PROVINCIA", provincia.IdProvincias),
+                new SqlParameter("@NOMBRE_PROVINCIAS", provincia.NombreProvincias),
+                
+            };
+
+            return await context.Database
+                .ExecuteSqlRawAsync("EXEC NuevaProvincia @ID_PROVINCIA, @NOMBRE_PROVINCIAS", parameters);
+        }
+
+        public async Task<int> ActualizarProvinciaAsync(Provincia provincia, TipoConexion tipoCon)
+        {
+            using var context = _contextFactory(tipoCon);
+
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter("@ID_PROVINCIA", provincia.IdProvincias),
+                new SqlParameter("@NOMBRE_PROVINCIAS", provincia.NombreProvincias),
+         
+            };
+
+            return await context.Database
+                .ExecuteSqlRawAsync("EXEC ActualizarProvincia @ID_PROVINCIA, @NOMBRE_PROVINCIA, @ESTADO_PROVINCIA", parameters);
+        }
+
+
+
+
 
     }
 }

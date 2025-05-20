@@ -1,9 +1,11 @@
 ﻿using System;
 using Cisepro.Data.Context;
 using Cisepro.Data.Entities;
+using Cisepro.Data.DTOs.TalentoHumano;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Cisepro.Data.Enums;
+using Dapper;
 
 namespace Cisepro.Services.Talento_Humano
 {
@@ -47,8 +49,27 @@ namespace Cisepro.Services.Talento_Humano
                 .ToListAsync();
         }
 
+        public async Task<ContratoDTO> ObtenerContratoXIdpersonalAsync(TipoConexion tipoCon, int idPersonal)
+        {
+            //Uso de Dapper para funciones que retornan tablas unicas
 
+            using var context = _contextFactory(tipoCon);
 
+            var conn = (SqlConnection)context.Database.GetDbConnection();
 
+            if (conn.State == System.Data.ConnectionState.Closed)
+                await conn.OpenAsync();
+
+            var sql = "sp_seleccionarContratoXIdPersonal";
+
+            var result = await conn.QueryFirstOrDefaultAsync<ContratoDTO>(
+                sql,
+                new { @id_personal = idPersonal },
+                commandType: System.Data.CommandType.StoredProcedure
+                );
+
+            return result;
+
+        }
     }
 }

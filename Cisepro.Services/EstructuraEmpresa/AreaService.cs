@@ -7,11 +7,11 @@ using Cisepro.Data.Enums;
 
 namespace Cisepro.Services.EstructuraEmpresa
 {
-    public class AreaServices
+    public class AreaService
     {
         private readonly Func<TipoConexion, AppDbContext> _contextFactory;
 
-        public AreaServices(Func<TipoConexion, AppDbContext> contextFactory)
+        public AreaService(Func<TipoConexion, AppDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }

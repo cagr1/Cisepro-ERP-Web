@@ -21,7 +21,7 @@
               ></i>
               <input
                 v-model="searchQuery"
-                placeholder="Buscar por cédula, nombres o apellidos..."
+                placeholder="Buscar por id, cédula, nombres o apellidos..."
                 class="search-input pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -121,17 +121,22 @@
                     <td
                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                     >
-                      {{ item.cargo }}
+                      {{ item.provincia }}
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >
+                      {{ item.ciudad }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
                         :class="`px-2 py-1 rounded-full text-xs font-semibold ${
-                          item.activo
+                          item.estado === 1
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
                         }`"
                       >
-                        {{ item.activo ? "Activo" : "Inactivo" }}
+                        {{ item.estado ? "Activo" : "Inactivo" }}
                       </span>
                     </td>
                     <td
@@ -140,17 +145,17 @@
                       <div class="flex justify-end space-x-2">
                         <button
                           @click="$emit('select', item)"
-                          class="text-blue-600 hover:text-blue-900"
                           title="Editar"
+                          class="text-blue-600 hover:text-blue-900"
                         >
                           <i class="ri-edit-line text-lg"></i>
                         </button>
                         <button
                           @click="confirmTerminate(item)"
+                          title="Eliminar"
                           class="text-red-600 hover:text-red-900"
-                          title="Terminar contrato"
                         >
-                          <i class="ri-contract-line text-lg"></i>
+                          <i class="ri-delete-bin-line text-lg"></i>
                         </button>
                       </div>
                     </td>
@@ -219,6 +224,8 @@ export default {
       showExportMenu.value = false;
     });
 
+    
+
     const exportToExcel = (filteredItems) => {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Personal");
@@ -227,8 +234,11 @@ export default {
         { header: "Cédula", key: "cedula" },
         { header: "Nombres", key: "nombres" },
         { header: "Apellidos", key: "apellidos" },
+        { header: "Provincia", key: "provincia" },
+        { header: "Ciudad", key: "ciudad" },
         { header: "Cargo", key: "cargo" },
         { header: "Estado", key: "estado" },
+        { header: "Acciones", key: "acciones" },
       ];
 
       filteredItems.forEach((item) => {

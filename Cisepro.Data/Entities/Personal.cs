@@ -119,7 +119,7 @@ public partial class Personal
 
     public string? EmisorCursoVigilante { get; set; }
 
-    public string? Observacion { get; set; }
+    //public string? Observacion { get; set; }
 
     public int? Credencial { get; set; }
 

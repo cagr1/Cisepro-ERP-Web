@@ -8,11 +8,11 @@ using Cisepro.Data.DTOs;
 
 namespace Cisepro.Services.DivisionGeografica
 {
-    public class ProvinciaServices
+    public class ProvinciaService
     {
         private readonly Func<TipoConexion, AppDbContext> _contextFactory;
 
-        public ProvinciaServices(Func<TipoConexion, AppDbContext> contextFactory)
+        public ProvinciaService(Func<TipoConexion, AppDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }

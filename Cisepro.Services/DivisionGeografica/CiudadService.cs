@@ -10,11 +10,11 @@ using Cisepro.Data.DTOs;
 
 namespace Cisepro.Services.DivisionGeografica
 {
-    public class CiudadServices : ICiudadServices
+    public class CiudadService : ICiudadService
     {
         private readonly Func<TipoConexion, AppDbContext> _contextFactory;
 
-        public CiudadServices(Func<TipoConexion, AppDbContext> contextFactory)
+        public CiudadService(Func<TipoConexion, AppDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }
@@ -33,7 +33,7 @@ namespace Cisepro.Services.DivisionGeografica
             var param = new SqlParameter("@ID_PROVINCIAS", idProvincia);
 
             var ciudades = await context.Ciudades
-                .FromSqlRaw("EXEC BuscarNombreCiudadesXIdProvincia @ID_PROVINCIAS",param)
+                .FromSqlRaw("EXEC BuscarNombreCiudadesXIdProvincia @ID_PROVINCIAS", param)
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -71,5 +71,7 @@ namespace Cisepro.Services.DivisionGeografica
                 .ExecuteSqlRawAsync("EXEC ActualizarCiudad @ID_CIUDAD, @NOMBRE_CIUDADES", parameters);
 
         }
+
+
     }
 }

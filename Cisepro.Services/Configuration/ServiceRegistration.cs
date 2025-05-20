@@ -1,11 +1,14 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using Cisepro.Services.DivisionGeografica;
-using Cisepro.Services.Usuario_General;
-using Cisepro.Services.Talento_Humano;
 using Cisepro.Data.Enums;
 using Cisepro.Data.Context;
 using Microsoft.Extensions.Configuration;
+using Cisepro.Services.DivisionGeografica;
+using Cisepro.Services.Usuario_General;
+using Cisepro.Services.Activos_Fijos.Depreciaciones;
+using Cisepro.Services.Contabilidad.Bancos;
+using Cisepro.Services.Talento_Humano;
+using Cisepro.Services.EstructuraEmpresa;
 
 
 
@@ -24,10 +27,27 @@ namespace Cisepro.Services.Configuration
 
                 return new AppDbContext(connectionString);
             });
-
-            // Otros servicios
+                        
+            //Activos Fijos
+            services.AddScoped<DepreciacionService>();
+            services.AddScoped<DetalleDepreciacionService>();
+            //Bancos
+            services.AddScoped<BancoService>();
+            //Division Geografica            
+            services.AddScoped<CiudadService>();
+            services.AddScoped<ProvinciaService>();
+            services.AddScoped<ParroquiaService>();
+            //Estructura Organizacional
+            services.AddScoped<CargoService>();
+            services.AddScoped<AreaService>();
+            //Usuarios
             services.AddScoped<AuthService>();
-            services.AddScoped<CiudadServices>();
+            services.AddScoped<UsuarioService>();
+            //Talento Humano
+            services.AddScoped<ContratoService>();
+            services.AddScoped<PersonalService>();
+            
+
         }
     }
 }

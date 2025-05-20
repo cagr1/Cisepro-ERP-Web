@@ -5699,7 +5699,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Movil).HasColumnName("MOVIL");
             entity.Property(e => e.Nombres).HasColumnName("NOMBRES");
             entity.Property(e => e.NombresPatronoAnterior).HasColumnName("NOMBRES_PATRONO_ANTERIOR");
-            entity.Property(e => e.Observacion).HasColumnName("OBSERVACION");
+            //entity.Property(e => e.Observacion).HasColumnName("OBSERVACION");
             entity.Property(e => e.Parroquia).HasColumnName("PARROQUIA");
             entity.Property(e => e.Pasaporte)
                 .HasMaxLength(20)

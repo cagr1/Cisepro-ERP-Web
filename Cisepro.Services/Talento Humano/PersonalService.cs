@@ -7,11 +7,11 @@ using Cisepro.Data.Enums;
 
 namespace Cisepro.Services.Talento_Humano
 {
-    public class PersonalServices
+    public class PersonalService
     {
         private readonly Func<TipoConexion, AppDbContext> _contextFactory;
 
-        public PersonalServices(Func<TipoConexion, AppDbContext> contextFactory)
+        public PersonalService(Func<TipoConexion, AppDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }
@@ -31,7 +31,7 @@ namespace Cisepro.Services.Talento_Humano
                 new SqlParameter("@FILTRO", filtro)
             };
             return await _context.Personals
-                .FromSqlRaw("spSeleccionarTodosLosRegistrosPersonal @FILTRO", parameters)
+                .FromSqlRaw("SeleccionarTodosRegistrosPersonalFiltroTodos @FILTRO", parameters)
                 .AsNoTracking()
                 .ToListAsync();
         }

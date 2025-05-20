@@ -779,7 +779,9 @@
       @select="loadEmployee"
       @terminate="terminateContract"
     />
+    
   </div>
+
 </template>
 
 <script setup>
@@ -843,14 +845,10 @@ const formData = reactive({
 });
 
 // Datos para selects
-const provincias = ref([
-  { id: "p1", nombre: "Pichincha" },
-  { id: "p2", nombre: "Guayas" },
-  { id: "p3", nombre: "Azuay" },
-]);
-
 const parroquias = ref([]);
 const ciudades = ref([]);
+
+
 
 // Pestañas
 const tabs = [
@@ -864,41 +862,7 @@ const tabs = [
 const currentTab = ref("datos");
 
 // Métodos
-const cargarParroquiasYCiudades = () => {
-  if (formData.provincia === "p1") {
-    parroquias.value = [
-      { id: "par1_p1", nombre: "Parroquia 1 - Pichincha" },
-      { id: "par2_p1", nombre: "Parroquia 2 - Pichincha" },
-    ];
-    ciudades.value = [
-      { id: "c1_p1", nombre: "Ciudad 1 - Pichincha" },
-      { id: "c2_p1", nombre: "Ciudad 2 - Pichincha" },
-    ];
-  } else if (formData.provincia === "p2") {
-    parroquias.value = [
-      { id: "par1_p2", nombre: "Parroquia 1 - Guayas" },
-      { id: "par2_p2", nombre: "Parroquia 2 - Guayas" },
-    ];
-    ciudades.value = [
-      { id: "c1_p2", nombre: "Ciudad 1 - Guayas" },
-      { id: "c2_p2", nombre: "Ciudad 2 - Guayas" },
-    ];
-  } else if (formData.provincia === "p3") {
-    parroquias.value = [
-      { id: "par1_p3", nombre: "Parroquia 1 - Azuay" },
-      { id: "par2_p3", nombre: "Parroquia 2 - Azuay" },
-    ];
-    ciudades.value = [
-      { id: "c1_p3", nombre: "Ciudad 1 - Azuay" },
-      { id: "c2_p3", nombre: "Ciudad 2 - Azuay" },
-    ];
-  } else {
-    parroquias.value = [];
-    ciudades.value = [];
-  }
-  formData.parroquia = "";
-  formData.ciudad = "";
-};
+
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
@@ -958,7 +922,32 @@ const buscarPersonal = async () => {
 };
 
 const loadEmployee = (employee) => {
-  Object.assign(formData, employee); // Actualiza formData
+  Object.assign(formData, {
+    id: employee.id,
+    cedula: employee.cedula,
+    nombres: employee.nombres,
+    apellidos: employee.apellidos,
+    sexo: employee.sexo,
+    estadoCivil: employee.estadoCivil,
+    instruccion: employee.instruccion,
+    tipoSangre: employee.tipoSangre,
+    provincia: employee.provincia,
+    parroquia: employee.parroquia,
+    direccion: employee.direccion,
+    email: employee.email,
+    banco: employee.banco,
+    cuenta: employee.cuenta,
+    contrato: employee.contrato,
+    fechaNacimiento: employee.fechaNacimiento,
+    pasaporte: employee.pasaporte,
+    libretaMilitar: employee.libretaMilitar,
+    peso: employee.peso,
+    estatura: employee.estatura,
+    ciudad: employee.ciudad,
+    telefono: employee.telefono,
+    celular: employee.celular,
+  });
+   // Actualiza formData
   showSearchModal.value = false;
   currentTab.value = 'datos';
 };

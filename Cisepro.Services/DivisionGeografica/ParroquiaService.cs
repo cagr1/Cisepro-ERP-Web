@@ -23,7 +23,7 @@ namespace Cisepro.Services.DivisionGeografica
                 .MaxAsync(p => (int?)p.IdParroquias) ?? 0;
         }
 
-        public async Task<List<Parroquia>> BuscarParroquiaXIdCiudadAsync(int idCiudad, TipoConexion tipoCon)
+        public async Task<List<Parroquia>> BuscarParroquiaXIdCiudadAsync(TipoConexion tipoCon ,int idCiudad )
         {
             var param = new SqlParameter("@ID_CIUDAD", idCiudad);
             using var context = _contextFactory(tipoCon);

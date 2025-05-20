@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cisepro.Services.Usuario_General
 {
-    public class UsuarioServices
+    public class UsuarioService
     {
 
     }

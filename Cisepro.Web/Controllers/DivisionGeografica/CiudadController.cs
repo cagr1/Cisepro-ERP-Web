@@ -13,14 +13,14 @@ namespace Cisepro.Web.Controllers.DivisionGeografica
     
     public class CiudadController : ControllerBase
     {
-        private readonly CiudadServices _ciudadServices;
+        private readonly CiudadService _ciudadServices;
 
-        public CiudadController(CiudadServices ciudadServices)
+        public CiudadController(CiudadService ciudadServices)
         {
             _ciudadServices = ciudadServices;
         }
 
-        [HttpGet("get-ciudades")]
+        [HttpGet("get-ciudad-por-provincia")]
         public async Task<IActionResult> GetCiudades([FromQuery] TipoConexion TipoConexion, [FromQuery] int idProvincia)
         {
             try
@@ -44,6 +44,8 @@ namespace Cisepro.Web.Controllers.DivisionGeografica
 
 
         }
+
+        
     }
 
     

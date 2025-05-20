@@ -3,7 +3,7 @@ using Cisepro.Data.Enums;
 
 namespace Cisepro.Services.DivisionGeografica
 {
-    public interface ICiudadServices
+    public interface ICiudadService
     {
         Task<int> ActualizarCiudadAsync(Ciudade ciudad, TipoConexion tipoCon);
         Task<int> BuscarMayorIdAsync(TipoConexion tipoCon);

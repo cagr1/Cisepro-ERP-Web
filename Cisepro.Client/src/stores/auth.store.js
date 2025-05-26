@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import api from "@/api/index.js";
 import { useRouter } from 'vue-router';
 import { getCurrentInstance } from "vue";
 import { ref } from "vue";
@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const login = async (credentials) => {
       try {
-        const response = await axios.post('http://localhost:5206/api/Auth/Login', credentials);
+        const response = await api.post('http://localhost:5206/api/Auth/Login', credentials);
         // Guardar token y usuario
         const userData = {          
           datos: response.data.usuario.datos,
@@ -35,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('selectedCompany', selectedCompany.value);
         console.log('login', user.value);
         // Redirigir
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token.value}`;
+        
         router.push(returnUrl.value || '/')
         
       } catch (error) {
@@ -53,9 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
           throw new Error('Token expirado');          
         }
 
-        await axios.get('http://localhost:5206/api/Auth/ValidateToken', {
-                headers: { Authorization: `Bearer ${token.value}` }
-            });
+        await api.get('/Auth/ValidateToken');
 
         return true;
     }
@@ -95,7 +93,7 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.removeItem('rememberedUsername');
       localStorage.removeItem('rememberedPassword');
 
-      delete axios.defaults.headers.common['Authorization'];
+      
       router.push('/login');
     };
   

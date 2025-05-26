@@ -21,6 +21,7 @@
               ></i>
               <input
                 v-model="searchQuery"
+                @keyup="handleKeyUp"
                 placeholder="Buscar por id, cédula, nombres o apellidos..."
                 class="search-input pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
@@ -131,12 +132,12 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
                         :class="`px-2 py-1 rounded-full text-xs font-semibold ${
-                          item.estado === 1
+                          item.estadoPersonal === 1
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
                         }`"
                       >
-                        {{ item.estado ? "Activo" : "Inactivo" }}
+                        {{ item.estadoPersonal ? "Activo" : "Inactivo" }}
                       </span>
                     </td>
                     <td
@@ -171,10 +172,16 @@
               Mostrando {{ filteredItems.length }} de
               {{ items.length }} registros
             </span>
+            <select v-model="itemsPerPage" @change="emitPageChange">
+              <option v-for="option in pageSizeOptions" :value="option">
+                {{ option }} por página
+              </option>
+            </select>
             <div class="flex space-x-2">
               <button
                 class="px-3 py-1 border rounded-md text-sm disabled:opacity-50"
-                disabled
+                disabled="currentPage === 1"
+                @click="previousPage"
               >
                 Anterior
               </button>
@@ -183,7 +190,10 @@
               >
                 1
               </button>
-              <button class="px-3 py-1 border rounded-md text-sm">
+              <button 
+              class="px-3 py-1 border rounded-md text-sm"
+                :disabled="currentPage >= totalPages"
+                @click="nextPage">
                 Siguiente
               </button>
             </div>
@@ -208,24 +218,52 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import ExcelJS from "exceljs";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 
 export default {
   props: {
     show: Boolean,
     items: Array,
+    currentPage: Number,
+        totalItems: Number,
   },
   setup(props, { emit }) {
     const showExportMenu = ref(false);
     const exportMenuRef = ref(null);
-
+    const filteredItems = computed(() => {
+      return props.items || [];
+    });
+    const searchQuery = ref("");
+    const sortKey = ref("");
+    const sortDirection = ref("asc");
     onClickOutside(exportMenuRef, () => {
       showExportMenu.value = false;
     });
 
-    
+    const headers = ref([
+      { key: "CEDULA", label: "Cédula" },
+      { key: "NOMBRES", label: "Nombres" },
+      { key: "PROVINCIA", label: "Provincia" },
+      { key: "CIUDAD", label: "Ciudad" },
+      { key: "ESTADO_PERSONAL", label: "Estado" },
+      { key: "acciones", label: "Acciones" },
+    ]);
 
+    const handleKeyUp = (e) => {
+      if (e.key === "Enter") {
+        emit("search", searchQuery.value);
+      }
+    };
+
+    const sortBy = (key) => {
+      if (sortKey.value === key) {
+        sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+      } else {
+        sortKey.value = key;
+        sortDirection.value = "asc";
+      }
+    };
     const exportToExcel = (filteredItems) => {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Personal");
@@ -311,6 +349,13 @@ export default {
     return {
       showExportMenu,
       exportMenuRef,
+      filteredItems,
+      headers,
+      searchQuery,
+      sortKey,
+      sortDirection,
+      sortBy,
+      handleKeyUp,
       exportToExcel,
       exportToPDF,
     };

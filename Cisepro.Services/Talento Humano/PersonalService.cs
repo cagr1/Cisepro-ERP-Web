@@ -23,15 +23,21 @@ namespace Cisepro.Services.Talento_Humano
                 .MaxAsync(p => (int?)p.IdPersonal) ?? 0;
         }
 
-        public async Task<List<Personal>> SelecccionarTodosLosRegistrosPersonalAsync(TipoConexion tipoCon, string filtro)
+        public async Task<List<Personal>> SelecccionarTodosLosRegistrosPersonalAsync(TipoConexion tipoCon, string filtro, int page =1, int itemsPerPage = 20)
         { 
           using var _context = _contextFactory(tipoCon);
+           
           var parameters = new[]
             {
-                new SqlParameter("@FILTRO", filtro)
+                new SqlParameter("@FILTRO", filtro),
+                new SqlParameter("@PAGE", page),
+                new SqlParameter("@ITEMSPERPAGE", itemsPerPage)
             };
+
+            
+
             return await _context.Personals
-                .FromSqlRaw("SeleccionarTodosRegistrosPersonalFiltroTodos @FILTRO", parameters)
+                .FromSqlRaw("SeleccionarTodosRegistrosPersonalFiltroTodos @FILTRO, @PAGE, @ITEMSPERPAGE", parameters)
                 .AsNoTracking()
                 .ToListAsync();
         }

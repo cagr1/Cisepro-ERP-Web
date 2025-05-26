@@ -143,11 +143,11 @@
 
               <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Pasaporte</label
+                  >Id Personal</label
                 >
                 <input
                   type="text"
-                  v-model="formData.pasaporte"
+                  v-model="formData.idPersonal"
                   class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
@@ -364,7 +364,7 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <!-- Dirección - Ocupa 2 columnas -->
-            <div class="md:col-span-2 py-0">
+            <div class="md:col-span-3 py-0">
               <label class="block text-xs font-medium text-gray-600 mb-1"
                 >Dirección</label
               >
@@ -775,6 +775,10 @@
      <SearchModal 
       :show="showSearchModal" 
       :items="searchResults"
+      :current-page="currentPage"
+      :items-per-page="itemsPerPage"
+      :total-items="totalItems"
+      @search="buscarPersonal"
       @close="showSearchModal = false"
       @select="loadEmployee"
       @terminate="terminateContract"
@@ -786,7 +790,9 @@
 
 <script setup>
 import { ref, reactive, computed, watch } from "vue";
+import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
+import { personalService } from "@/api/personal";
 
 // Estado del formulario
 const formData = reactive({
@@ -845,11 +851,13 @@ const formData = reactive({
 });
 
 // Datos para selects
-const parroquias = ref([]);
-const ciudades = ref([]);
 
 
-
+const authStore = useAuthStore();
+const tipoConexion = authStore.selectedCompany;;
+const currentPage = ref(1);
+const itemsPerPage = ref(20);
+const pageSizeOptions = ref([10, 20, 50, 100]);
 // Pestañas
 const tabs = [
   { id: "datos", name: "Datos", icon: "ri-user-line" },
@@ -862,8 +870,27 @@ const tabs = [
 const currentTab = ref("datos");
 
 // Métodos
+const nextPage = () => {
+  
+  if (currentPage.value < totalPages.value) {
+  currentPage.value++;
+  buscarPersonal(searchQuery.value);
+  }
+};
 
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+    buscarPersonal(searchQuery.value);
+  }
+};
 
+const emitPageChange = () => {
+  // Emitir evento de cambio de página
+  // Puedes usar un evento personalizado o manejarlo directamente aquí
+  currentPage.value = 1; // Reiniciar a la primera página
+  buscarPersonal(searchQuery.value);
+};
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
@@ -909,21 +936,26 @@ const isLoading = ref(false);
 
 
 // Métodos del modal
-const buscarPersonal = async () => {
+const buscarPersonal = async (filtro = '') => {
   showSearchModal.value = true;
   isLoading.value = true;
   try {
-    searchResults.value = await $api.getPersonal();
-    showSearchModal.value = true;
-  } catch (error) {
+    const response = await personalService.getPersonal(
+      tipoConexion, filtro, currentPage.value, itemsPerPage.value);
+    searchResults.value = response.data;
+    }      
+    
+   catch (error) {
     console.error("Error buscando personal:", error);
     // Usa tu sistema de notificaciones (ej: toast)
+  } finally {
+    isLoading.value = false;
   }
 };
 
 const loadEmployee = (employee) => {
   Object.assign(formData, {
-    id: employee.id,
+    id: employee.idPersonal,
     cedula: employee.cedula,
     nombres: employee.nombres,
     apellidos: employee.apellidos,

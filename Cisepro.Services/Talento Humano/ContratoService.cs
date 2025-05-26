@@ -60,7 +60,7 @@ namespace Cisepro.Services.Talento_Humano
             if (conn.State == System.Data.ConnectionState.Closed)
                 await conn.OpenAsync();
 
-            var sql = "sp_seleccionarContratoXIdPersonal";
+            var sql = "sp_seleccionarContratoXIdPersonal"; //Nuevo SP
 
             var result = await conn.QueryFirstOrDefaultAsync<ContratoDTO>(
                 sql,

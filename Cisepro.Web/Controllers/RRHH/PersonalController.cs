@@ -18,16 +18,18 @@ namespace Cisepro.Web.Controllers.RRHH
         }
 
         [HttpGet("Get-Personal")]
-        public async Task<IActionResult> GetPersonal([FromQuery] TipoConexion tipoConexion, [FromQuery] string filtro)
+        public async Task<IActionResult> GetPersonal([FromQuery] TipoConexion tipoConexion, [FromQuery] string filtro, [FromQuery] int page =1, [FromQuery] int itemsPerPage = 20)
         {
             try
             {  
-                var result = await _personalService.SelecccionarTodosLosRegistrosPersonalAsync(tipoConexion, filtro);
+                var result = await _personalService.SelecccionarTodosLosRegistrosPersonalAsync(tipoConexion, filtro, page, itemsPerPage);
                 return Ok(
                     new
                     {
                         success = true,
-                        data = result
+                        data = result,
+                        page,
+                        itemsPerPage
                     });
                     
             }

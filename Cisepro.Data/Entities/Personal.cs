@@ -123,6 +123,8 @@ public partial class Personal
 
     public int? Credencial { get; set; }
 
+    
+
     public virtual ICollection<ActivoFijoGeneral> ActivoFijoGenerals { get; set; } = new List<ActivoFijoGeneral>();
 
     public virtual ICollection<AsignacionPersonal> AsignacionPersonals { get; set; } = new List<AsignacionPersonal>();

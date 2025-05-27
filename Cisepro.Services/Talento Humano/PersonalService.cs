@@ -4,6 +4,8 @@ using Cisepro.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Cisepro.Data.Enums;
+using Cisepro.Data.DTOs.TalentoHumano;
+using System.Data;
 
 namespace Cisepro.Services.Talento_Humano
 {
@@ -23,7 +25,7 @@ namespace Cisepro.Services.Talento_Humano
                 .MaxAsync(p => (int?)p.IdPersonal) ?? 0;
         }
 
-        public async Task<List<Personal>> SelecccionarTodosLosRegistrosPersonalAsync(TipoConexion tipoCon, string filtro, int page =1, int itemsPerPage = 20)
+        public async Task<PersonalResultDto> SelecccionarTodosLosRegistrosPersonalAsync(TipoConexion tipoCon, string filtro, int page =1, int itemsPerPage = 20)
         { 
           using var _context = _contextFactory(tipoCon);
            
@@ -31,15 +33,22 @@ namespace Cisepro.Services.Talento_Humano
             {
                 new SqlParameter("@FILTRO", filtro),
                 new SqlParameter("@PAGE", page),
-                new SqlParameter("@ITEMSPERPAGE", itemsPerPage)
+                new SqlParameter("@ITEMSPERPAGE", itemsPerPage),
+                
             };
 
             
 
-            return await _context.Personals
+            var results =  await _context.Personals
                 .FromSqlRaw("SeleccionarTodosRegistrosPersonalFiltroTodos @FILTRO, @PAGE, @ITEMSPERPAGE", parameters)
                 .AsNoTracking()
                 .ToListAsync();
+
+            int totalRecords = results.Count > 0 ? Convert.ToInt32(results[0].GetType().GetProperty("TotalRegistros").GetValue(results[0])) : 0;
+
+            return new PersonalResultDto{
+                Data = results,
+                TotalRecords = totalRecords };
         }
 
 

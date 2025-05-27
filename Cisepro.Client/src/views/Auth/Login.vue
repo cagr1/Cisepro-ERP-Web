@@ -1,48 +1,47 @@
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center p-4 bg-[url('/src/assets/Images/login_bg.jpg')] bg-cover bg-center bg-no-repeat bg-opacity-50"
-  >
+   <div
+    class="min-h-screen flex items-center justify-center p-4 bg-[url('/src/assets/Images/login_bg.jpg')] bg-cover bg-center bg-no-repeat "
+  > 
+  
     <!-- Card Container -->
 
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+    <div
+      class="w-full max-w-md bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-white/20"
+    >
       <!-- Card Content -->
-      <div class="px-6 pb-6 pt-2">
-        <div class="mb-4">
-          <h4 class="text-xl font-semibold mb-1 text-gray-900">
+      <div class="px-6 pb-6 pt-8">
+        <div class="mb-6 text-center">
+          <h4 class="text-2xl font-semibold mb-2 text-gray-900">
             Bienvenido! 👋
           </h4>
-          <p class="text-gray-600">Inicie sesión en su cuenta para comenzar</p>
+          <p class="text-gray-600">Inicie sesión para continuar</p>
         </div>
         <div class="mt-8">
           <RadioChoice
             v-model="selectedCompany"
             name="company"
             :options="companies"
-            icon-border-color="border-gray-200"
+            icon-border-color="border-white/20"
+            class="[&_.icon]:w-16 [&_.icon]:h-16 [&_.choice.active]:scale-105"
           />
         </div>
         <div class="mt-4"></div>
         <form @submit.prevent="handleLogin">
           <!-- Email Input -->
 
-          <div class="mb-6">         
-
+            <div class="mb-5">
             <UiInput 
               v-model="form.login"
               label="Usuario"
               type="text"
               autocomplete="username"
+              
               :class="{'border-red-500': errors.login} "
               @input="errorMessage = ''"
             />
-            <FormErrorMessage :message="errors.login" />
+            <FormErrorMessage :message="errors.login" /> 
           </div>
-         
-
-          <!-- Error state -->
-          <div v-if="usersError" class="mt-2 text-sm text-red-500">
-            Error cargando usuarios: {{ usersError }}
-          </div>
+          
           <!-- Password Input -->
           <div class="mb-6">
             <UiInput
@@ -55,9 +54,7 @@
             <FormErrorMessage :message="errors.password" />
           </div>
 
-          <div v-if="errorMessage" class="text-red-500 text-center mb-4">
-            {{ errorMessage }}
-          </div>
+         
 
           <!-- Remember Me & Forgot Password -->
           <div class="flex items-center justify-between mb-6">
@@ -70,12 +67,13 @@
               <span class="ml-2 text-sm">Recordar sesión</span>
             </label>
 
-            <RouterLink
-              to="/forgot-password"
-              class="text-sm text-blue-600 hover:text-blue-800"
+            <button 
+              type="button" 
+              class="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              @click="() => {}" 
             >
               ¿Olvidó su contraseña?
-            </RouterLink>
+            </button>
           </div>
 
           <!-- Login Button -->
@@ -116,19 +114,19 @@
       <!-- Card Footer -->
       <div class="bg-gray-50 px-6 py-4 text-center">
         <span class="text-gray-600 text-sm">¿No tiene una cuenta?</span>
-        <RouterLink
-          to="/register"
+        <button
+          type="button"
           class="text-blue-600 hover:text-blue-800 ml-2 text-sm font-medium"
         >
           Crear cuenta
-        </RouterLink>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref,onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import UiInput from "@/components/Input.vue";
@@ -137,10 +135,7 @@ import FormErrorMessage from "@/components/FormErrorMessage.vue";
 import { useFormValidation } from "@/validations/useFormValidation";
 import { useAuthValidations } from "@/validations/useAuthValidations";
 
-
-
 const authStore = useAuthStore();
-
 
 const { errors, validateRequire } = useFormValidation();
 const { validateLoginForm } = useAuthValidations();
@@ -164,23 +159,22 @@ const companies = ref([
 
 const form = ref({
   tipoConexion: selectedCompany.value,
-  login: localStorage.getItem('rememberedUsername') || "",
+  login: localStorage.getItem("rememberedUsername") || "",
   password: "",
-  remember: localStorage.getItem('rememberUsername') === "true"
+  remember: localStorage.getItem("rememberUsername") === "true",
 });
 
 onMounted(() => {
   if (form.value.remember) {
     form.value.login = localStorage.getItem("rememberedUsername") || "";
-  } 
-})
+  }
+});
 
-const errorMessage = ref("");
 
 
 const handleLogin = async () => {
   try {
-    errorMessage.value = "";
+
 
     const isValid = validateRequire({
       login: form.value.login,
@@ -191,7 +185,7 @@ const handleLogin = async () => {
 
     if (form.value.remember) {
       localStorage.setItem("rememberedUsername", form.value.login);
-      localStorage.setItem("rememberUsername", 'true');
+      localStorage.setItem("rememberUsername", "true");
     } else {
       localStorage.removeItem("rememberedUsername");
       localStorage.removeItem("rememberPassword");
@@ -208,16 +202,14 @@ const handleLogin = async () => {
       return;
     }
 
-   
+    await authStore.login({
+      tipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
+      login: form.value.login.toUpperCase(),
+      password: form.value.password,
+    });
 
-     await authStore.login({
-       tipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
-       login: form.value.login.toUpperCase(),
-       password: form.value.password,
-     });
+    console.log("Login successful:", authStore.user);
 
-   console.log("Login successful:", authStore.user);
-  
     // Redirigir a dashboard
   } catch (error) {
     errorMessage.value =

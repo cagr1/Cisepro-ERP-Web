@@ -27,9 +27,11 @@ namespace Cisepro.Web.Controllers.RRHH
                     new
                     {
                         success = true,
-                        data = result,
+                        data = result.Data,
                         page,
-                        itemsPerPage
+                        itemsPerPage,
+                        totalRecords = result.TotalRecords,
+                        totalPages = (int)Math.Ceiling((double)result.TotalRecords / itemsPerPage)
                     });
                     
             }

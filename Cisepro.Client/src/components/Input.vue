@@ -6,14 +6,14 @@
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"  
       ref="input"
-      class="peer block w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="peer block w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-300/80 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
       placeholder=" "
     />
     
     <!-- Label flotante -->
     <label 
       v-if="label"
-      class="absolute left-4 top-3 px-1 text-gray-500 transition-all duration-200 transform
+      class="absolute left-3 top-2.5 px-1 text-gray-600 transition-all duration-200 transform
              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-blue-600 peer-focus:bg-white
              peer-placeholder-shown:top-3 peer-placeholder-shown:text-base
              peer-[&:not(:placeholder-shown)]:-top-2 peer-[&:not(:placeholder-shown)]:text-xs

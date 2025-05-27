@@ -794,6 +794,8 @@ import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
 import { personalService } from "@/api/personal";
 
+const totalItems = ref(0);
+const searchQuery = ref('');
 // Estado del formulario
 const formData = reactive({
   cedula: "",
@@ -937,6 +939,7 @@ const isLoading = ref(false);
 
 // Métodos del modal
 const buscarPersonal = async (filtro = '') => {
+  if (filtro || filtro === '') {     
   showSearchModal.value = true;
   isLoading.value = true;
   try {
@@ -950,6 +953,7 @@ const buscarPersonal = async (filtro = '') => {
     // Usa tu sistema de notificaciones (ej: toast)
   } finally {
     isLoading.value = false;
+  }
   }
 };
 

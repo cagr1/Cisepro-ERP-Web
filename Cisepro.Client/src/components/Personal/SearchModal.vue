@@ -172,8 +172,16 @@
               Mostrando {{ filteredItems.length }} de
               {{ items.length }} registros
             </span>
-            <select v-model="itemsPerPage" @change="emitPageChange">
-              <option v-for="option in pageSizeOptions" :value="option">
+            <select
+              :value="itemsPerPage"
+              @change="handlePageSizeChange"
+              class="page-size-selector"
+            >
+              <option
+                v-for="option in pageSizeOptions"
+                :value="option"
+                :key="option"
+              >
                 {{ option }} por página
               </option>
             </select>
@@ -190,10 +198,11 @@
               >
                 1
               </button>
-              <button 
-              class="px-3 py-1 border rounded-md text-sm"
+              <button
+                class="px-3 py-1 border rounded-md text-sm"
                 :disabled="currentPage >= totalPages"
-                @click="nextPage">
+                @click="nextPage"
+              >
                 Siguiente
               </button>
             </div>
@@ -226,7 +235,8 @@ export default {
     show: Boolean,
     items: Array,
     currentPage: Number,
-        totalItems: Number,
+    itemsPerPage: Number,
+    pageSizeOptions: { type: Array, default: () => [10, 20, 50, 100] },
   },
   setup(props, { emit }) {
     const showExportMenu = ref(false);
@@ -254,6 +264,11 @@ export default {
       if (e.key === "Enter") {
         emit("search", searchQuery.value);
       }
+    };
+
+    const handlePageSizeChange = (e) => {
+      const newValue = Number(e.target.value);
+      emit("update:itemsPerPage", newValue); // Emite el evento para actualizar
     };
 
     const sortBy = (key) => {
@@ -354,6 +369,7 @@ export default {
       searchQuery,
       sortKey,
       sortDirection,
+      handlePageSizeChange,
       sortBy,
       handleKeyUp,
       exportToExcel,

@@ -22,17 +22,27 @@ namespace Cisepro.Web.Controllers.RRHH
         {
             try
             {  
+
                 var result = await _personalService.SelecccionarTodosLosRegistrosPersonalAsync(tipoConexion, filtro, page, itemsPerPage);
-                return Ok(
-                    new
+
+                var totalPages = result.TotalRecords > 0
+                                ? (int)Math.Ceiling((double)result.TotalRecords / itemsPerPage)
+                                : 0;
+
+                var response = new
+                {
+                    success = true,
+                    data = result.Data,
+                    pagination = new
                     {
-                        success = true,
-                        data = result.Data,
                         page,
                         itemsPerPage,
                         totalRecords = result.TotalRecords,
-                        totalPages = (int)Math.Ceiling((double)result.TotalRecords / itemsPerPage)
-                    });
+                        totalPages
+                    },
+                    filter = filtro
+                };
+                return Ok(response);
                     
             }
             catch (Exception ex)

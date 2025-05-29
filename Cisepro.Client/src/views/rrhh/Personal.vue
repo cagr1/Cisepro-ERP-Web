@@ -8,28 +8,29 @@
         </h1>
         <div class="flex space-x-2">
           <button
-            @click="buscarPersonal"
+            @click="openSearchModal"
             class="flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
           >
-            <i class="ri-search-line mr-2"></i> Buscar
+              <Icon icon="lucide:file-search" class="w-5 h-5 mr-2" /> Buscar
           </button>
           <button
             @click="nuevoPersonal"
             class="flex items-center px-4 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-colors"
           >
-            <i class="ri-add-line mr-2"></i> Nuevo
+             <Icon icon="lucide:circle-plus" class="w-5 h-5 mr-2" /> Nuevo
           </button>
           <button
             @click="guardarPersonal"
             class="flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
           >
-            <i class="ri-save-line mr-2"></i> Guardar
+              <!-- <Icon icon="heroicons:bookmark-square-20-solid" class="w-5 h-5 mr-2" /> Guardar -->
+              <Icon icon="lucide:save" class="w-5 h-5 mr-2" /> Guardar
           </button>
           <button
             @click="cancelarEdicion"
-            class="flex items-center px-4 py-2 border border-gray-700 text-gray-700 rounded-lg hover:bg-gray-700 hover:text-white transition-colors"
+            class="flex items-center px-4 py-2 border border-red-700 text-red-700 rounded-lg hover:bg-red-700 hover:text-white transition-colors"
           >
-            <i class="ri-close-line mr-2"></i> Cancelar
+            <Icon icon="material-symbols:cancel-outline" class="w-5 h-5 mr-2" /> Cancelar
           </button>
         </div>
       </div>
@@ -51,7 +52,7 @@
             ]"
           >
             <div class="flex items-center">
-              <i :class="`${tab.icon} mr-2`"></i>
+              <Icon :icon="tab.icon" class="mr-2" ></Icon>
               {{ tab.name }}
             </div>
           </button>
@@ -103,7 +104,7 @@
                 <input
                   type="number"
                   v-model="formData.edad"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
@@ -136,7 +137,7 @@
                 <input
                   type="text"
                   v-model="formData.cedula"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="0703686868"
                 />
               </div>
@@ -148,7 +149,7 @@
                 <input
                   type="text"
                   v-model="formData.idPersonal"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
@@ -204,7 +205,7 @@
                 >
                 <select
                   v-model="formData.sexo"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="masculino">Masculino</option>
                   <option value="femenino">Femenino</option>
@@ -218,7 +219,7 @@
                 <input
                   type="number"
                   v-model="formData.peso"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
@@ -276,7 +277,7 @@
                 <input
                   type="number"
                   v-model="formData.estatura"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
@@ -286,7 +287,7 @@
                 <input
                   type="tel"
                   v-model="formData.telefono"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
@@ -297,7 +298,7 @@
                 <input
                   type="tel"
                   v-model="formData.telefono"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
@@ -311,7 +312,7 @@
                 <input
                   type="date"
                   v-model="formData.fechaNacimiento"
-                  class="w-max-[160px] appearance-none h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-max-[160px] appearance-none h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
@@ -337,7 +338,7 @@
                 >
                 <select
                   v-model="formData.tipoSangre"
-                  class="w-max-[180px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-max-[180px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="O+">O+</option>
                   <option value="O-">O-</option>
@@ -371,7 +372,7 @@
               <input
                 type="text"
                 v-model="formData.direccion"
-                class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
           </div>
@@ -662,7 +663,7 @@
                   v-if="formData.discapacitado"
                   type="text"
                   v-model="formData.discapacitadoDetalle"
-                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
                   placeholder="Número o serie"
                 />
               </div>
@@ -686,7 +687,7 @@
                   v-if="formData.examenPsicologico"
                   type="text"
                   v-model="formData.examenPsicologicoDetalle"
-                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
                   placeholder="Número o serie"
                 />
               </div>
@@ -710,7 +711,7 @@
                   v-if="formData.cursoVigilante"
                   type="text"
                   v-model="formData.cursoVigilanteDetalle"
-                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
                   placeholder="Número o serie"
                 />
               </div>
@@ -778,10 +779,15 @@
       :current-page="currentPage"
       :items-per-page="itemsPerPage"
       :total-items="totalItems"
+      :total-pages="totalPages"
+      :is-loading="isLoading"
+      :page-size-options="pageSizeOptions"
       @search="buscarPersonal"
       @close="showSearchModal = false"
       @select="loadEmployee"
       @terminate="terminateContract"
+      @page-change="handlePageChange"
+      @change-page-size="handlePageSizeChange"
     />
     
   </div>
@@ -789,13 +795,25 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive} from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
 import { personalService } from "@/api/personal";
+import { Icon } from "@iconify/vue";
 
+// Estados de busqueda y paginacion
+const showSearchModal = ref(false);
+const isLoading = ref(false);
+const searchResults = ref([]);
+const currentPage = ref(1);
+const itemsPerPage = ref(20);
 const totalItems = ref(0);
-const searchQuery = ref('');
+const totalPages = ref(0);
+const pageSizeOptions = ref([10, 20, 50, 100]);
+
+
+
+
 // Estado del formulario
 const formData = reactive({
   cedula: "",
@@ -853,38 +871,56 @@ const formData = reactive({
 });
 
 // Datos para selects
-
-
 const authStore = useAuthStore();
 const tipoConexion = authStore.selectedCompany;;
-const currentPage = ref(1);
-const itemsPerPage = ref(20);
-const pageSizeOptions = ref([10, 20, 50, 100]);
+
 // Pestañas
 const tabs = [
-  { id: "datos", name: "Datos", icon: "ri-user-line" },
-  { id: "familia", name: "Familia", icon: "ri-group-line" },
-  { id: "referencias", name: "Referencias", icon: "ri-contacts-line" },
-  { id: "fotos", name: "Fotos", icon: "ri-camera-line" },
-  { id: "historial", name: "Historial", icon: "ri-history-line" },
+  { id: "datos", name: "Datos", icon: "lucide:user" },
+  { id: "familia", name: "Familia", icon: "lucide:users" },
+  { id: "referencias", name: "Referencias", icon: "lucide:contact" },
+  { id: "fotos", name: "Fotos", icon: "lucide:camera" },
+  { id: "historial", name: "Historial", icon: "lucide:history" },
 ];
 
 const currentTab = ref("datos");
 
 // Métodos
-const nextPage = () => {
-  
-  if (currentPage.value < totalPages.value) {
-  currentPage.value++;
-  buscarPersonal(searchQuery.value);
-  }
+
+const handlePageChange = (newPage) => {
+  currentPage.value = newPage;
+  buscarPersonal();
 };
 
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-    buscarPersonal(searchQuery.value);
-  }
+const handlePageSizeChange = (newSize) => {
+  itemsPerPage.value = newSize;
+  currentPage.value = 1; // Reiniciar a la primera página
+  buscarPersonal();
+};
+
+const openSearchModal = () => {
+  showSearchModal.value = true;
+  // No realizar búsqueda automática
+};
+
+// const prevPage = () => {
+//   if (currentPage.value > 1) {
+//     currentPage.value--;
+//     buscarPersonal(searchQuery.value);
+//   }
+// };
+
+// const goToPage = (page) => {
+//   if (page >= 1 && page <= totalPages.value) {
+//     currentPage.value = page;
+//     buscarPersonal(searchQuery.value);
+//   }
+// };
+
+const changePageSize = (newSize) => {
+  itemsPerPage.value = newSize;
+  currentPage.value = 1; // Reiniciar a la primera página
+  buscarPersonal(searchQuery.value);
 };
 
 const emitPageChange = () => {
@@ -904,21 +940,6 @@ const handleFileChange = (event) => {
   }
 };
 
-const edad = computed(() => {
-  if (formData.fechaNacimiento) {
-    const hoy = new Date();
-    const fechaNacimiento = new Date(formData.fechaNacimiento);
-    let edadCalculada = hoy.getFullYear() - fechaNacimiento.getFullYear();
-    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
-    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-      edadCalculada--;
-    }
-    return edadCalculada;
-  }
-  return "";
-});
-
-
 
 
 const guardarPersonal = () => {
@@ -929,32 +950,36 @@ const cancelarEdicion = () => {
   console.log("Cancelando edición...");
 };
 
-// Estado del modal
-const showSearchModal = ref(false);
-const searchResults = ref([]);
-const isLoading = ref(false);
-
-// Estado del formulario (tu reactive existente)
-
 
 // Métodos del modal
-const buscarPersonal = async (filtro = '') => {
-  if (filtro || filtro === '') {     
+const buscarPersonal = async (searchTerm = null) => {
+  
   showSearchModal.value = true;
   isLoading.value = true;
+  
   try {
     const response = await personalService.getPersonal(
-      tipoConexion, filtro, currentPage.value, itemsPerPage.value);
+      tipoConexion,
+      searchTerm,
+      currentPage.value,
+      itemsPerPage.value);
     searchResults.value = response.data;
+    totalItems.value = response.pagination?.totalRecords || 0;
+    totalPages.value = response.pagination?.totalPages || 0;
+
+     if (searchTerm !== null || response.data.length > 0) {
+      showSearchModal.value = true;
+    }
+
     }      
-    
+
    catch (error) {
     console.error("Error buscando personal:", error);
     // Usa tu sistema de notificaciones (ej: toast)
   } finally {
     isLoading.value = false;
   }
-  }
+  
 };
 
 const loadEmployee = (employee) => {
@@ -1025,6 +1050,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .form-field {
   @apply h-8 px-2 text-xs border border-gray-300 rounded shadow-sm
-         focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500;
+         focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500;
 }
 </style>

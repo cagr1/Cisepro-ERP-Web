@@ -4,9 +4,16 @@
       <div class="modal-container">
         <!-- Encabezado mejorado -->
         <div class="modal-header bg-gradient-to-r from-blue-500 to-blue-600">
-          <h3 class="text-white font-semibold text-lg">
-            <i class="ri-team-line mr-2"></i> Búsqueda de Personal
-          </h3>
+          <Icon icon="lucide:file-search" class="mr-2" />
+          <h2 class="text-white font-semibold text-lg">
+             Búsqueda de Personal
+          </h2>
+          <button
+            @click="$emit('close')"
+            class="text-white hover:text-gray-400"
+          >
+            <i class="ri-close-line text-2xl"></i>
+          </button>
         </div>
 
         <!-- Cuerpo del modal -->
@@ -20,12 +27,21 @@
                 class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               ></i>
               <input
-                v-model="searchQuery"
-                @keyup="handleKeyUp"
+                ref="searchInput"
+                v-model="searchTerm"
+                @keyup.enter="performSearch"
+                type="text"
                 placeholder="Buscar por id, cédula, nombres o apellidos..."
-                class="search-input pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="search-input pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1/2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
+            <button
+              @click="performSearch"
+              class="px-6 py-2 bg-white border text-blue-700 border-blue-700 rounded-lg hover:bg-blue-700"
+            >
+              <i class="ri-search-line mr-2"></i>
+              Buscar
+            </button>
 
             <div class="relative" ref="exportMenuRef">
               <button
@@ -110,34 +126,34 @@
                     class="hover:bg-blue-50 transition-colors"
                   >
                     <td
-                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900"
                     >
                       {{ item.cedula }}
                     </td>
                     <td
-                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      class="px-6 py-4 whitespace-nowrap text-xs text-gray-500"
                     >
                       {{ item.nombres }} {{ item.apellidos }}
                     </td>
                     <td
-                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      class="px-6 py-4 whitespace-nowrap text-xs text-gray-500"
                     >
                       {{ item.provincia }}
                     </td>
                     <td
-                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      class="px-6 py-4 whitespace-nowrap text-xs text-gray-500"
                     >
                       {{ item.ciudad }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
                         :class="`px-2 py-1 rounded-full text-xs font-semibold ${
-                          item.estadoPersonal === 1
+                          item.estado_Persoanl === 1
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
                         }`"
                       >
-                        {{ item.estadoPersonal ? "Activo" : "Inactivo" }}
+                        {{ item.estado ? "Activo" : "Inactivo" }}
                       </span>
                     </td>
                     <td
@@ -213,8 +229,21 @@
         <div class="modal-footer flex justify-center border-t border-gray-200">
           <button
             @click="$emit('close')"
-            class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
+            class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors flex items-center justify-center"
           >
+            <span class="icon-container mr-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6L6.4 19Z"
+                />
+              </svg>
+            </span>
             Cerrar
           </button>
         </div>
@@ -223,28 +252,61 @@
   </Transition>
 </template>
 
-<script>
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
-import ExcelJS from "exceljs";
-import { computed, ref } from "vue";
+<script setup>
+import { computed, ref, nextTick, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
+import { Icon } from "@iconify/vue";
 
-export default {
-  props: {
+
+ const props= defineProps( {
     show: Boolean,
     items: Array,
     currentPage: Number,
     itemsPerPage: Number,
+    totalPages: Number,
     pageSizeOptions: { type: Array, default: () => [10, 20, 50, 100] },
-  },
-  setup(props, { emit }) {
+    isLoading: Boolean
+    
+  });
+  
+  const emit = defineEmits([
+  'close', 
+  'search', 
+  'select', 
+  'page-change', 
+  'change-page-size'
+]);
+    const searchInput = ref(null);
+    const searchTerm = ref("");
     const showExportMenu = ref(false);
     const exportMenuRef = ref(null);
     const filteredItems = computed(() => {
       return props.items || [];
     });
-    const searchQuery = ref("");
+
+    if (props.show) {
+      nextTick(() => {
+        if (searchInputElement) {
+          searchInput.value.focus();
+        }
+      });
+    }
+    watch(
+      () => props.show,
+      (newVal) => {
+        if (newVal) {
+          setTimeout(() => {
+            const input = document.querySelector(".search-input");
+            if (input) input.focus();
+          }, 100);
+        }
+      }
+    );
+
+    const performSearch = () => {
+      emit("search", searchTerm.value);
+    };
+
     const sortKey = ref("");
     const sortDirection = ref("asc");
     onClickOutside(exportMenuRef, () => {
@@ -260,15 +322,15 @@ export default {
       { key: "acciones", label: "Acciones" },
     ]);
 
-    const handleKeyUp = (e) => {
-      if (e.key === "Enter") {
-        emit("search", searchQuery.value);
+    const nextPage = () => {
+      if (props.currentPage < props.totalPages) {
+        emit("page-change", props.currentPage + 1);
       }
     };
 
     const handlePageSizeChange = (e) => {
       const newValue = Number(e.target.value);
-      emit("update:itemsPerPage", newValue); // Emite el evento para actualizar
+      emit("change-page-size", newValue); // Emite el evento para actualizar
     };
 
     const sortBy = (key) => {
@@ -279,104 +341,9 @@ export default {
         sortDirection.value = "asc";
       }
     };
-    const exportToExcel = (filteredItems) => {
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet("Personal");
 
-      worksheet.columns = [
-        { header: "Cédula", key: "cedula" },
-        { header: "Nombres", key: "nombres" },
-        { header: "Apellidos", key: "apellidos" },
-        { header: "Provincia", key: "provincia" },
-        { header: "Ciudad", key: "ciudad" },
-        { header: "Cargo", key: "cargo" },
-        { header: "Estado", key: "estado" },
-        { header: "Acciones", key: "acciones" },
-      ];
-
-      filteredItems.forEach((item) => {
-        worksheet.addRow({
-          cedula: item.cedula,
-          nombres: item.nombres,
-          apellidos: item.apellidos,
-          cargo: item.cargo,
-          estado: item.activo ? "Activo" : "Inactivo",
-        });
-      });
-
-      workbook.xlsx.writeBuffer().then((buffer) => {
-        const blob = new Blob([buffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `personal_${
-          new Date().toISOString().split("T")[0]
-        }.xlsx`;
-        link.click();
-        URL.revokeObjectURL(link.href);
-      });
-    };
-
-    const exportToPDF = (filteredItems) => {
-      const doc = new jsPDF();
-      const date = new Date().toLocaleDateString();
-
-      doc.setFontSize(18);
-      doc.text("Listado de Personal", 14, 22);
-      doc.setFontSize(11);
-      doc.setTextColor(100);
-      doc.text(`Generado el: ${date}`, 14, 30);
-
-      const headers = [["Cédula", "Nombres", "Apellidos", "Cargo", "Estado"]];
-      const data = filteredItems.map((item) => [
-        item.cedula,
-        item.nombres,
-        item.apellidos,
-        item.cargo,
-        item.activo ? "Activo" : "Inactivo",
-      ]);
-
-      doc.autoTable({
-        head: headers,
-        body: data,
-        startY: 40,
-        styles: {
-          cellPadding: 3,
-          fontSize: 9,
-          valign: "middle",
-          halign: "left",
-        },
-        headStyles: {
-          fillColor: [41, 128, 185],
-          textColor: 255,
-          fontStyle: "bold",
-        },
-        alternateRowStyles: {
-          fillColor: [245, 245, 245],
-        },
-        margin: { top: 40 },
-      });
-
-      doc.save(`personal_${new Date().toISOString().split("T")[0]}.pdf`);
-    };
-
-    return {
-      showExportMenu,
-      exportMenuRef,
-      filteredItems,
-      headers,
-      searchQuery,
-      sortKey,
-      sortDirection,
-      handlePageSizeChange,
-      sortBy,
-      handleKeyUp,
-      exportToExcel,
-      exportToPDF,
-    };
-  },
-};
+    
+  
 </script>
 
 <style scoped>
@@ -418,6 +385,7 @@ export default {
 .modal-body {
   flex: 1;
   padding: 20px;
+  max-height: 60vh;
   overflow-y: auto;
 }
 
@@ -435,6 +403,14 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
 }
 
 /* Animaciones */

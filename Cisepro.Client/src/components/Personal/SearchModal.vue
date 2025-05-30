@@ -1,13 +1,16 @@
 <template>
   <Transition name="modal-fade">
-    <div v-if="show" class="modal-mask" @click.self="$emit('close')">
-      <div class="modal-container">
+    <div
+      v-if="show"
+      class="modal-mask"
+      @click.self="$emit('close')"
+      @keydown.self="handleKeyDown"
+    >
+      <div class="modal-container w-11/12 max-w-6xl mx-auto">
         <!-- Encabezado mejorado -->
         <div class="modal-header bg-gradient-to-r from-blue-500 to-blue-600">
           <Icon icon="lucide:file-search" class="mr-2" />
-          <h2 class="text-white font-semibold text-lg">
-             Búsqueda de Personal
-          </h2>
+          <h2 class="text-white font-semibold text-lg">Búsqueda de Personal</h2>
           <button
             @click="$emit('close')"
             class="text-white hover:text-gray-400"
@@ -31,17 +34,18 @@
                 v-model="searchTerm"
                 @keyup.enter="performSearch"
                 type="text"
-                placeholder="Buscar por id, cédula, nombres o apellidos..."
+                placeholder="Buscar por cédula, nombres o apellidos..."
                 class="search-input pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1/2 focus:ring-blue-500 focus:border-blue-500"
               />
+               <button
+                v-if="searchTerm"
+                @click="clearSearch"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <i class="ri-close-line"></i>
+              </button>
             </div>
-            <button
-              @click="performSearch"
-              class="px-6 py-2 bg-white border text-blue-700 border-blue-700 rounded-lg hover:bg-blue-700"
-            >
-              <i class="ri-search-line mr-2"></i>
-              Buscar
-            </button>
+           
 
             <div class="relative" ref="exportMenuRef">
               <button
@@ -86,7 +90,7 @@
           <!-- Tabla de resultados -->
           <div class="border border-gray-200 rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
+              <table class="min-w-full divide-y divide-gray-200" style="min-width: max-content">
                 <thead class="bg-gray-50">
                   <tr>
                     <th
@@ -148,18 +152,26 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
                         :class="`px-2 py-1 rounded-full text-xs font-semibold ${
-                          item.estado_Persoanl === 1
+                          item.estado_Personal === 1
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
                         }`"
                       >
-                        {{ item.estado ? "Activo" : "Inactivo" }}
+                        {{ item.estado_Personal === 1 ? "Activo" : "Inactivo" }}
                       </span>
                     </td>
                     <td
                       class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
                     >
                       <div class="flex justify-end space-x-2">
+                        <button
+                          @click="$emit('view', item)"
+                          title="Ver"
+                          class="text-green-600 hover:text-green-900"
+                        >
+                          <i class="ri-eye-line text-lg"></i>
+                        </button>
+
                         <button
                           @click="$emit('select', item)"
                           title="Editar"
@@ -191,7 +203,7 @@
             <select
               :value="itemsPerPage"
               @change="handlePageSizeChange"
-              class="page-size-selector"
+              class="page-size-selector  border rounded-md px-2 py-1 text-sm "
             >
               <option
                 v-for="option in pageSizeOptions"
@@ -210,12 +222,13 @@
                 Anterior
               </button>
               <button
-                class="px-3 py-1 border rounded-md text-sm bg-blue-500 text-white"
+                class="px-3 py-1 border rounded-md text-sm"
+                :class="{'bg-blue-500 text-white': currentPage === 1}"
               >
-                1
+                 {{ currentPage }}
               </button>
               <button
-                class="px-3 py-1 border rounded-md text-sm"
+                class="px-3 py-1 border rounded-md text-sm disabled:opacity-50"
                 :disabled="currentPage >= totalPages"
                 @click="nextPage"
               >
@@ -257,93 +270,136 @@ import { computed, ref, nextTick, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { Icon } from "@iconify/vue";
 
+const props = defineProps({
+  show: Boolean,
+  items: Array,
+  currentPage: Number,
+  itemsPerPage: Number,
+  totalPages: Number,
+  pageSizeOptions: { type: Array, default: () => [10, 20, 50, 100] },
+  isLoading: Boolean,
+});
 
- const props= defineProps( {
-    show: Boolean,
-    items: Array,
-    currentPage: Number,
-    itemsPerPage: Number,
-    totalPages: Number,
-    pageSizeOptions: { type: Array, default: () => [10, 20, 50, 100] },
-    isLoading: Boolean
-    
-  });
-  
-  const emit = defineEmits([
-  'close', 
-  'search', 
-  'select', 
-  'page-change', 
-  'change-page-size'
+const emit = defineEmits([
+  "close",
+  "search",
+  "select",
+  "view",
+  "page-change",
+  "change-page-size",
 ]);
-    const searchInput = ref(null);
-    const searchTerm = ref("");
-    const showExportMenu = ref(false);
-    const exportMenuRef = ref(null);
-    const filteredItems = computed(() => {
-      return props.items || [];
-    });
+const searchInput = ref(null);
+const searchTerm = ref("");
+const showExportMenu = ref(false);
+const exportMenuRef = ref(null);
+const filteredItems = computed(() => {
+  return props.items || [];
+});
 
-    if (props.show) {
+// if (props.show) {
+//   nextTick(() => {
+//     if (searchInputElement) {
+//       searchInput.value.focus();
+//     }
+//   });
+// }
+// watch(
+//   () => props.show,
+//   (newVal) => {
+//     if (newVal) {
+//       setTimeout(() => {
+//         const input = document.querySelector(".search-input");
+//         if (input) input.focus();
+//       }, 100);
+//     }
+//   }
+// );
+
+const visiblePages = computed(() => {
+  const pages = [];
+  const maxVisible = 5;
+  let start = Math.max(1, props.currentPage - Math.floor(maxVisible / 2));
+  const end = Math.min(props.totalPages, start + maxVisible - 1);
+  
+  if (end - start + 1 < maxVisible) {
+    start = Math.max(1, end - maxVisible + 1);
+  }
+  
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  
+  return pages;
+});
+
+const clearSearch = () => {
+  searchTerm.value = "";
+  
+};
+
+const performSearch = () => {
+  emit("search", searchTerm.value);
+};
+
+const sortKey = ref("");
+const sortDirection = ref("asc");
+onClickOutside(exportMenuRef, () => {
+  showExportMenu.value = false;
+});
+
+const headers = ref([
+  { key: "CEDULA", label: "Cédula" },
+  { key: "NOMBRES", label: "Nombres" },
+  { key: "PROVINCIA", label: "Provincia" },
+  { key: "CIUDAD", label: "Ciudad" },
+  { key: "ESTADO_PERSONAL", label: "Estado" },
+  { key: "acciones", label: "Acciones" },
+]);
+
+const nextPage = () => {
+  if (props.currentPage < props.totalPages) {
+    emit("page-change", props.currentPage + 1);
+  }
+};
+const previousPage = () => {
+  if (props.currentPage > 1) {
+    emit("page-change", props.currentPage - 1);
+  }
+};
+
+const handlePageSizeChange = (e) => {
+  const newValue = Number(e.target.value);
+  emit("change-page-size", newValue); // Emite el evento para actualizar
+};
+
+const handleKeyDown = (e) => {
+  if ((e.ctrlKey && e.key === "a") || e.key === "Home") {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+};
+
+const sortBy = (key) => {
+  if (sortKey.value === key) {
+    sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value = key;
+    sortDirection.value = "asc";
+  }
+};
+
+watch(
+  () => props.show,
+  (newVal) => {
+    if (newVal) {
       nextTick(() => {
-        if (searchInputElement) {
+        if (searchInput.value) {
           searchInput.value.focus();
         }
       });
     }
-    watch(
-      () => props.show,
-      (newVal) => {
-        if (newVal) {
-          setTimeout(() => {
-            const input = document.querySelector(".search-input");
-            if (input) input.focus();
-          }, 100);
-        }
-      }
-    );
-
-    const performSearch = () => {
-      emit("search", searchTerm.value);
-    };
-
-    const sortKey = ref("");
-    const sortDirection = ref("asc");
-    onClickOutside(exportMenuRef, () => {
-      showExportMenu.value = false;
-    });
-
-    const headers = ref([
-      { key: "CEDULA", label: "Cédula" },
-      { key: "NOMBRES", label: "Nombres" },
-      { key: "PROVINCIA", label: "Provincia" },
-      { key: "CIUDAD", label: "Ciudad" },
-      { key: "ESTADO_PERSONAL", label: "Estado" },
-      { key: "acciones", label: "Acciones" },
-    ]);
-
-    const nextPage = () => {
-      if (props.currentPage < props.totalPages) {
-        emit("page-change", props.currentPage + 1);
-      }
-    };
-
-    const handlePageSizeChange = (e) => {
-      const newValue = Number(e.target.value);
-      emit("change-page-size", newValue); // Emite el evento para actualizar
-    };
-
-    const sortBy = (key) => {
-      if (sortKey.value === key) {
-        sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
-      } else {
-        sortKey.value = key;
-        sortDirection.value = "asc";
-      }
-    };
-
-    
-  
+  }
+);
 </script>
 
 <style scoped>
@@ -363,7 +419,7 @@ import { Icon } from "@iconify/vue";
 
 .modal-container {
   width: 90%;
-  max-width: 1200px;
+  max-width: 900px;
   max-height: 90vh;
   background-color: #fff;
   border-radius: 12px;

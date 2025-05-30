@@ -16,7 +16,7 @@ namespace Cisepro.Web.Controllers.RRHH
             _contratoService = contratoService;
         }
 
-        [HttpGet("Get-Contratos")]
+        [HttpGet("Get-Personal-Contrato")]
         public async Task<IActionResult> GetContratos([FromQuery] TipoConexion tipoConexion, [FromQuery] bool estado)
         {
             try

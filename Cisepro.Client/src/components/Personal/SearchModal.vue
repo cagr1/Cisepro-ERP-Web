@@ -296,24 +296,7 @@ const filteredItems = computed(() => {
   return props.items || [];
 });
 
-// if (props.show) {
-//   nextTick(() => {
-//     if (searchInputElement) {
-//       searchInput.value.focus();
-//     }
-//   });
-// }
-// watch(
-//   () => props.show,
-//   (newVal) => {
-//     if (newVal) {
-//       setTimeout(() => {
-//         const input = document.querySelector(".search-input");
-//         if (input) input.focus();
-//       }, 100);
-//     }
-//   }
-// );
+
 
 const visiblePages = computed(() => {
   const pages = [];

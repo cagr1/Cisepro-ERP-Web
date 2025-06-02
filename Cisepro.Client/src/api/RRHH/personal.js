@@ -1,4 +1,3 @@
-
 import api from '@/api';
 
 
@@ -51,7 +50,7 @@ export const personalService = {
                     id: idPersonal
                 };
 
-                const response = await api.get('/Contrato/Get-Personal-Contrato', { 
+                const response = await api.get('/Contrato/Get-Contrato-PorPersonal', { 
                     params: params,
                     paramsSerializer: {
                         indexes: null // Esto evita que se agreguen índices a arrays

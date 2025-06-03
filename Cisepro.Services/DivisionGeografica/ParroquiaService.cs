@@ -25,8 +25,9 @@ namespace Cisepro.Services.DivisionGeografica
 
         public async Task<List<Parroquia>> BuscarParroquiaXIdCiudadAsync(TipoConexion tipoCon ,int idCiudad )
         {
-            var param = new SqlParameter("@ID_CIUDAD", idCiudad);
             using var context = _contextFactory(tipoCon);
+            var param = new SqlParameter("@ID_CIUDAD", idCiudad);
+            
             return await context.Parroquias
                 .FromSqlRaw("EXEC BuscarNombreParroquiaXIdCiudades @ID_CIUDAD")
                 .AsNoTracking()

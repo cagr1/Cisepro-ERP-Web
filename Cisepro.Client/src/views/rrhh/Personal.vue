@@ -431,8 +431,16 @@
                   >Proyecto</label
                 >
                 <select v-model="formData.proyecto" class="form-field w-full">
-                  <option>Cisepro</option>
-                  <option>Proyecto X</option>
+                  <option
+                  v-for ="proyecto in proyectoDisponible"
+                  :key="proyecto.id"
+                  :value="proyecto.id"
+                  :label="proyecto.nombre"
+                  class="form-field w-full h-20"
+                >
+                 {{ proyecto.nombre }}
+
+                  </option>
                 </select>
               </div>
             </div>
@@ -479,7 +487,7 @@
                 >
                 <input
                   type="date"
-                  v-model="formData.inicioProyecto"
+                  v-model="formData.fechaInicio"
                   class="form-field w-full"
                 />
               </div>
@@ -491,10 +499,14 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Cargo</label
                 >
-                <select v-model="formData.cargo" class="form-field w-full">
-                  <option>Analista de Sistema</option>
-                  <option>Asistente</option>
-                  <option>Contador</option>
+                <select v-model="formData.cargo" class="form-field w-full text-xs">
+                  <option
+                    v-for="cargo in cargoDisponibles"
+                    :key="cargo.id"
+                    :value="cargo.id"
+                  >
+                    {{ cargo.nombre }}
+                  </option>
                 </select>
               </div>
               <div>
@@ -502,7 +514,7 @@
                   >Observación</label
                 >
                 <textarea
-                  v-model="formData.observacion"
+                  v-model="formData.observaciones"
                   class="form-field w-full h-20"
                 ></textarea>
               </div>
@@ -512,7 +524,7 @@
                 >
                 <input
                   type="date"
-                  v-model="formData.inicioProyecto"
+                  v-model="formData.fechaFin"
                   class="form-field w-full"
                 />
               </div>
@@ -827,11 +839,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, nextTick, onMounted } from "vue";
+import { ref, reactive, onMounted,computed, nextTick } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
 import { personalService } from "@/api/RRHH/personal";
 import { areaService} from "@/api/EstructuraEmpresa/area";
+import { cargoService } from "@/api/EstructuraEmpresa/cargo";
+import {contratoService} from "@/api/EstructuraEmpresa/contrato";
 import { Icon } from "@iconify/vue";
 import { toast } from "sonner";
 
@@ -847,18 +861,39 @@ const totalItems = ref(0);
 const totalPages = ref(0);
 const pageSizeOptions = ref([10, 20, 50, 100]);
 const areasDisponibles = ref([]);
+const cargoDisponibles = ref([]);
+const proyectoDisponible = ref([]);
+const todosProyectoCache = ref([]);
 
 
-//carga Areas
+//carga Areas, Cargos, Proyectos
 onMounted(async () => {
   try {
-    const response = await areaService.getAreas(tipoConexion);
-    areasDisponibles.value = response.data.map( area => ({
+    
+    const [areaResponse, cargoResponse,proyecto]  = await Promise.all([
+    areaService.getAreas(tipoConexion),
+    cargoService.getCargos(tipoConexion),
+    contratoService.getProyectos(tipoConexion, true)
+    
+    ])    
+    
+    areasDisponibles.value = areaResponse.data.map( area => ({
       id: area.idAreaGeneral,
       nombre: area.nombreArea
 
   }));
+
+    cargoDisponibles.value = cargoResponse.data.map( cargo => ({
+      id: cargo.idCargoOcupacional,
+      nombre: cargo.descripcion
+  }));
+
+  proyectoDisponible.value = proyecto.data.map( proyecto => ({
+      id: proyecto.idProyecto,
+      nombre: proyecto.nombreProyecto
+  }));
   
+      
 
   } catch (error) {
     toast.error("Error al cargar áreas: ", {
@@ -868,7 +903,20 @@ onMounted(async () => {
   }
 });
 
-
+const cargarTodosProyectos = async () =>{
+  try{
+    const response = await contratoService.getProyectos(tipoConexion, false);
+    return response.data.map(proyecto => ({
+      id: proyecto.idProyecto,
+      nombre: proyecto.nombreProyecto
+    }));
+  } catch (error) {
+    toast.error("Error al cargar proyectos: ", {
+      description: error.message || "Ocurrió un error al cargar proyectos.",
+      duration: 5000,
+    });
+  }
+}
 
 
 
@@ -992,6 +1040,7 @@ const buscarPersonal = async (searchTerm = null) => {
   isLoading.value = true;
 
   try {
+    const todosProyectos = await cargarTodosProyectos();
     const response = await personalService.getPersonal(
       tipoConexion,
       searchTerm,
@@ -1113,16 +1162,31 @@ const loadEmployee = async (employee) => {
     );
 
     if (contratoResponse.success && contratoResponse.data) {
+      //area
       const areaContrato =  contratoResponse.data.area;
-        const areaEncontrada = areasDisponibles.value.find(
+      const areaEncontrada = areasDisponibles.value.find(
           a => a.nombre === areaContrato
         );
-      
+      //cargo
+      const cargoContrato =  contratoResponse.data.descripcion;
+      const cargoEncontrado = cargoDisponibles.value.find(
+          c => c.nombre === cargoContrato
+        );
+      //contrato
+      const proyectoId =  contratoResponse.data.idProyecto;
+      let proyectoEncontrado = proyectoDisponible.value.find(
+        p => p.id === proyectoId
+      );
+      if (!proyectoEncontrado) {
+        // Si no se encuentra el proyecto, intenta cargar todos los proyectos
+        proyectoEncontrado = todosProyectoCache.find(p => p.id === proyectoId);
+      }
       Object.assign(formData, {
         
         nroContrato: contratoResponse.data.nroContrato,
-        descripcion: contratoResponse.data.descripcion,
         area: areaEncontrada ? areaEncontrada.id : "",
+        cargo: cargoEncontrado ? cargoEncontrado.id : "",
+        proyecto: proyectoEncontrado ? proyectoEncontrado.id : "",
         fechaInicio: toDateInputFormat(contratoResponse.data.fechaInicio),
         fechaFin: toDateInputFormat(contratoResponse.data.fechaFin),
         periodo: contratoResponse.data.periodo,
@@ -1147,6 +1211,7 @@ const loadEmployee = async (employee) => {
     showSearchModal.value = false;
     currentTab.value = "datos";     
     console.log('ContratoResponse', contratoResponse.data);
+    
   } catch (error) {
     toast.error("Error al cargar los datos del empleado: ", {
       description:

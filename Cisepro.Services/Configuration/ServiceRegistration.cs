@@ -37,6 +37,7 @@ namespace Cisepro.Services.Configuration
             services.AddScoped<CiudadService>();
             services.AddScoped<ProvinciaService>();
             services.AddScoped<ParroquiaService>();
+            services.AddScoped<SitioService>();
             //Estructura Organizacional
             services.AddScoped<CargoService>();
             services.AddScoped<AreaService>();

@@ -143,7 +143,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import { storeToRefs } from "pinia";
@@ -154,13 +154,7 @@ const openSubmenus = ref({});
 const sidebarOpen = ref(true);
 const { selectedCompany } = storeToRefs(authStore);
 
-watch(
-  () => router.currentRoute.value,
-  (newRoute) => {
-    console.log("Ruta cambiada a:", newRoute.path);
-  },
-  { immediate: true }
-);
+
 
 const menuItems = [
   {
@@ -215,7 +209,6 @@ const toggleSubmenu = (item) => {
 
 const sidebarStyle = computed(() => {
   const company = selectedCompany.value;
-  console.log("Selected company:", company);
   const colors = {
     Seportpac: {
       background: "rgb(38, 50, 56)",

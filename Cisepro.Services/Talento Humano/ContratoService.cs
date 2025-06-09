@@ -49,7 +49,7 @@ namespace Cisepro.Services.Talento_Humano
                 .ToListAsync();
         }
 
-        public async Task<ContratoDTO> ObtenerContratoXIdpersonalAsync(TipoConexion tipoCon, int idPersonal)
+        public async Task<ContratoDTO> ObtenerContratoXIdpersonalAsync(TipoConexion tipoCon, int idPersonal, bool estado)
         {
             //Uso de Dapper para funciones que retornan tablas unicas
 

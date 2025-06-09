@@ -40,7 +40,7 @@ namespace Cisepro.Services.DivisionGeografica
             var param = new SqlParameter("@ID_SITIO_TRABAJO", id);
 
             var nombres = await context.Database
-                .SqlQueryRaw<string>("EXEC BuscarNombreSitioXId @ID_SITIO_TRABAJO", param)
+                .SqlQueryRaw<string>("EXEC BuscarNombreSitioXIdSitio @ID_SITIO_TRABAJO", param)
                 .ToListAsync();
 
 

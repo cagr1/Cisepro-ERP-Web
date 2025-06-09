@@ -41,7 +41,7 @@ namespace Cisepro.Web.Controllers.RRHH
         }
 
         [HttpGet("Get-Contrato-PorPersonal")]
-        public async Task<IActionResult> ObtenerContratoPorPersonal([FromQuery] TipoConexion tipoConexion, [FromQuery] int id)
+        public async Task<IActionResult> ObtenerContratoPorPersonal([FromQuery] TipoConexion tipoConexion, [FromQuery] int id, [FromQuery] bool estado)
         {
             try
             {

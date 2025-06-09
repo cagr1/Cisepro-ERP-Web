@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-10 p-4">
+  <div class="min-h-screen bg-gray-10 p-1">
     <!-- Barra de acciones superior -->
-    <div class="bg-white rounded-lg shadow-md p-4 mb-2 sticky top-0 z-10">
+    <div class="bg-white rounded-lg shadow-md p-3 mb-2 sticky top-0 z-5">
       <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-800">
           Gestión de Personal
@@ -396,6 +396,36 @@
                 class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
+            <div class="space-y-2">
+              <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Lib Militar</label
+                >
+                <input
+                  type="text"
+                  v-model="formData.libretaMilitar"
+                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  
+                />
+              </div>
+              
+              
+            </div>
+            <div class="space-y-2">
+              <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Pasaporte</label
+                >
+                <input
+                  type="text"
+                  v-model="formData.pasaporte"
+                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  
+                />
+              </div>
+              
+              
+            </div>
           </div>
           <!-- Seccion Operativa -->
           <div class="">
@@ -418,16 +448,6 @@
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Ubicacion</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.pagoRol"
-                  class="form-field w-full h-20"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Proyecto</label
                 >
                 <select v-model="formData.proyecto" class="form-field w-full">
@@ -443,6 +463,17 @@
                   </option>
                 </select>
               </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Ubicacion</label
+                >
+                <input
+                  type="text"
+                  v-model="formData.pagoRol"
+                  class="form-field w-full h-20"
+                />
+              </div>
+              
             </div>
 
             <!-- Columna 2 -->
@@ -465,6 +496,17 @@
                   
                 />
               </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Inicio Pro</label
+                >
+                <input
+                  type="date"
+                  v-model="formData.fechaInicio"
+                  class="form-field w-full"
+                  
+                />
+              </div>
 
               <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1"
@@ -481,16 +523,7 @@
                 </select>
               </div>
 
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Inicio Pro</label
-                >
-                <input
-                  type="date"
-                  v-model="formData.fechaInicio"
-                  class="form-field w-full"
-                />
-              </div>
+              
             </div>
 
             <!-- Columna 3 -->
@@ -511,15 +544,6 @@
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Observación</label
-                >
-                <textarea
-                  v-model="formData.observaciones"
-                  class="form-field w-full h-20"
-                ></textarea>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Fin Pro</label
                 >
                 <input
@@ -528,6 +552,16 @@
                   class="form-field w-full"
                 />
               </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Observación</label
+                >
+                <textarea
+                  v-model="formData.observaciones"
+                  class="form-field w-full "
+                ></textarea>
+              </div>
+              
             </div>
 
             <!-- Columna 4 -->
@@ -1143,6 +1177,7 @@ const loadEmployee = async (employee) => {
       cuenta: employee.cuenta,
       fechaNacimiento: toDateInputFormat(employee.fecha_Nacimiento),
       libretaMilitar: employee.libreta_Militar,
+      pasaporte: employee.pasaporte,
       peso: employee.peso,
       estatura: employee.estatura,
       ciudad: employee.ciudad,

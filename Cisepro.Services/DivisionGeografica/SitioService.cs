@@ -28,9 +28,24 @@ namespace Cisepro.Services.DivisionGeografica
         {
             using var context = _contextFactory(tipoCon);
             return await context.SitiosTrabajos
-                .FromSqlRaw("SeleccionarSitios")
+                .FromSqlRaw("EXEC SeleccionarSitios")
                 .AsNoTracking()
+                .AsSplitQuery()
                 .ToListAsync();
+        }
+        //buscar sitio por ID
+        public async Task<SitiosTrabajo> BuscarSitioXIdAsync(TipoConexion tipoCon, int id)
+        {
+            using var context = _contextFactory(tipoCon);
+            
+            var param = new SqlParameter("@ID_SITIO_TRABAJO", id);
+            
+            return await context.SitiosTrabajos
+                .FromSqlRaw("EXEC BuscarSitioXId @ID_SITIO_TRABAJO", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+            
+            
         }
 
         public async Task<List<SitioDTO>> BuscarNombreSitioXIdAsync(TipoConexion tipoCon, int id)

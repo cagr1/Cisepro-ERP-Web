@@ -45,7 +45,7 @@ namespace Cisepro.Web.Controllers.RRHH
         {
             try
             {
-                var result = await _contratoService.ObtenerContratoXIdpersonalAsync(tipoConexion, id);
+                var result = await _contratoService.ObtenerContratoXIdpersonalAsync(tipoConexion, id,estado);
                 return Ok(
                     new
                     {

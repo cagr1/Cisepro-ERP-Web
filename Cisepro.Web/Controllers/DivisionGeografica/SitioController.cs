@@ -40,12 +40,12 @@ namespace Cisepro.Web.Controllers.DivisionGeografica
             }
         }
 
-        [HttpGet("get-sitio-por-nombre")]
-        public async Task<IActionResult> GetSitiosXNombre([FromQuery] TipoConexion TipoConexion, [FromQuery] int id)
+        [HttpGet("get-sitios-min")]
+        public async Task<IActionResult> GetSitiosMin([FromQuery] TipoConexion TipoConexion)
         {
             try
             {
-                var sitios = await _sitioServices.BuscarNombreSitioXIdAsync(TipoConexion, id);
+                var sitios = await _sitioServices.BuscarNombreSitioMinAsync(TipoConexion);
                 return Ok(
                     new
                     {
@@ -62,5 +62,8 @@ namespace Cisepro.Web.Controllers.DivisionGeografica
                 });
             }
         }
+
+
+        
     }
 }

@@ -467,11 +467,15 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Ubicacion</label
                 >
-                <input
-                  type="text"
-                  v-model="formData.pagoRol"
-                  class="form-field w-full h-20"
-                />
+                <select v-model="formData.ubicacion" class="form-field w-full text-xs">
+                  <option
+                    v-for="sitio in sitiosDisponibles"
+                    :key="sitio.id"
+                    :value="sitio.id"
+                  >
+                    {{ sitio.nombre }}
+                  </option>
+                </select>
               </div>
               
             </div>
@@ -880,6 +884,7 @@ import { personalService } from "@/api/RRHH/personal";
 import { areaService} from "@/api/EstructuraEmpresa/area";
 import { cargoService } from "@/api/EstructuraEmpresa/cargo";
 import {contratoService} from "@/api/EstructuraEmpresa/contrato";
+import { sitiosService } from "@/api/DivisionGeografica/sitios";
 import { Icon } from "@iconify/vue";
 import { toast } from "sonner";
 
@@ -898,16 +903,18 @@ const areasDisponibles = ref([]);
 const cargoDisponibles = ref([]);
 const proyectoDisponible = ref([]);
 const todosProyectoCache = ref([]);
+const sitiosDisponibles = ref([]);
 
 
 //carga Areas, Cargos, Proyectos
 onMounted(async () => {
   try {
     
-    const [areaResponse, cargoResponse,proyecto]  = await Promise.all([
+    const [areaResponse, cargoResponse,proyecto, sitiosResponse]  = await Promise.all([
     areaService.getAreas(tipoConexion),
     cargoService.getCargos(tipoConexion),
-    contratoService.getProyectos(tipoConexion, true)
+    contratoService.getProyectos(tipoConexion, true),
+    sitiosService.getSitios(tipoConexion)
     
     ])    
     
@@ -925,6 +932,11 @@ onMounted(async () => {
   proyectoDisponible.value = proyecto.data.map( proyecto => ({
       id: proyecto.idProyecto,
       nombre: proyecto.nombreProyecto
+  }));
+
+  sitiosDisponibles.value = sitiosResponse.data.map( sitio => ({
+      id: sitio.Id_Sitio_trabajo,
+      nombre: sitio.nombre_Sitio_trabajo
   }));
   
       
@@ -1190,6 +1202,7 @@ const loadEmployee = async (employee) => {
       : toDateInputFormat(employee.fecha_Salida),
       foto: employee.foto ? await blobToDataURL(employee.foto) : null,
     });
+console.log('formData', formData.ubicacion);
 
     const contratoResponse = await personalService.getPersonalContrato(
       tipoConexion,
@@ -1216,12 +1229,19 @@ const loadEmployee = async (employee) => {
         // Si no se encuentra el proyecto, intenta cargar todos los proyectos
         proyectoEncontrado = todosProyectoCache.find(p => p.id === proyectoId);
       }
+      //sitio
+      const sitioContrato = contratoResponse.data.idSitio;
+      const sitioEncontrado = sitiosDisponibles.value.find(
+        s => s.id === sitioContrato
+      );
+
       Object.assign(formData, {
         
         nroContrato: contratoResponse.data.nroContrato,
         area: areaEncontrada ? areaEncontrada.id : "",
         cargo: cargoEncontrado ? cargoEncontrado.id : "",
         proyecto: proyectoEncontrado ? proyectoEncontrado.id : "",
+        sitio: sitioEncontrado ? sitioEncontrado.id : "",
         fechaInicio: toDateInputFormat(contratoResponse.data.fechaInicio),
         fechaFin: toDateInputFormat(contratoResponse.data.fechaFin),
         periodo: contratoResponse.data.periodo,

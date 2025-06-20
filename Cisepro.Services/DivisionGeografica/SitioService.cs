@@ -33,37 +33,16 @@ namespace Cisepro.Services.DivisionGeografica
                 .AsSplitQuery()
                 .ToListAsync();
         }
-        //buscar sitio por ID
-        public async Task<SitiosTrabajo> BuscarSitioXIdAsync(TipoConexion tipoCon, int id)
+        
+        
+        public async Task<List<SitioDTO>> BuscarNombreSitioMinAsync(TipoConexion tipoCon)
         {
             using var context = _contextFactory(tipoCon);
-            
-            var param = new SqlParameter("@ID_SITIO_TRABAJO", id);
-            
-            return await context.SitiosTrabajos
-                .FromSqlRaw("EXEC BuscarSitioXId @ID_SITIO_TRABAJO", param)
+
+             return await context.Database
+                .SqlQueryRaw<SitioDTO>("EXEC SP_BuscarSitioMin")
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
-            
-            
-        }
-
-        public async Task<List<SitioDTO>> BuscarNombreSitioXIdAsync(TipoConexion tipoCon, int id)
-        {
-            using var context = _contextFactory(tipoCon);
-
-            var param = new SqlParameter("@ID_SITIO_TRABAJO", id);
-
-            var nombres = await context.Database
-                .SqlQueryRaw<string>("EXEC BuscarNombreSitioXIdSitio @ID_SITIO_TRABAJO", param)
-                .ToListAsync();
-
-
-            return nombres.Select(n => new SitioDTO 
-            { 
-                Id_Sitio_trabajo = id,
-                Nombre_Sitio_trabajo = n
-            }).ToList();
+                .ToListAsync();       
 
 
             

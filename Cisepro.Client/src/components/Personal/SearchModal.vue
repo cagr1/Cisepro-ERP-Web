@@ -37,7 +37,7 @@
                 placeholder="Buscar por cédula, nombres o apellidos..."
                 class="search-input pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-1/2 focus:ring-blue-500 focus:border-blue-500"
               />
-               <button
+              <button
                 v-if="searchTerm"
                 @click="clearSearch"
                 class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
@@ -45,7 +45,6 @@
                 <i class="ri-close-line"></i>
               </button>
             </div>
-           
 
             <div class="relative" ref="exportMenuRef">
               <button
@@ -90,7 +89,10 @@
           <!-- Tabla de resultados -->
           <div class="border border-gray-200 rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200" style="min-width: max-content">
+              <table
+                class="min-w-full divide-y divide-gray-200"
+                style="min-width: max-content"
+              >
                 <thead class="bg-gray-50">
                   <tr>
                     <th
@@ -163,7 +165,7 @@
                     <td
                       class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
                     >
-                      <div class="flex justify-end space-x-2">
+                      <div class="flex justify-start space-x-2">
                         <button
                           @click="$emit('view', item)"
                           title="Ver"
@@ -172,20 +174,23 @@
                           <i class="ri-eye-line text-lg"></i>
                         </button>
 
-                        <button
-                          @click="$emit('select', item)"
-                          title="Editar"
-                          class="text-blue-600 hover:text-blue-900"
-                        >
-                          <i class="ri-edit-line text-lg"></i>
-                        </button>
-                        <button
-                          @click="confirmTerminate(item)"
-                          title="Eliminar"
-                          class="text-red-600 hover:text-red-900"
-                        >
-                          <i class="ri-delete-bin-line text-lg"></i>
-                        </button>
+                        <template v-if="item.estado_Personal === 1">
+                          <button
+                            @click="$emit('select', item)"
+                            title="Editar"
+                            class="text-blue-600 hover:text-blue-900"
+                          >
+                            <i class="ri-edit-line text-lg"></i>
+                          </button>
+                          <button
+                            @click="confirmTerminate(item)"
+                            title="Eliminar"
+                            class="text-red-600 hover:text-red-900"
+                          >
+                            <i class="ri-delete-bin-line text-lg"></i>
+                            <!--  -->
+                          </button>
+                        </template>
                       </div>
                     </td>
                   </tr>
@@ -203,7 +208,7 @@
             <select
               :value="itemsPerPage"
               @change="handlePageSizeChange"
-              class="page-size-selector  border rounded-md px-2 py-1 text-sm "
+              class="page-size-selector border rounded-md px-2 py-1 text-sm"
             >
               <option
                 v-for="option in pageSizeOptions"
@@ -223,9 +228,9 @@
               </button>
               <button
                 class="px-3 py-1 border rounded-md text-sm"
-                :class="{'bg-blue-500 text-white': currentPage === 1}"
+                :class="{ 'bg-blue-500 text-white': currentPage === 1 }"
               >
-                 {{ currentPage }}
+                {{ currentPage }}
               </button>
               <button
                 class="px-3 py-1 border rounded-md text-sm disabled:opacity-50"
@@ -294,30 +299,38 @@ const showExportMenu = ref(false);
 const exportMenuRef = ref(null);
 const filteredItems = computed(() => {
   return props.items || [];
+
+  const term = searchTerm.value.toLowerCase();
+  return props.items.filter((item) => {
+     return (
+      (item.CEDULA?.toLowerCase().includes(term)) ||
+      (item.NOMBRES?.toLowerCase().includes(term)) ||
+      (item.APELLIDOS?.toLowerCase().includes(term)) ||
+      (item.PROVINCIA?.toLowerCase().includes(term)) ||
+      (item.CIUDAD?.toLowerCase().includes(term))
+    );
+  });
 });
-
-
 
 const visiblePages = computed(() => {
   const pages = [];
   const maxVisible = 5;
   let start = Math.max(1, props.currentPage - Math.floor(maxVisible / 2));
   const end = Math.min(props.totalPages, start + maxVisible - 1);
-  
+
   if (end - start + 1 < maxVisible) {
     start = Math.max(1, end - maxVisible + 1);
   }
-  
+
   for (let i = start; i <= end; i++) {
     pages.push(i);
   }
-  
+
   return pages;
 });
 
 const clearSearch = () => {
   searchTerm.value = "";
-  
 };
 
 const performSearch = () => {

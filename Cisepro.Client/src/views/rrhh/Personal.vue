@@ -67,9 +67,20 @@
           <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <!-- Columna de la foto - Reducida -->
             <div class="space-y-2">
-              <div class="flex flex-col items-center justify-center">
+              
+                <div class="relative flex flex-col items-center justify-center">
+                
+                <div 
+                  v-if="formData.estado_Personal !== undefined"
+                  class="absolute w-24 h-24 rounded-full border-[3px] animate-pulse-ring"
+                  :class="{
+                    'border-green-500': formData.estado_Personal === 1,
+                    'border-red-500': formData.estado_Personal !== 1
+                  }"
+                ></div>
+
                 <div
-                  class="w-20 h-20 rounded-full bg-gray-200 mb-2 overflow-hidden border-2 border-white shadow-sm"
+                  class="relative w-20 h-20 rounded-full bg-gray-200 mb-2 overflow-hidden border-2 border-white shadow-sm z-10 "
                 >
                   <img
                     v-if="formData.foto"
@@ -84,10 +95,12 @@
                     <i class="ri-user-line text-4xl"></i>
                   </div>
                 </div>
+                
                 <label
                   for="dropzone-file"
                   class="text-xs text-blue-600 hover:text-blue-800 cursor-pointer"
                 >
+                <i class="ri-camera-line text-sm"></i>
                   Cambiar foto
                   <input
                     id="dropzone-file"
@@ -97,7 +110,9 @@
                   />
                 </label>
               </div>
-
+              
+              
+              
               <div class="py-1">
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Edad</label
@@ -467,7 +482,7 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Ubicacion</label
                 >
-                <select v-model="formData.ubicacion" class="form-field w-full text-xs">
+                <select v-model="formData.sitio" class="form-field w-full text-xs">
                   <option
                     v-for="sitio in sitiosDisponibles"
                     :key="sitio.id"
@@ -867,7 +882,7 @@
       :total-pages="totalPages"
       :is-loading="isLoading"
       :page-size-options="pageSizeOptions"
-      @search="buscarPersonal"
+      @search="(term)=> {buscarPersonal(term);}"
       @close="showSearchModal = false"
       @select="loadEmployee"
       @page-change="handlePageChange"
@@ -890,6 +905,7 @@ import { toast } from "sonner";
 
 // Estados de busqueda y paginacion
 const authStore = useAuthStore();
+const searchQuery = ref("");
 const tipoConexion = authStore.selectedCompany;
 const showSearchModal = ref(false);
 const isLoading = ref(false);
@@ -906,7 +922,7 @@ const todosProyectoCache = ref([]);
 const sitiosDisponibles = ref([]);
 
 
-//carga Areas, Cargos, Proyectos
+//carga Areas, Cargos, Proyectos, sitios al montar el componente
 onMounted(async () => {
   try {
     
@@ -935,7 +951,7 @@ onMounted(async () => {
   }));
 
   sitiosDisponibles.value = sitiosResponse.data.map( sitio => ({
-      id: sitio.Id_Sitio_trabajo,
+      id: sitio.id_Sitio_trabajo,
       nombre: sitio.nombre_Sitio_trabajo
   }));
   
@@ -948,23 +964,6 @@ onMounted(async () => {
     });
   }
 });
-
-const cargarTodosProyectos = async () =>{
-  try{
-    const response = await contratoService.getProyectos(tipoConexion, false);
-    return response.data.map(proyecto => ({
-      id: proyecto.idProyecto,
-      nombre: proyecto.nombreProyecto
-    }));
-  } catch (error) {
-    toast.error("Error al cargar proyectos: ", {
-      description: error.message || "Ocurrió un error al cargar proyectos.",
-      duration: 5000,
-    });
-  }
-}
-
-
 
 
 // Estado del formulario
@@ -1002,7 +1001,7 @@ const formData = reactive({
   cargo: "cargo1",
   proyecto: "proyecto1",
   inicioProyecto: "",
-  ubicacion: "",
+  sitio: "",
   observacion: "",
   historiaClinica: false,
   discapacitado: false,
@@ -1052,7 +1051,7 @@ const handlePageSizeChange = (newSize) => {
 
 const openSearchModal = () => {
   showSearchModal.value = true;
-  // No realizar búsqueda automática
+  searchQuery.value = null; // Limpiar la consulta de búsqueda
 };
 
 const changePageSize = (newSize) => {
@@ -1085,11 +1084,15 @@ const buscarPersonal = async (searchTerm = null) => {
   showSearchModal.value = true;
   isLoading.value = true;
 
+   if (searchTerm !== null) {
+    searchQuery.value = searchTerm;
+  }
+
   try {
-    const todosProyectos = await cargarTodosProyectos();
+    
     const response = await personalService.getPersonal(
       tipoConexion,
-      searchTerm,
+      searchQuery.value,
       currentPage.value,
       itemsPerPage.value
     );
@@ -1097,9 +1100,7 @@ const buscarPersonal = async (searchTerm = null) => {
     totalItems.value = response.pagination?.totalRecords || 0;
     totalPages.value = response.pagination?.totalPages || 0;
 
-    if (searchTerm !== null || response.data.length > 0) {
-      showSearchModal.value = true;
-    }
+    
   } catch (error) {
     toast.error("Error al buscar personal: ", {
       description: error.message || "Ocurrió un error al buscar personal.",
@@ -1156,7 +1157,17 @@ const tipoContratoSelect = [
 
 const blobToDataURL = async (blobData) => {
   // Si es un Buffer (Node.js) o Blob (navegador)
-  const blob = new Blob([blobData], { type: "image/jpeg" }); // Ajusta el type según corresponda
+   if (typeof blobData === 'string' && blobData.startsWith('data:image')) {
+    return blobData;
+  }
+  
+  // Si es un string base64 sin prefijo (como el que recibes del backend)
+  if (typeof blobData === 'string' && blobData.startsWith('/9j')) {
+    return `data:image/jpeg;base64,${blobData}`;
+  }
+  
+  // Si es un Buffer o Blob (código original)
+  const blob = new Blob([blobData], { type: "image/jpeg" });
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
@@ -1167,10 +1178,14 @@ const blobToDataURL = async (blobData) => {
 const loadEmployee = async (employee) => {
   try {
 
+    
     Object.keys(formData).forEach((key) => {
       formData[key] = ""; // Limpia el formulario
     });
     
+    const sitioId = employee.ubicacion;
+    const sitioNumerico = parseInt(sitioId, 10);
+    const sitioValido = sitiosDisponibles.value.find(s => s.id === sitioNumerico);
     Object.assign(formData, {
       idPersonal: employee.id_Personal,
       cedula: employee.cedula,
@@ -1195,6 +1210,7 @@ const loadEmployee = async (employee) => {
       ciudad: employee.ciudad,
       telefono: employee.telefono,
       celular: employee.movil,
+      sitio: sitioValido ? sitioValido.id : "",
       pruebaAntidroga: employee.prueba_Antidroga,
       fechaEntrada : toDateInputFormat(employee.fecha_Entrada),
       fechaSalida: employee.estado_Personal ===1 
@@ -1202,7 +1218,7 @@ const loadEmployee = async (employee) => {
       : toDateInputFormat(employee.fecha_Salida),
       foto: employee.foto ? await blobToDataURL(employee.foto) : null,
     });
-console.log('formData', formData.ubicacion);
+
 
     const contratoResponse = await personalService.getPersonalContrato(
       tipoConexion,
@@ -1229,11 +1245,7 @@ console.log('formData', formData.ubicacion);
         // Si no se encuentra el proyecto, intenta cargar todos los proyectos
         proyectoEncontrado = todosProyectoCache.find(p => p.id === proyectoId);
       }
-      //sitio
-      const sitioContrato = contratoResponse.data.idSitio;
-      const sitioEncontrado = sitiosDisponibles.value.find(
-        s => s.id === sitioContrato
-      );
+      
 
       Object.assign(formData, {
         
@@ -1241,7 +1253,7 @@ console.log('formData', formData.ubicacion);
         area: areaEncontrada ? areaEncontrada.id : "",
         cargo: cargoEncontrado ? cargoEncontrado.id : "",
         proyecto: proyectoEncontrado ? proyectoEncontrado.id : "",
-        sitio: sitioEncontrado ? sitioEncontrado.id : "",
+        
         fechaInicio: toDateInputFormat(contratoResponse.data.fechaInicio),
         fechaFin: toDateInputFormat(contratoResponse.data.fechaFin),
         periodo: contratoResponse.data.periodo,
@@ -1265,7 +1277,7 @@ console.log('formData', formData.ubicacion);
     // Actualiza formData
     showSearchModal.value = false;
     currentTab.value = "datos";     
-    console.log('ContratoResponse', contratoResponse.data);
+
     
   } catch (error) {
     toast.error("Error al cargar los datos del empleado: ", {
@@ -1281,7 +1293,20 @@ console.log('formData', formData.ubicacion);
 
 <style>
 /* Estilos para inputs de fecha */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  70%, 100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
 
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
 input[type="date"]::-webkit-calendar-picker-indicator {
   display: inline-block;
   cursor: pointer;

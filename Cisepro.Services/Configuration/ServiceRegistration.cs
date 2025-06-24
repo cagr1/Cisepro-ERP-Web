@@ -47,6 +47,8 @@ namespace Cisepro.Services.Configuration
             //Talento Humano
             services.AddScoped<ContratoService>();
             services.AddScoped<PersonalService>();
+            services.AddScoped<HistorialService>();
+            services.AddScoped<CuentaPersonalService>();
             
 
         }

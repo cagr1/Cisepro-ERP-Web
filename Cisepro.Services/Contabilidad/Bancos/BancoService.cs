@@ -30,6 +30,8 @@ namespace Cisepro.Services.Contabilidad.Bancos
                 .AsNoTracking()
                 .ToListAsync();
         }
+        
+            
 
     }
 }

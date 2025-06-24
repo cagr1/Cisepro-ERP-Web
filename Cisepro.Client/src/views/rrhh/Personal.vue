@@ -38,7 +38,7 @@
     </div>
 
     <!-- Pestañas -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4 ">
       <div class="border-b border-gray-200">
         <nav class="flex -mb-px">
           <button
@@ -66,63 +66,54 @@
         <div v-if="currentTab === 'datos'">
           <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <!-- Columna de la foto - Reducida -->
-            <div class="space-y-2">
-              
-                <div class="relative flex flex-col items-center justify-center">
-                
-                <div 
-                  v-if="formData.estado_Personal !== undefined"
-                  class="absolute w-24 h-24 rounded-full border-[3px] animate-pulse-ring"
-                  :class="{
-                    'border-green-500': formData.estado_Personal === 1,
-                    'border-red-500': formData.estado_Personal !== 1
-                  }"
-                ></div>
-
-                <div
-                  class="relative w-20 h-20 rounded-full bg-gray-200 mb-2 overflow-hidden border-2 border-white shadow-sm z-10 "
-                >
-                  <img
-                    v-if="formData.foto"
-                    :src="formData.foto"
-                    class="w-full h-full object-cover"
-                    alt="Foto de perfil"
-                  />
+            <div class="space-y-2 flex flex-col -mr-8 ">
+              <div class=" relative flex flex-col items-center justify-center">
+                <div class="relative w-32 h-32 mr-7">
                   <div
-                    v-else
-                    class="w-full h-full flex items-center justify-center text-gray-400"
+                    v-if="formData.estado_Personal !== undefined"
+                    class="absolute inset-0 rounded-full border-[3px] animate-pulse-ring"
+                    :class="{
+                      'border-green-500': formData.estado_Personal === 1,
+                      'border-red-500': formData.estado_Personal === 0,
+                      'border-gray-500': formData.estado_Personal === undefined,
+                    }"
+                  ></div>
+
+                  <div
+                    class="relative w-full h-full rounded-full bg-gray-200 mb-2 overflow-hidden border-2 border-white shadow-sm z-10"
+                    
                   >
-                    <i class="ri-user-line text-4xl"></i>
+                    <img
+                      v-if="formData.foto"
+                      :src="formData.foto"
+                      class="w-full h-full object-cover"
+                      alt="Foto de perfil"
+                    />
+                    <div
+                      v-else
+                      class="w-full h-full flex items-center justify-center text-gray-400"
+                    >
+                      <i class="ri-user-line text-6xl"></i>
+                    </div>
                   </div>
+
+                  <label
+                    for="dropzone-file"
+                    class="  text-xs text-blue-600 hover:text-blue-800 cursor-pointer"
+                  >
+                    <i class="ri-camera-line text-sm"></i>
+                    Cambiar foto
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      class="hidden"
+                      @change="handleFileChange"
+                    />
+                  </label>
                 </div>
+              </div>
+              <div class="pt-11">
                 
-                <label
-                  for="dropzone-file"
-                  class="text-xs text-blue-600 hover:text-blue-800 cursor-pointer"
-                >
-                <i class="ri-camera-line text-sm"></i>
-                  Cambiar foto
-                  <input
-                    id="dropzone-file"
-                    type="file"
-                    class="hidden"
-                    @change="handleFileChange"
-                  />
-                </label>
-              </div>
-              
-              
-              
-              <div class="py-1">
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Edad</label
-                >
-                <input
-                  type="number"
-                  v-model="formData.edad"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
               <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Provincia</label
@@ -133,15 +124,35 @@
                   class="w-max-[160px] form-field"
                 />
               </div>
-              <div>
+              <div class="mt-2">
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Banco</label
                 >
-                <select v-model="formData.banco" class="form-field">
-                  <option>Banco Pichincha</option>
-                  <option>Banco Machala</option>
+                <select v-model="formData.idPersonal" 
+                class="w-full max-w-[140px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500">
+                  <option
+                    v-for="banco in bancosDisponibles"
+                    :key="banco.id"
+                    :value="banco.id"
+                    :label="banco.nombre"
+                    class="form-field w-full h-20"
+                  >
+                    {{ banco.nombre }}
+                  </option>
                 </select>
               </div>
+              <div class="mt-2">
+                <label class="block text-xs font-medium text-gray-600 mb-1"
+                  >Edad</label
+                >
+                <input
+                  type="number"
+                  v-model="formData.edad"
+                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              </div>
+              
             </div>
 
             <!-- Grupo 1: Datos básicos -->
@@ -413,33 +424,27 @@
             </div>
             <div class="space-y-2">
               <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1"
+                <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Lib Militar</label
                 >
                 <input
                   type="text"
                   v-model="formData.libretaMilitar"
                   class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                  
                 />
               </div>
-              
-              
             </div>
             <div class="space-y-2">
               <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1"
+                <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Pasaporte</label
                 >
                 <input
                   type="text"
                   v-model="formData.pasaporte"
                   class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                  
                 />
               </div>
-              
-              
             </div>
           </div>
           <!-- Seccion Operativa -->
@@ -467,14 +472,13 @@
                 >
                 <select v-model="formData.proyecto" class="form-field w-full">
                   <option
-                  v-for ="proyecto in proyectoDisponible"
-                  :key="proyecto.id"
-                  :value="proyecto.id"
-                  :label="proyecto.nombre"
-                  class="form-field w-full h-20"
-                >
-                 {{ proyecto.nombre }}
-
+                    v-for="proyecto in proyectoDisponible"
+                    :key="proyecto.id"
+                    :value="proyecto.id"
+                    :label="proyecto.nombre"
+                    class="form-field w-full h-20"
+                  >
+                    {{ proyecto.nombre }}
                   </option>
                 </select>
               </div>
@@ -482,7 +486,10 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Ubicacion</label
                 >
-                <select v-model="formData.sitio" class="form-field w-full text-xs">
+                <select
+                  v-model="formData.sitio"
+                  class="form-field w-full text-xs"
+                >
                   <option
                     v-for="sitio in sitiosDisponibles"
                     :key="sitio.id"
@@ -492,18 +499,17 @@
                   </option>
                 </select>
               </div>
-              
             </div>
 
             <!-- Columna 2 -->
             <div class="space-y-2">
-              <div  >
+              <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">
                   Fecha de salida
                 </label>
                 <div
                   v-if="formData.fechaSalida === 'en_funciones'"
-                  class="form-field w-full bg-gray-100 italic text-gray-500 text-center "
+                  class="form-field w-full bg-gray-100 italic text-gray-500 text-center"
                 >
                   En funciones
                 </div>
@@ -512,7 +518,6 @@
                   type="date"
                   v-model="formData.fechaSalida"
                   class="form-field w-full"
-                  
                 />
               </div>
               <div>
@@ -523,7 +528,6 @@
                   type="date"
                   v-model="formData.fechaInicio"
                   class="form-field w-full"
-                  
                 />
               </div>
 
@@ -531,7 +535,10 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Área</label
                 >
-                <select v-model="formData.area" class="form-field w-full text-xs">
+                <select
+                  v-model="formData.area"
+                  class="form-field w-full text-xs"
+                >
                   <option
                     v-for="area in areasDisponibles"
                     :key="area.id"
@@ -541,8 +548,6 @@
                   </option>
                 </select>
               </div>
-
-              
             </div>
 
             <!-- Columna 3 -->
@@ -551,7 +556,10 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Cargo</label
                 >
-                <select v-model="formData.cargo" class="form-field w-full text-xs">
+                <select
+                  v-model="formData.cargo"
+                  class="form-field w-full text-xs"
+                >
                   <option
                     v-for="cargo in cargoDisponibles"
                     :key="cargo.id"
@@ -577,10 +585,9 @@
                 >
                 <textarea
                   v-model="formData.observaciones"
-                  class="form-field w-full "
+                  class="form-field w-full"
                 ></textarea>
               </div>
-              
             </div>
 
             <!-- Columna 4 -->
@@ -594,12 +601,12 @@
                   class="form-field w-full"
                 >
                   <option
-                  v-for="option in tipoContratoSelect"
-                  :key="option.value"
-                  :value="option.value"
+                    v-for="option in tipoContratoSelect"
+                    :key="option.value"
+                    :value="option.value"
                   >
                     {{ option.text }}
-                  </option> 
+                  </option>
                 </select>
               </div>
               <div class="flex items-center gap-2">
@@ -865,11 +872,49 @@
             <h3 class="text-lg font-medium text-gray-900 mb-2">
               Historial Laboral
             </h3>
-            <p class="text-sm text-gray-500">
-              Registro completo de la trayectoria del empleado en la empresa.
-            </p>
           </div>
-          <!-- Contenido específico de historial -->
+          <div v-if="loadingHistorial" class="flex justify-center py-4">
+            <Icon
+              icon="svg-spinners:6-dots-scale"
+              class="text-blue-500 text-2xl"
+            />
+          </div>
+          <div v-else class="overflow-x-auto bg-white rounded-lg shadow">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                  >
+                    Fecha
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                  >
+                    Detalle
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr v-for="(item, index) in historialLaboral" :key="index">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ toDateInputFormat(item.fechaHistoriaLaboral) }}
+                  </td>
+                  <td class="px-6 py-4 text-xs text-gray-500">
+                    {{ item.detalleHistoriaLaboral }}
+                  </td>
+                </tr>
+                <tr v-if="historialLaboral.length === 0">
+                  <td
+                    colspan="2"
+                    class="px-6 py-4 text-center text-sm text-gray-500"
+                  >
+                    No hay registros de historial laboral
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -882,7 +927,11 @@
       :total-pages="totalPages"
       :is-loading="isLoading"
       :page-size-options="pageSizeOptions"
-      @search="(term)=> {buscarPersonal(term);}"
+      @search="
+        (term) => {
+          buscarPersonal(term);
+        }
+      "
       @close="showSearchModal = false"
       @select="loadEmployee"
       @page-change="handlePageChange"
@@ -892,14 +941,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted,computed, nextTick } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
 import { personalService } from "@/api/RRHH/personal";
-import { areaService} from "@/api/EstructuraEmpresa/area";
+import { areaService } from "@/api/EstructuraEmpresa/area";
 import { cargoService } from "@/api/EstructuraEmpresa/cargo";
-import {contratoService} from "@/api/EstructuraEmpresa/contrato";
+import { contratoService } from "@/api/EstructuraEmpresa/contrato";
 import { sitiosService } from "@/api/DivisionGeografica/sitios";
+import { historialService } from "@/api/RRHH/historial";
+import { cuentaPersonalService } from "../../api/RRHH/cuentaPersonal";
+import { bancoService } from "../../api/Contabilidad/banco";
 import { Icon } from "@iconify/vue";
 import { toast } from "sonner";
 
@@ -918,44 +970,50 @@ const pageSizeOptions = ref([10, 20, 50, 100]);
 const areasDisponibles = ref([]);
 const cargoDisponibles = ref([]);
 const proyectoDisponible = ref([]);
+const bancosDisponibles = ref([]);
 const todosProyectoCache = ref([]);
 const sitiosDisponibles = ref([]);
-
+const historialLaboral = ref([]);
+const loadingHistorial = ref(false);
 
 //carga Areas, Cargos, Proyectos, sitios al montar el componente
 onMounted(async () => {
   try {
-    
-    const [areaResponse, cargoResponse,proyecto, sitiosResponse]  = await Promise.all([
-    areaService.getAreas(tipoConexion),
-    cargoService.getCargos(tipoConexion),
-    contratoService.getProyectos(tipoConexion, true),
-    sitiosService.getSitios(tipoConexion)
-    
-    ])    
-    
-    areasDisponibles.value = areaResponse.data.map( area => ({
+    const [areaResponse, cargoResponse, proyecto, sitiosResponse, bancosResponse] =
+      await Promise.all([
+        areaService.getAreas(tipoConexion),
+        cargoService.getCargos(tipoConexion),
+        contratoService.getProyectos(tipoConexion, true),
+        sitiosService.getSitios(tipoConexion),
+        bancoService.getBancos(tipoConexion)
+      ]);
+
+    areasDisponibles.value = areaResponse.data.map((area) => ({
       id: area.idAreaGeneral,
-      nombre: area.nombreArea
+      nombre: area.nombreArea,
+    }));
 
-  }));
-
-    cargoDisponibles.value = cargoResponse.data.map( cargo => ({
+    cargoDisponibles.value = cargoResponse.data.map((cargo) => ({
       id: cargo.idCargoOcupacional,
-      nombre: cargo.descripcion
-  }));
+      nombre: cargo.descripcion,
+    }));
 
-  proyectoDisponible.value = proyecto.data.map( proyecto => ({
+    proyectoDisponible.value = proyecto.data.map((proyecto) => ({
       id: proyecto.idProyecto,
-      nombre: proyecto.nombreProyecto
-  }));
+      nombre: proyecto.nombreProyecto,
+    }));
 
-  sitiosDisponibles.value = sitiosResponse.data.map( sitio => ({
+    sitiosDisponibles.value = sitiosResponse.data.map((sitio) => ({
       id: sitio.id_Sitio_trabajo,
-      nombre: sitio.nombre_Sitio_trabajo
-  }));
-  
-      
+      nombre: sitio.nombre_Sitio_trabajo,
+    }));
+
+    // Cargar bancos
+    bancosDisponibles.value = bancosResponse.data.map((banco) => ({
+      id: banco.idBanco,
+      nombre: banco.nombreBanco,
+    }))
+
 
   } catch (error) {
     toast.error("Error al cargar áreas: ", {
@@ -964,7 +1022,6 @@ onMounted(async () => {
     });
   }
 });
-
 
 // Estado del formulario
 const formData = reactive({
@@ -1022,14 +1079,28 @@ const formData = reactive({
   noEspecificado: "",
 });
 
-// Datos para selects
-
-
+// Historial
+const loadHistorial = async (idPersona) => {
+  try {
+    loadingHistorial.value = true;
+    const response = await historialService.getHistorialPersonal(
+      tipoConexion,
+      idPersona
+    );
+    historialLaboral.value = response.data || [];
+  } catch (error) {
+    toast.error("Error al cargar historial laboral: ", {
+      description:
+        error.message || "Ocurrió un error al cargar el historial laboral.",
+      duration: 5000,
+    });
+  } finally {
+    loadingHistorial.value = false;
+  }
+};
 // Pestañas
 const tabs = [
   { id: "datos", name: "Datos", icon: "lucide:user" },
-  { id: "familia", name: "Familia", icon: "lucide:users" },
-  { id: "referencias", name: "Referencias", icon: "lucide:contact" },
   { id: "fotos", name: "Fotos", icon: "lucide:camera" },
   { id: "historial", name: "Historial", icon: "lucide:history" },
 ];
@@ -1084,12 +1155,11 @@ const buscarPersonal = async (searchTerm = null) => {
   showSearchModal.value = true;
   isLoading.value = true;
 
-   if (searchTerm !== null) {
+  if (searchTerm !== null) {
     searchQuery.value = searchTerm;
   }
 
   try {
-    
     const response = await personalService.getPersonal(
       tipoConexion,
       searchQuery.value,
@@ -1099,8 +1169,6 @@ const buscarPersonal = async (searchTerm = null) => {
     searchResults.value = response.data;
     totalItems.value = response.pagination?.totalRecords || 0;
     totalPages.value = response.pagination?.totalPages || 0;
-
-    
   } catch (error) {
     toast.error("Error al buscar personal: ", {
       description: error.message || "Ocurrió un error al buscar personal.",
@@ -1120,7 +1188,6 @@ const toDateInputFormat = (dateString) => {
 
   return date.toISOString().split("T")[0]; // Formato yyyy-MM-dd
 };
-
 
 const educationlevel = [
   { text: "Primaria", value: "PRIMARIA" },
@@ -1154,18 +1221,17 @@ const tipoContratoSelect = [
   { text: "Indefinido", value: "2" },
 ];
 
-
 const blobToDataURL = async (blobData) => {
   // Si es un Buffer (Node.js) o Blob (navegador)
-   if (typeof blobData === 'string' && blobData.startsWith('data:image')) {
+  if (typeof blobData === "string" && blobData.startsWith("data:image")) {
     return blobData;
   }
-  
+
   // Si es un string base64 sin prefijo (como el que recibes del backend)
-  if (typeof blobData === 'string' && blobData.startsWith('/9j')) {
+  if (typeof blobData === "string" && blobData.startsWith("/9j")) {
     return `data:image/jpeg;base64,${blobData}`;
   }
-  
+
   // Si es un Buffer o Blob (código original)
   const blob = new Blob([blobData], { type: "image/jpeg" });
   return new Promise((resolve) => {
@@ -1177,15 +1243,18 @@ const blobToDataURL = async (blobData) => {
 
 const loadEmployee = async (employee) => {
   try {
-
-    
     Object.keys(formData).forEach((key) => {
       formData[key] = ""; // Limpia el formulario
     });
-    
+
     const sitioId = employee.ubicacion;
     const sitioNumerico = parseInt(sitioId, 10);
-    const sitioValido = sitiosDisponibles.value.find(s => s.id === sitioNumerico);
+    const sitioValido = sitiosDisponibles.value.find(
+      (s) => s.id === sitioNumerico
+    );
+    const bancoValido = bancosDisponibles.value.find(
+      (b) => b.idPersonal === employee.idPersonal
+    );
     Object.assign(formData, {
       idPersonal: employee.id_Personal,
       cedula: employee.cedula,
@@ -1200,11 +1269,12 @@ const loadEmployee = async (employee) => {
       direccion: employee.direccion,
       edad: employee.edad,
       email: employee.email,
-      banco: employee.banco,
+      banco: bancoValido ? bancoValido.id : "",
       cuenta: employee.cuenta,
       fechaNacimiento: toDateInputFormat(employee.fecha_Nacimiento),
       libretaMilitar: employee.libreta_Militar,
       pasaporte: employee.pasaporte,
+      estado_Personal: employee.estado_Personal,
       peso: employee.peso,
       estatura: employee.estatura,
       ciudad: employee.ciudad,
@@ -1212,13 +1282,13 @@ const loadEmployee = async (employee) => {
       celular: employee.movil,
       sitio: sitioValido ? sitioValido.id : "",
       pruebaAntidroga: employee.prueba_Antidroga,
-      fechaEntrada : toDateInputFormat(employee.fecha_Entrada),
-      fechaSalida: employee.estado_Personal ===1 
-      ? 'en_funciones'
-      : toDateInputFormat(employee.fecha_Salida),
+      fechaEntrada: toDateInputFormat(employee.fecha_Entrada),
+      fechaSalida:
+        employee.estado_Personal === 1
+          ? "en_funciones"
+          : toDateInputFormat(employee.fecha_Salida),
       foto: employee.foto ? await blobToDataURL(employee.foto) : null,
     });
-
 
     const contratoResponse = await personalService.getPersonalContrato(
       tipoConexion,
@@ -1227,40 +1297,42 @@ const loadEmployee = async (employee) => {
 
     if (contratoResponse.success && contratoResponse.data) {
       //area
-      const areaContrato =  contratoResponse.data.area;
+      const areaContrato = contratoResponse.data.area;
       const areaEncontrada = areasDisponibles.value.find(
-          a => a.nombre === areaContrato
-        );
+        (a) => a.nombre === areaContrato
+      );
       //cargo
-      const cargoContrato =  contratoResponse.data.descripcion;
+      const cargoContrato = contratoResponse.data.descripcion;
       const cargoEncontrado = cargoDisponibles.value.find(
-          c => c.nombre === cargoContrato
-        );
+        (c) => c.nombre === cargoContrato
+      );
       //contrato
-      const proyectoId =  contratoResponse.data.idProyecto;
+      const proyectoId = contratoResponse.data.idProyecto;
       let proyectoEncontrado = proyectoDisponible.value.find(
-        p => p.id === proyectoId
+        (p) => p.id === proyectoId
       );
       if (!proyectoEncontrado) {
         // Si no se encuentra el proyecto, intenta cargar todos los proyectos
-        proyectoEncontrado = todosProyectoCache.find(p => p.id === proyectoId);
+        proyectoEncontrado = todosProyectoCache.find(
+          (p) => p.id === proyectoId
+        );
       }
-      
 
       Object.assign(formData, {
-        
         nroContrato: contratoResponse.data.nroContrato,
         area: areaEncontrada ? areaEncontrada.id : "",
         cargo: cargoEncontrado ? cargoEncontrado.id : "",
         proyecto: proyectoEncontrado ? proyectoEncontrado.id : "",
-        
+
         fechaInicio: toDateInputFormat(contratoResponse.data.fechaInicio),
         fechaFin: toDateInputFormat(contratoResponse.data.fechaFin),
         periodo: contratoResponse.data.periodo,
         tipoContrato: contratoResponse.data.tipoContrato,
         estadoContrato: contratoResponse.data.estado,
         iess: contratoResponse.data.iess === 1,
-        fechaAfiliacion: toDateInputFormat(contratoResponse.data.fechaAfiliacion),
+        fechaAfiliacion: toDateInputFormat(
+          contratoResponse.data.fechaAfiliacion
+        ),
         reservaRol: contratoResponse.data.reservaRol === 1,
         acumFondoReserva: contratoResponse.data.acu_fondo === 1,
         xiii: contratoResponse.data.xiii === 1,
@@ -1276,9 +1348,8 @@ const loadEmployee = async (employee) => {
 
     // Actualiza formData
     showSearchModal.value = false;
-    currentTab.value = "datos";     
-
-    
+    currentTab.value = "datos";
+    await loadHistorial(employee.id_Personal);
   } catch (error) {
     toast.error("Error al cargar los datos del empleado: ", {
       description:
@@ -1288,24 +1359,27 @@ const loadEmployee = async (employee) => {
   }
 };
 
-
 </script>
 
 <style>
 /* Estilos para inputs de fecha */
 @keyframes pulse-ring {
   0% {
-    transform: scale(0.9);
-    opacity: 1;
+    transform: scale(0.8);
+    opacity: 0.8;
   }
-  70%, 100% {
-    transform: scale(1.3);
+  80%,
+  100% {
+    transform: scale(1.2);
     opacity: 0;
   }
 }
 
 .animate-pulse-ring {
-  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  top: 0;
+  left: 0;
+  animation: pulse-ring 2s linear infinite;
+  pointer-events: none; /* Evita interferencias con clics */
 }
 input[type="date"]::-webkit-calendar-picker-indicator {
   display: inline-block;

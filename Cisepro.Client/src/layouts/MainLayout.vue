@@ -2,31 +2,40 @@
   <div class="min-h-screen flex">
     <!-- Sidebar -->
     <aside
-      class="w-64 fixed left-0 top-0 h-screen shadow-xl transition-all duration-300 z-40 border-r"
-      :class="{'ml-[-16rem]': !sidebarOpen}"
+      class="fixed left-0 top-0 h-screen shadow-2xl transition-all duration-300 z-40 border-r border-gray-200/20"
+      :class="sidebarOpen ? 'w-64' : 'w-16'"
       :style="sidebarStyle"
     >
       <div class="h-full flex flex-col">
         <!-- Logo -->
-        <div class="p-4 border-b border-gray-200 flex items-center gap-3">
-          <div
-            v-if="selectedCompany === 'Cisepro'"
-            class="flex items-center gap-3"
-          >
-            <img
-              src="../assets/images/cisepro.png"
-              alt="Cispero"
-              class="h-10 w-auto"
-            />
-            <span class="text-white font-semibold text-lg">CISEPRO</span>
+        <div class="p-4 border-b border-white/10 flex items-center justify-center relative  min-h-[72px]">
+           <!-- Logo expandido -->
+          <div v-if="sidebarOpen" class="flex items-center gap-3 transition-all duration-300 opacity-100">
+            <div v-if="selectedCompany === 'Cisepro'" class="flex items-center gap-3">
+              <img
+                src="../assets/images/cisepro.png"
+                alt="Cisepro"
+                class="h-10 w-auto"
+              />
+              <span class="text-white font-semibold text-lg">CISEPRO</span>
+            </div>
+            <div v-else class="flex items-center gap-3">
+              <img
+                src="../assets/images/seportpac.png"
+                alt="Seportpac"
+                class="h-10 w-auto"
+              />
+              <span class="text-white font-semibold text-lg">SEPORTPAC</span>
+            </div>
           </div>
-          <div v-else class="flex items-center gap-3">
+          
+          <!-- Logo minimizado -->
+          <div v-else class="flex items-center w-full transition-all  duration-300 opacity-100">
             <img
-              src="../assets/images/seportpac.png"
-              alt="Seportpac"
-              class="h-10 w-auto"
+              :src="selectedCompany === 'Cisepro' ? '../assets/images/cisepro.png' : '../assets/images/seportpac.png'"
+              
+              class="h-8 w-auto flex-shrink-0"
             />
-            <span class="text-white font-semibold text-lg">SEPORTPAC</span>
           </div>
         </div>
 
@@ -34,87 +43,135 @@
         <nav class="flex-1 overflow-y-auto px-2 py-4">
           <ul class="space-y-1">
             <li v-for="item in menuItems" :key="item.name">
+              <!-- Items con submenú -->
               <template v-if="item.children">
-                <button
-                  @click="toggleSubmenu(item)"
-                  class="w-full flex items-center justify-between p-2 text-white hover:bg-blue-600 rounded-lg transition-colors"
-                >
-                  <div class="flex items-center">
-                    <i :class="`${item.icon} text-white text-lg mr-3`"></i>
-                    <span class="text-sm font-medium">{{ item.name }}</span>
-                  </div>
-                  <i
-                    :class="`ri-arrow-down-s-line transition-transform ${
-                      openSubmenus[item.name] ? 'rotate-180' : ''
-                    }`"
-                  ></i>
-                </button>
-                <transition
-                  enter-active-class="transition-all duration-300 ease-out"
-                  leave-active-class="transition-all duration-300 ease-in"
-                  enter-from-class="max-h-0 opacity-0"
-                  enter-to-class="max-h-96 opacity-100"
-                  leave-from-class="max-h-96 opacity-100"
-                  leave-to-class="max-h-0 opacity-0"
-                >
-                  <ul v-show="openSubmenus[item.name]" class="ml-8 space-y-1">
-                    <li v-for="child in item.children" :key="child.name">
-                      <RouterLink
-                        :to="child.path"
-                        custom
-                        v-slot="{ navigate, isActive }"
+                <div class="relative group">
+                  <button
+                    @click="sidebarOpen ? toggleSubmenu(item) : null"
+                    @mouseenter="!sidebarOpen ? showTooltip(item.name, $event) : null"
+                    @mouseleave="!sidebarOpen ? hideTooltip() : null"
+                    :class="[
+                      'w-full flex items-center p-3 text-white hover:bg-white/10 rounded-xl transition-all duration-200',
+                      sidebarOpen ? 'justify-between' : 'justify-center'
+                    ]"
+                  >
+                    <div class="flex items-center">
+                      <i :class="`${item.icon} text-white text-xl`" :style="{ minWidth: '20px' }"></i>
+                      <span 
+                        v-if="sidebarOpen" 
+                        class="text-sm font-medium ml-3 transition-opacity duration-300"
                       >
-                        <!-- class="flex items-center p-2 text-white hover:bg-blue-500 rounded-lg text-sm" -->
-                        <a
-                          @click="navigate"
-                          :href="child.path"
-                          :class="[
-                            'flex items-center p-2 text-white hover:bg-[var(--hover-color)] rounded-lg text-sm',
-                            { 'bg-blue-600': isActive },
-                          ]"
+                        {{ item.name }}
+                      </span>
+                    </div>
+                    <i
+                      v-if="sidebarOpen"
+                      :class="`ri-arrow-down-s-line transition-transform duration-200 ${
+                        openSubmenus[item.name] ? 'rotate-180' : ''
+                      }`"
+                    ></i>
+                  </button>
+                  
+                  <!-- Submenu expandido -->
+                  <transition
+                    enter-active-class="transition-all duration-300 ease-out"
+                    leave-active-class="transition-all duration-300 ease-in"
+                    enter-from-class="max-h-0 opacity-0"
+                    enter-to-class="max-h-96 opacity-100"
+                    leave-from-class="max-h-96 opacity-100"
+                    leave-to-class="max-h-0 opacity-0"
+                  >
+                    <ul v-show="openSubmenus[item.name] && sidebarOpen" class="ml-8 space-y-1 overflow-hidden">
+                      <li v-for="child in item.children" :key="child.name">
+                        <RouterLink
+                          :to="child.path"
+                          custom
+                          v-slot="{ navigate, isActive }"
                         >
-                          <i
-                            :class="`${child.icon} text-white text-base mr-3`"
-                          ></i>
-                          {{ child.name }}
-                        </a>
-                      </RouterLink>
-                    </li>
-                  </ul>
-                </transition>
+                          <a
+                            @click="navigate"
+                            :href="child.path"
+                            :class="[
+                              'flex items-center p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg text-sm transition-all duration-200',
+                              { 'bg-white/20 text-white': isActive },
+                            ]"
+                          >
+                            <i :class="`${child.icon} text-base mr-3`" style="min-width: 16px;"></i>
+                            {{ child.name }}
+                          </a>
+                        </RouterLink>
+                      </li>
+                    </ul>
+                  </transition>
+                </div>
               </template>
-              <RouterLink
-                v-else
-                :to="item.path"
-                class="flex items-center p-2 text-white hover:bg-[var(--hover-color)] rounded-lg transition-colors"
-              >
-                <i :class="`${item.icon} text-white text-lg mr-3`"></i>
-                <span class="text-sm font-medium">{{ item.name }}</span>
-              </RouterLink>
+              
+              <!-- Items simples -->
+              <div v-else class="relative group">
+                <RouterLink
+                  :to="item.path"
+                  custom
+                  v-slot="{ navigate, isActive }"
+                >
+                  <a
+                    @click="navigate"
+                    @mouseenter="!sidebarOpen ? showTooltip(item.name, $event) : null"
+                    @mouseleave="!sidebarOpen ? hideTooltip() : null"
+                    :href="item.path"
+                    :class="[
+                      'flex items-center p-3 text-white hover:bg-white/10 rounded-xl transition-all duration-200',
+                      sidebarOpen ? 'justify-start' : 'justify-center',
+                      { 'bg-white/20': isActive }
+                    ]"
+                  >
+                    <i :class="`${item.icon} text-white text-xl`" :style="{ minWidth: '20px' }"></i>
+                    <span 
+                      v-if="sidebarOpen" 
+                      class="text-sm font-medium ml-3 transition-opacity duration-300"
+                    >
+                      {{ item.name }}
+                    </span>
+                  </a>
+                </RouterLink>
+              </div>
             </li>
           </ul>
         </nav>
       </div>
     </aside>
 
+    <!-- Toggle Button -->
+    <button 
+      @click="toggleSidebar"
+      :class="[
+        'fixed top-6 z-50 w-8 h-8 bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:scale-105',
+        sidebarOpen ? 'left-60' : 'left-12'
+      ]"
+    >
+      <svg 
+        :class="['w-4 h-4 transition-transform duration-300', sidebarOpen ? 'rotate-180' : '']" 
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
     <!-- Main Content -->
-    <div class="flex-1 transition-all duration-300" :class="{'ml-0': !sidebarOpen, 'ml-64': sidebarOpen}">
+    <div 
+      class="flex-1 transition-all duration-300" 
+      :class="sidebarOpen ? 'ml-64' : 'ml-16'"
+    >
       <!-- Navbar -->
-      <header class="bg-white border-b border-gray-200">
-        <div class="flex justify-between items-center px-6 py-3">
-          
-          <button 
-            @click="toggleSidebar"
-            class="p-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-800 transition-colors"
-          >
-            <i :class="sidebarOpen ? 'ri-menu-fold-line' : 'ri-menu-unfold-line'" class="text-lg"></i>
-          </button>
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex justify-end items-center px-6 py-3">
           <!-- User Profile -->
           <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
               <img
                 :src="user.photo || 'https://via.placeholder.com/40'"
-                class="w-10 h-10 rounded-full object-cover"
+                class="w-10 h-10 rounded-full object-cover shadow-md"
                 alt="User photo"
               />
               <div class="text-right">
@@ -126,7 +183,7 @@
             </div>
             <button
               @click="logout"
-              class="p-2 hover:bg-gray-100 rounded-full text-gray-600 hover:text-red-600 transition-colors"
+              class="p-2 hover:bg-red-50 rounded-full text-gray-600 hover:text-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <i class="ri-logout-box-r-line text-lg"></i>
             </button>
@@ -139,11 +196,21 @@
         <router-view />
       </div>
     </div>
+
+    <!-- Tooltip -->
+    <div
+      v-if="tooltip.show && !sidebarOpen"
+      :style="{ top: tooltip.y + 'px', left: tooltip.x + 'px' }"
+      class="fixed z-50 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-xl pointer-events-none transform transition-opacity duration-200"
+    >
+      {{ tooltip.text }}
+      <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-gray-900"></div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import { storeToRefs } from "pinia";
@@ -151,10 +218,16 @@ import { storeToRefs } from "pinia";
 const authStore = useAuthStore();
 const router = useRouter();
 const openSubmenus = ref({});
-const sidebarOpen = ref(true);
+const sidebarOpen = ref(false); // Iniciamos minimizado
 const { selectedCompany } = storeToRefs(authStore);
 
-
+// Tooltip state
+const tooltip = reactive({
+  show: false,
+  text: '',
+  x: 0,
+  y: 0
+});
 
 const menuItems = [
   {
@@ -201,28 +274,44 @@ const menuItems = [
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value;
+  // Cerrar submenus cuando se minimiza
+  if (!sidebarOpen.value) {
+    openSubmenus.value = {};
+    hideTooltip();
+  }
 };
 
 const toggleSubmenu = (item) => {
-  openSubmenus.value[item.name] = !openSubmenus.value[item.name];
+  if (sidebarOpen.value) {
+    openSubmenus.value[item.name] = !openSubmenus.value[item.name];
+  }
+};
+
+const showTooltip = (text, event) => {
+  const rect = event.currentTarget.getBoundingClientRect();
+  tooltip.text = text;
+  tooltip.x = rect.right + 10;
+  tooltip.y = rect.top + (rect.height / 2) - 20;
+  tooltip.show = true;
+};
+
+const hideTooltip = () => {
+  tooltip.show = false;
 };
 
 const sidebarStyle = computed(() => {
   const company = selectedCompany.value;
   const colors = {
     Seportpac: {
-      background: "rgb(38, 50, 56)",
-      hover: "rgba(255, 255, 255, 0.1)",
+      background: "linear-gradient(135deg, rgb(38, 50, 56) 0%, rgb(55, 71, 79) 100%)",
     },
     Cisepro: {
-      background: "rgb(13, 71, 161)",
-      hover: "rgba(255, 255, 255, 0.1)",
+      background: "linear-gradient(135deg, rgb(13, 71, 161) 0%, rgb(25, 118, 210) 100%)",
     },
   };
 
   return {
-    backgroundColor: colors[company]?.background,
-    "--hover-color": colors[company]?.hover,
+    background: colors[company]?.background || colors.Cisepro.background,
   };
 });
 
@@ -249,39 +338,33 @@ const logout = () => {
 </script>
 
 <style scoped>
-button.rounded-full {
-  border-radius: 9999px;
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Scrollbar personalizado para el sidebar */
+nav::-webkit-scrollbar {
+  width: 4px;
 }
 
-/* Transición suave para el sidebar */
-.aside {
-  transition: transform 0.3s ease-in-out;
+nav::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* Estilos adicionales existentes */
-.aside {
-  background: linear-gradient(
-    135deg,
-    rgba(var(--sidebar-bg-rgb), 0.95) 0%,
-    rgba(var(--sidebar-bg-rgb), 0.95) 100%
-  );
+nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mejoras en las transiciones */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto glassmorphism sutil */
+aside {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.3s ease;
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateX(-20px);
-  opacity: 0;
 }
 </style>

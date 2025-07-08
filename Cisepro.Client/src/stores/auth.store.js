@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import api from "@/api/index.js";
 import { useRouter } from 'vue-router';
-import { getCurrentInstance } from "vue";
 import { ref } from "vue";
 import  {jwtDecode}  from 'jwt-decode';
 
@@ -17,7 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const login = async (credentials) => {
       try {
-        const response = await api.post('http://localhost:5206/api/Auth/Login', credentials);
+        const response = await api.post('/Auth/Login', credentials);
         // Guardar token y usuario
         const userData = {          
           datos: response.data.usuario.datos,
@@ -33,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('user', JSON.stringify(user.value));
         
         localStorage.setItem('selectedCompany', selectedCompany.value);
-        console.log('login', user.value);
+        
         // Redirigir
         
         router.push(returnUrl.value || '/')

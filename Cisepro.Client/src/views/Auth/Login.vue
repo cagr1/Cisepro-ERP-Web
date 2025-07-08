@@ -1,8 +1,7 @@
 <template>
-   <div
-    class="min-h-screen flex items-center justify-center p-4 bg-[url('/src/assets/Images/login_bg.jpg')] bg-cover bg-center bg-no-repeat "
-  > 
-  
+  <div
+    class="min-h-screen flex items-center justify-center p-4 bg-[url('/src/assets/Images/login_bg.jpg')] bg-cover bg-center bg-no-repeat"
+  >
     <!-- Card Container -->
 
     <div
@@ -26,22 +25,22 @@
           />
         </div>
         <div class="mt-4"></div>
+        
         <form @submit.prevent="handleLogin">
           <!-- Email Input -->
 
-            <div class="mb-5">
-            <UiInput 
+          <div class="mb-5">
+            <UiInput
               v-model="form.login"
               label="Usuario"
               type="text"
               autocomplete="username"
-              
-              :class="{'border-red-500': errors.login} "
+              :class="{ 'border-red-500': errors.login }"
               @input="errorMessage = ''"
             />
-            <FormErrorMessage :message="errors.login" /> 
+            <FormErrorMessage :message="errors.login" />
           </div>
-          
+
           <!-- Password Input -->
           <div class="mb-6">
             <UiInput
@@ -54,8 +53,6 @@
             <FormErrorMessage :message="errors.password" />
           </div>
 
-         
-
           <!-- Remember Me & Forgot Password -->
           <div class="flex items-center justify-between mb-6">
             <label class="flex items-center text-gray-600">
@@ -67,10 +64,10 @@
               <span class="ml-2 text-sm">Recordar sesión</span>
             </label>
 
-            <button 
-              type="button" 
+            <button
+              type="button"
               class="text-sm text-blue-600 hover:text-blue-800 transition-colors"
-              @click="() => {}" 
+              @click="() => {}"
             >
               ¿Olvidó su contraseña?
             </button>
@@ -127,20 +124,22 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import UiInput from "@/components/Input.vue";
 import RadioChoice from "@/components/RadioChoice.vue";
 import FormErrorMessage from "@/components/FormErrorMessage.vue";
 import { useFormValidation } from "@/validations/useFormValidation";
 import { useAuthValidations } from "@/validations/useAuthValidations";
+import { push } from "notivue";
+
 
 const authStore = useAuthStore();
 
 const { errors, validateRequire } = useFormValidation();
 const { validateLoginForm } = useAuthValidations();
-
 const selectedCompany = ref("Cisepro");
+
+
 
 const companies = ref([
   {
@@ -170,18 +169,30 @@ onMounted(() => {
   }
 });
 
-
-
 const handleLogin = async () => {
   try {
-
-
+    
+    errors.value = {};
+    
     const isValid = validateRequire({
       login: form.value.login,
       password: form.value.password,
     });
+    
+    if (!isValid) {
+      if (!form.value.login) errors.value.login = "El campo usuario es requerido";
+      if (!form.value.password) errors.value.password = "El campo contraseña es requerido";
+      return;
+    }  
 
-    if (!isValid) return;
+    //validate form inputs
+    const authErrors = validateLoginForm(form.value);
+    if (Object.keys(authErrors).length > 0) {
+      errors.value = authErrors;
+      return;
+    }  
+
+    
 
     if (form.value.remember) {
       localStorage.setItem("rememberedUsername", form.value.login);
@@ -191,31 +202,29 @@ const handleLogin = async () => {
       localStorage.removeItem("rememberPassword");
     }
 
-    if (!form.value.login) {
-      errors.value.login = "El campo usuario es requerido";
-      return;
-    }
-
-    const authErrors = validateLoginForm(form.value);
-    if (Object.keys(authErrors).length > 0) {
-      errors.value = authErrors;
-      return;
-    }
-
+    //login attempt
     await authStore.login({
       tipoConexion: selectedCompany.value, // 'cisepro' o 'seportpac'
       login: form.value.login.toUpperCase(),
       password: form.value.password,
     });
 
-    console.log("Login successful:", authStore.user);
+    push.success({
+      title: "Inicio de sesión exitoso",
+      message: `Bienvenido ${form.value.login}!`,
+    });
+    
+
+    
 
     // Redirigir a dashboard
   } catch (error) {
-    errorMessage.value =
-      error.response?.data?.message ||
-      "Error al iniciar sesión. Usuario o Contraseña incorrectos.";
-    console.error("Error de inicio de sesión:", error);
+    push.error({
+      title: "Error al iniciar sesión",
+      message: error.message || "Ocurrió un error al iniciar sesión.",
+      
+    });
+    
   }
 };
 </script>

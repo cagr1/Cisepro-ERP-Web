@@ -1,5 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-10 p-1">
+    
+    
+
     <!-- Barra de acciones superior -->
     <div class="bg-white rounded-lg shadow-md p-3 mb-2 sticky top-0 z-5">
       <div class="flex justify-between items-center">
@@ -128,7 +131,7 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Banco</label
                 >
-                <select v-model="formData.idPersonal" 
+                <select v-model="formData.banco" 
                 class="w-full max-w-[140px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500">
                   <option
                     v-for="banco in bancosDisponibles"
@@ -205,11 +208,11 @@
                   >Tipo Cta</label
                 >
                 <select
-                  v-model="formData.tipoCta"
+                  v-model="formData.tipoCuenta"
                   class="form-field max-w-[160px]"
                 >
-                  <option>Corriente</option>
-                  <option>Ahorros</option>
+                  <option value="Corriente">Corriente</option>
+                  <option value="Ahorros">Ahorros</option>
                 </select>
               </div>
             </div>
@@ -270,7 +273,7 @@
                 >
                 <input
                   type="text"
-                  v-model="formData.ctaBanco"
+                  v-model="formData.cuentaBanco"
                   class="form-field max-w-[160px]"
                 />
               </div>
@@ -509,7 +512,7 @@
                 </label>
                 <div
                   v-if="formData.fechaSalida === 'en_funciones'"
-                  class="form-field w-full bg-gray-100 italic text-gray-500 text-center"
+                  class="form-field w-full bg-gray-100 italic text-gray-500 text-center text-justify"
                 >
                   En funciones
                 </div>
@@ -941,7 +944,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, nextTick } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
 import { personalService } from "@/api/RRHH/personal";
@@ -950,11 +953,10 @@ import { cargoService } from "@/api/EstructuraEmpresa/cargo";
 import { contratoService } from "@/api/EstructuraEmpresa/contrato";
 import { sitiosService } from "@/api/DivisionGeografica/sitios";
 import { historialService } from "@/api/RRHH/historial";
-import { cuentaPersonalService } from "../../api/RRHH/cuentaPersonal";
-import { bancoService } from "../../api/Contabilidad/banco";
+import { cuentaPersonalService } from "@/api/RRHH/cuentaPersonal";
+import { bancoService } from "@/api/Contabilidad/banco";
 import { Icon } from "@iconify/vue";
-import { toast } from "sonner";
-
+import { push } from "notivue";
 // Estados de busqueda y paginacion
 const authStore = useAuthStore();
 const searchQuery = ref("");
@@ -975,6 +977,7 @@ const todosProyectoCache = ref([]);
 const sitiosDisponibles = ref([]);
 const historialLaboral = ref([]);
 const loadingHistorial = ref(false);
+
 
 //carga Areas, Cargos, Proyectos, sitios al montar el componente
 onMounted(async () => {
@@ -1016,9 +1019,9 @@ onMounted(async () => {
 
 
   } catch (error) {
-    toast.error("Error al cargar áreas: ", {
-      description: error.message || "Ocurrió un error al cargar áreas.",
-      duration: 5000,
+    push.error("Error al cargar áreas: ", {
+      title: "Error",
+      message: error.message || "Ocurrió un error al cargar servicios.",
     });
   }
 });
@@ -1089,10 +1092,9 @@ const loadHistorial = async (idPersona) => {
     );
     historialLaboral.value = response.data || [];
   } catch (error) {
-    toast.error("Error al cargar historial laboral: ", {
-      description:
-        error.message || "Ocurrió un error al cargar el historial laboral.",
-      duration: 5000,
+    push.error({
+      title: "Error al cargar historial",
+      message: error.message || "Ocurrió un error al cargar el historial laboral.",
     });
   } finally {
     loadingHistorial.value = false;
@@ -1170,9 +1172,9 @@ const buscarPersonal = async (searchTerm = null) => {
     totalItems.value = response.pagination?.totalRecords || 0;
     totalPages.value = response.pagination?.totalPages || 0;
   } catch (error) {
-    toast.error("Error al buscar personal: ", {
-      description: error.message || "Ocurrió un error al buscar personal.",
-      duration: 5000,
+    push.error({
+      title: "Error al buscar personal",
+      message: error.message || "Ocurrió un error al buscar personal.",
     });
     // Usa tu sistema de notificaciones (ej: toast)
   } finally {
@@ -1247,14 +1249,9 @@ const loadEmployee = async (employee) => {
       formData[key] = ""; // Limpia el formulario
     });
 
-    const sitioId = employee.ubicacion;
-    const sitioNumerico = parseInt(sitioId, 10);
-    const sitioValido = sitiosDisponibles.value.find(
-      (s) => s.id === sitioNumerico
-    );
-    const bancoValido = bancosDisponibles.value.find(
-      (b) => b.idPersonal === employee.idPersonal
-    );
+    const sitioNumerico = parseInt(employee.ubicacion, 10);
+    const sitioValido = sitiosDisponibles.value.find((s) => s.id === sitioNumerico);
+    
     Object.assign(formData, {
       idPersonal: employee.id_Personal,
       cedula: employee.cedula,
@@ -1269,8 +1266,6 @@ const loadEmployee = async (employee) => {
       direccion: employee.direccion,
       edad: employee.edad,
       email: employee.email,
-      banco: bancoValido ? bancoValido.id : "",
-      cuenta: employee.cuenta,
       fechaNacimiento: toDateInputFormat(employee.fecha_Nacimiento),
       libretaMilitar: employee.libreta_Militar,
       pasaporte: employee.pasaporte,
@@ -1289,13 +1284,39 @@ const loadEmployee = async (employee) => {
           : toDateInputFormat(employee.fecha_Salida),
       foto: employee.foto ? await blobToDataURL(employee.foto) : null,
     });
+    
 
-    const contratoResponse = await personalService.getPersonalContrato(
-      tipoConexion,
-      employee.id_Personal
-    );
+    
+    const [cuentasResponse, contratoResponse] = await Promise.all([
+    cuentaPersonalService.getCuentaPersonal(tipoConexion, employee.id_Personal)
+    .catch(error => {
+      push.error({
+        title: "Error al cargar cuentas bancarias",
+        message: error.message || "Ocurrió un error al cargar las cuentas bancarias.",
+      });
+      return { success: false, data: [] };
+    }),
+    personalService.getPersonalContrato(tipoConexion,employee.id_Personal)
+    .catch(error => {
+      push.error({
+        title: "Error al cargar contrato",
+        message: error.message || "Ocurrió un error al cargar el contrato.",
+      });
+      return { success: false, data: null };
+    }),
+  ]);
+    // Cargar datos de la cuenta bancaria
+    if (cuentasResponse?.success && cuentasResponse.data) {
+       const cuenta = cuentasResponse.data[0];
+      formData.banco = cuenta.idBanco;
+      formData.cuentaBanco = cuenta.numCuenta ? cuenta.numCuenta : "";
+      formData.tipoCuenta = cuenta.tipoCuenta  === "AHO       " ? "Ahorros" : "Corriente";
+    }
 
-    if (contratoResponse.success && contratoResponse.data) {
+    console.log("Datos de la cuenta bancaria:", formData.banco, formData.cuentaBanco, formData.tipoCuenta);
+    console.log("Datos del contrato:", contratoResponse.data);
+    // Cargar datos del contrato
+    if (contratoResponse?.success && contratoResponse.data) {
       //area
       const areaContrato = contratoResponse.data.area;
       const areaEncontrada = areasDisponibles.value.find(
@@ -1316,8 +1337,8 @@ const loadEmployee = async (employee) => {
         proyectoEncontrado = todosProyectoCache.find(
           (p) => p.id === proyectoId
         );
-      }
-
+      }    
+      
       Object.assign(formData, {
         nroContrato: contratoResponse.data.nroContrato,
         area: areaEncontrada ? areaEncontrada.id : "",
@@ -1345,17 +1366,19 @@ const loadEmployee = async (employee) => {
         sueldo: contratoResponse.data.sueldo,
       });
     }
-
+    
+    await loadHistorial(employee.id_Personal);
     // Actualiza formData
     showSearchModal.value = false;
     currentTab.value = "datos";
-    await loadHistorial(employee.id_Personal);
+    
   } catch (error) {
-    toast.error("Error al cargar los datos del empleado: ", {
-      description:
-        error.message || "Ocurrió un error al cargar los datos del empleado.",
-      duration: 5000,
+       push.error({
+      title: "Error al cargar personal",
+      message: error.message || "Ocurrió un error al cargar personal.",
     });
+
+    showSearchModal.value = false;
   }
 };
 

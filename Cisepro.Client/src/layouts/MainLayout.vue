@@ -32,7 +32,7 @@
           <!-- Logo minimizado -->
           <div v-else class="flex items-center w-full transition-all  duration-300 opacity-100">
             <img
-              :src="selectedCompany === 'Cisepro' ? '../assets/images/cisepro.png' : '../assets/images/seportpac.png'"
+              :src="selectedCompany === 'Cisepro' ? ciseproLogo : seportpacLogo "
               
               class="h-8 w-auto flex-shrink-0"
             />
@@ -47,7 +47,7 @@
               <template v-if="item.children">
                 <div class="relative group">
                   <button
-                    @click="sidebarOpen ? toggleSubmenu(item) : null"
+                    @click="toggleSubmenu(item)"
                     @mouseenter="!sidebarOpen ? showTooltip(item.name, $event) : null"
                     @mouseleave="!sidebarOpen ? hideTooltip() : null"
                     :class="[
@@ -56,7 +56,7 @@
                     ]"
                   >
                     <div class="flex items-center">
-                      <i :class="`${item.icon} text-white text-xl`" :style="{ minWidth: '20px' }"></i>
+                      <i :class="`${item.icon} text-white/90 hover:text-white text-xl`" :style="{ minWidth: '20px' }"></i>
                       <span 
                         v-if="sidebarOpen" 
                         class="text-sm font-medium ml-3 transition-opacity duration-300"
@@ -144,7 +144,7 @@
     <button 
       @click="toggleSidebar"
       :class="[
-        'fixed top-6 z-50 w-8 h-8 bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:scale-105',
+        'fixed top-6 z-50 w-7 h-7 bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:scale-105',
         sidebarOpen ? 'left-60' : 'left-12'
       ]"
     >
@@ -214,6 +214,8 @@ import { computed, ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import { storeToRefs } from "pinia";
+import ciseproLogo from "@/assets/images/cisepro.png";
+import seportpacLogo from "@/assets/images/seportpac.png";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -282,16 +284,26 @@ const toggleSidebar = () => {
 };
 
 const toggleSubmenu = (item) => {
-  if (sidebarOpen.value) {
+  if (!sidebarOpen.value) {
+    sidebarOpen.value = true; // Abrir sidebar si está cerrado
+
+    setTimeout(() => {
+      openSubmenus.value[item.name] = true;
+    }, 300);
+  } else
+  {
     openSubmenus.value[item.name] = !openSubmenus.value[item.name];
   }
+  
 };
 
 const showTooltip = (text, event) => {
+  if (sidebarOpen.value) return;
+  
   const rect = event.currentTarget.getBoundingClientRect();
   tooltip.text = text;
   tooltip.x = rect.right + 10;
-  tooltip.y = rect.top + (rect.height / 2) - 20;
+  tooltip.y = rect.top;
   tooltip.show = true;
 };
 
@@ -358,8 +370,7 @@ nav::-webkit-scrollbar-thumb:hover {
 
 /* Mejoras en las transiciones */
 .transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Efecto glassmorphism sutil */

@@ -1,5 +1,5 @@
 import api from '@/api';
-
+import { push } from 'notivue';
 
 export const historialService = {
     async getHistorialPersonal(tipoConexion, idPersonal) {
@@ -19,7 +19,11 @@ export const historialService = {
             return response.data;
         }
         catch (error) {
-            console.error('Error fetching areas:', error);
+            push.error({
+                title: 'Error fetching historial personal',
+                message: error.message || 'No se pudo cargar el historial personal.'
+            })
+            
             throw error;
         }
 

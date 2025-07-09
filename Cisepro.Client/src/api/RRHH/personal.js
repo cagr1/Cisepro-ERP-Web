@@ -1,5 +1,5 @@
 import api from '@/api';
-
+import { push } from 'notivue';
 
 export const personalService = {
     async getPersonal(tipoConexion, filtro = '', page = 1, itemsPerPage = 20) {
@@ -38,6 +38,7 @@ export const personalService = {
                             itemsPerPage: itemsPerPage
                         }
                     };
+
             }
             console.error('Error fetching personal data:', error);
                 throw error;

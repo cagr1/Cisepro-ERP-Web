@@ -26,7 +26,7 @@
             @click="guardarPersonal"
             class="flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
           >
-            <!-- <Icon icon="heroicons:bookmark-square-20-solid" class="w-5 h-5 mr-2" /> Guardar -->
+            
             <Icon icon="lucide:save" class="w-5 h-5 mr-2" /> Guardar
           </button>
           <button
@@ -118,8 +118,7 @@
               <div class="pt-11">
                 
               <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Provincia</label
+                <label class="block text-xs font-medium text-gray-600 mb-1">Provincia</label
                 >
                 <input
                   type="text"
@@ -134,7 +133,7 @@
                 <select v-model="formData.banco" 
                 class="w-full max-w-[140px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500">
                   <option
-                    v-for="banco in bancosDisponibles"
+                    v-for="banco in bancoStore.bancoOptions"
                     :key="banco.id"
                     :value="banco.id"
                     :label="banco.nombre"
@@ -512,7 +511,7 @@
                 </label>
                 <div
                   v-if="formData.fechaSalida === 'en_funciones'"
-                  class="form-field w-full bg-gray-100 italic text-gray-500 text-center text-justify"
+                  class="form-field w-full bg-gray-100 italic text-gray-500 text-center"
                 >
                   En funciones
                 </div>
@@ -543,7 +542,7 @@
                   class="form-field w-full text-xs"
                 >
                   <option
-                    v-for="area in areasDisponibles"
+                    v-for="area in areaStore.areasOptions"
                     :key="area.id"
                     :value="area.id"
                   >
@@ -564,7 +563,7 @@
                   class="form-field w-full text-xs"
                 >
                   <option
-                    v-for="cargo in cargoDisponibles"
+                    v-for="cargo in cargoStore.cargoOptions"
                     :key="cargo.id"
                     :value="cargo.id"
                   >
@@ -944,17 +943,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, nextTick } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
 import { personalService } from "@/api/RRHH/personal";
-import { areaService } from "@/api/EstructuraEmpresa/area";
-import { cargoService } from "@/api/EstructuraEmpresa/cargo";
-import { contratoService } from "@/api/EstructuraEmpresa/contrato";
-import { sitiosService } from "@/api/DivisionGeografica/sitios";
+import { useAreaStore } from "../../stores/MasterData/area.store";
+import { useBancoStore } from "../../stores/MasterData/banco.store";
+import { useCargoStore } from "../../stores/MasterData/cargo.store";
+import { useContratoStore } from "../../stores/MasterData/contrato.store";
+import { useSitioStore } from "../../stores/MasterData/sitio.store";
 import { historialService } from "@/api/RRHH/historial";
 import { cuentaPersonalService } from "@/api/RRHH/cuentaPersonal";
-import { bancoService } from "@/api/Contabilidad/banco";
 import { Icon } from "@iconify/vue";
 import { push } from "notivue";
 // Estados de busqueda y paginacion
@@ -969,12 +968,12 @@ const itemsPerPage = ref(20);
 const totalItems = ref(0);
 const totalPages = ref(0);
 const pageSizeOptions = ref([10, 20, 50, 100]);
-const areasDisponibles = ref([]);
-const cargoDisponibles = ref([]);
-const proyectoDisponible = ref([]);
-const bancosDisponibles = ref([]);
-const todosProyectoCache = ref([]);
-const sitiosDisponibles = ref([]);
+const areaStore = useAreaStore();
+const bancoStore = useBancoStore();
+const cargoStore = useCargoStore();
+const contratoStore = useContratoStore();
+const sitiosStore = useSitioStore();
+
 const historialLaboral = ref([]);
 const loadingHistorial = ref(false);
 
@@ -982,44 +981,18 @@ const loadingHistorial = ref(false);
 //carga Areas, Cargos, Proyectos, sitios al montar el componente
 onMounted(async () => {
   try {
-    const [areaResponse, cargoResponse, proyecto, sitiosResponse, bancosResponse] =
-      await Promise.all([
-        areaService.getAreas(tipoConexion),
-        cargoService.getCargos(tipoConexion),
-        contratoService.getProyectos(tipoConexion, true),
-        sitiosService.getSitios(tipoConexion),
-        bancoService.getBancos(tipoConexion)
-      ]);
+    
 
-    areasDisponibles.value = areaResponse.data.map((area) => ({
-      id: area.idAreaGeneral,
-      nombre: area.nombreArea,
-    }));
-
-    cargoDisponibles.value = cargoResponse.data.map((cargo) => ({
-      id: cargo.idCargoOcupacional,
-      nombre: cargo.descripcion,
-    }));
-
-    proyectoDisponible.value = proyecto.data.map((proyecto) => ({
-      id: proyecto.idProyecto,
-      nombre: proyecto.nombreProyecto,
-    }));
-
-    sitiosDisponibles.value = sitiosResponse.data.map((sitio) => ({
-      id: sitio.id_Sitio_trabajo,
-      nombre: sitio.nombre_Sitio_trabajo,
-    }));
-
-    // Cargar bancos
-    bancosDisponibles.value = bancosResponse.data.map((banco) => ({
-      id: banco.idBanco,
-      nombre: banco.nombreBanco,
-    }))
+    await areaStore.fetchAreas(tipoConexion, false);        
+    await bancoStore.fetchBancos(tipoConexion);
+    await cargoStore.fetchCargos(tipoConexion);
+    await contratoStore.fetchContratos(tipoConexion);
+    await sitiosStore.fetchSitios(tipoConexion);
+    
 
 
   } catch (error) {
-    push.error("Error al cargar áreas: ", {
+    push.error("Error al cargar servicios: ", {
       title: "Error",
       message: error.message || "Ocurrió un error al cargar servicios.",
     });
@@ -1191,37 +1164,7 @@ const toDateInputFormat = (dateString) => {
   return date.toISOString().split("T")[0]; // Formato yyyy-MM-dd
 };
 
-const educationlevel = [
-  { text: "Primaria", value: "PRIMARIA" },
-  { text: "Secundaria", value: "SECUNDARIA" },
-  { text: "Bachiller", value: "BACHILLER" },
-  { text: "Universidad", value: "UNIVERSIDAD" },
-  { text: "Universidad Incompleta", value: "UNIVERSIDAD INCOMPLETA" },
-  { text: "Ninguna", value: "NINGUNA" },
-];
-const maritalStatus = [
-  { text: "Soltero", value: "SOLTERO (A)" },
-  { text: "Casado", value: "CASADO (A)" },
-  { text: "Divorciado", value: "DIVORCIADO (A)" },
-  { text: "Viudo", value: "VIUDO (A)" },
-  { text: "Union Libre", value: "UNION LIBRE" },
-];
 
-const SexoOption = [
-  { text: "Masculino", value: "MASCULINO" },
-  { text: "Femenino", value: "FEMENINO" },
-];
-
-const pruebaAntidrogaSelect = [
-  { text: "Negativo", value: "NEGATIVO" },
-  { text: "Positivo", value: "POSITIVO" },
-];
-
-const tipoContratoSelect = [
-  { text: "Por Obra o Servicio", value: "0" },
-  { text: "Indefinido + Prueba", value: "1" },
-  { text: "Indefinido", value: "2" },
-];
 
 const blobToDataURL = async (blobData) => {
   // Si es un Buffer (Node.js) o Blob (navegador)
@@ -1319,7 +1262,7 @@ const loadEmployee = async (employee) => {
     if (contratoResponse?.success && contratoResponse.data) {
       //area
       const areaContrato = contratoResponse.data.area;
-      const areaEncontrada = areasDisponibles.value.find(
+      const areaEncontrada = areaStore.areas.find(
         (a) => a.nombre === areaContrato
       );
       //cargo

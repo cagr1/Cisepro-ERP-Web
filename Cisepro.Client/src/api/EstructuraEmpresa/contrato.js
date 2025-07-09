@@ -1,5 +1,4 @@
-import api from '@/api';
-
+import api from "@/api";
 
 export const contratoService = {
   async getProyectos(tipoConexion, soloActivos = false) {
@@ -18,7 +17,7 @@ export const contratoService = {
 
       return response.data;
     } catch (error) {
-      console.error("Error fetching areas:", error);
+      console.error("Error fetching proyectos:", error);
       throw error;
     }
   },

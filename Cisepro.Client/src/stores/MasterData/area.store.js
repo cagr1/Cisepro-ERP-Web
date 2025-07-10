@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { areaService } from "@/api/EstructuraEmpresa/area.js";
-import { useAuthStore } from "@/stores/auth.store";
+
 import { push } from "notivue";
 
 
@@ -25,7 +25,7 @@ export const useAreaStore = defineStore("masterData/area", {
   },
   actions: {
     async fetchAreas(tipoConexion, forceRefresh = false) {
-      const authStore = useAuthStore();
+      
 
         if (!tipoConexion) {
           throw new Error("Tipo de conexión no proporcionado");

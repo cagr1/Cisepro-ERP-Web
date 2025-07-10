@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { bancoService } from "@/api/Contabilidad/banco.js";
 import { push } from "notivue";
 
-export const useBancoStore = defineStore("masterDataBanco", {
+export const useBancoStore = defineStore("masterData/banco", {
   state: () => ({
     data: [],
     loading: false,

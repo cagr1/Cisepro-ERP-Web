@@ -3,7 +3,7 @@ import { cargoService } from "@/api/EstructuraEmpresa/cargo.js";
 
 import { push } from "notivue";
 
-export const useCargoStore = defineStore("masterDataCargo", {
+export const useCargoStore = defineStore("masterData/cargo", {
   state: () => ({
     data: [],
     loading: false,
@@ -24,7 +24,7 @@ export const useCargoStore = defineStore("masterDataCargo", {
     },
   },
   actions: {
-    async fetchCargos(tipoConexion) {
+    async fetchCargos(tipoConexion, forceRefresh = false) {
 
 
 

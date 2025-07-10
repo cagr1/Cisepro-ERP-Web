@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { contratoService } from "@/api/EstructuraEmpresa/contrato.js";
 import { push } from "notivue";
 
-export const useContratoStore = defineStore("masterDataContrato", {
+export const useContratoStore = defineStore("masterData/contrato", {
   state: () => ({
     data: [],
     loading: false,
@@ -23,7 +23,7 @@ export const useContratoStore = defineStore("masterDataContrato", {
     },
   },
   actions: {
-    async fetchCargos(tipoConexion) {
+    async fetchContratos(tipoConexion, forceRefresh = false) {
 
 
 

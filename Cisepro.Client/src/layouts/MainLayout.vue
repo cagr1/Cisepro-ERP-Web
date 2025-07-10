@@ -170,7 +170,7 @@
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-3">
               <img
-                :src="user.photo || 'https://via.placeholder.com/40'"
+                :src="user.photo || 'https://img.icons8.com/?size=100&id=23265&format=png&color=000000'"
                 class="w-10 h-10 rounded-full object-cover shadow-md"
                 alt="User photo"
               />

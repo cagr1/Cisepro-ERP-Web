@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { sitiosService } from "@/api/DivisionGeografica/sitios.js";
 import { push } from "notivue";
 
-export const useSitioStore = defineStore("masterDataSitio", {
+export const useSitioStore = defineStore("masterData/sitio", {
   state: () => ({
     data: [],
     loading: false,
@@ -12,9 +12,10 @@ export const useSitioStore = defineStore("masterDataSitio", {
   }),
   getters: {
     sitios: (state) => state.data,
-    sitioOptions: (state) => state.data.map((sitio) => ({
+    sitioOptions: (state) =>
+      state.data.map((sitio) => ({
         id: sitio.id_Sitio_trabajo,
-      nombre: sitio.nombre_Sitio_trabajo,
+        nombre: sitio.nombre_Sitio_trabajo,
       })),
     shouldRefresh: (state) => {
       return (
@@ -23,20 +24,16 @@ export const useSitioStore = defineStore("masterDataSitio", {
     },
   },
   actions: {
-    async fetchCargos(tipoConexion) {
-      
-
-
+    async fetchSitios(tipoConexion, forceRefresh = false) {
       if (!forceRefresh && !this.shouldRefresh) {
         return;
       }
       this.loading = true;
       try {
-        const response = await sitiosService.getSitios( tipoConexion);
+        const response = await sitiosService.getSitios(tipoConexion);
         this.data = response.data;
         this.error = null;
         this.lastUpdate = Date.now(); // Update the last update time
-        
       } catch (error) {
         push.error({
           title: "Error al cargar los cargos",

@@ -1,5 +1,5 @@
 //transforma string a formato de fecha para input HTML
-const toDateInputFormat = (dateString) => {
+export const toDateInputFormat = (dateString) => {
   if (!dateString) return "";
 
   const date = new Date(dateString);

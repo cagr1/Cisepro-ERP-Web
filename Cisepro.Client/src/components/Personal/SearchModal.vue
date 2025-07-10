@@ -176,7 +176,7 @@
 
                         <template v-if="item.estado_Personal === 1">
                           <button
-                            @click="$emit('select', item)"
+                            @click="$emit('select-employee', item)"
                             title="Editar"
                             class="text-blue-600 hover:text-blue-900"
                           >
@@ -280,15 +280,16 @@ const props = defineProps({
   items: Array,
   currentPage: Number,
   itemsPerPage: Number,
+  totalItems: Number,
   totalPages: Number,
   pageSizeOptions: { type: Array, default: () => [10, 20, 50, 100] },
   isLoading: Boolean,
 });
 
 const emit = defineEmits([
-  "close",
+  "update:show",
   "search",
-  "select",
+  "select-employee",
   "view",
   "page-change",
   "change-page-size",
@@ -300,16 +301,7 @@ const exportMenuRef = ref(null);
 const filteredItems = computed(() => {
   return props.items || [];
 
-  const term = searchTerm.value.toLowerCase();
-  return props.items.filter((item) => {
-     return (
-      (item.CEDULA?.toLowerCase().includes(term)) ||
-      (item.NOMBRES?.toLowerCase().includes(term)) ||
-      (item.APELLIDOS?.toLowerCase().includes(term)) ||
-      (item.PROVINCIA?.toLowerCase().includes(term)) ||
-      (item.CIUDAD?.toLowerCase().includes(term))
-    );
-  });
+  
 });
 
 const visiblePages = computed(() => {
@@ -396,6 +388,8 @@ watch(
     }
   }
 );
+
+
 </script>
 
 <style scoped>

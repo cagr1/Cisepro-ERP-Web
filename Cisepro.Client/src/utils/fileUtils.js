@@ -1,5 +1,5 @@
 //Transforma un Blob o Buffer a una URL de datos (Data URL) para mostrar imágenes en un componente Vue.js
-const blobToDataURL = async (blobData) => {
+export const blobToDataURL = async (blobData) => {
   // Si es un Buffer (Node.js) o Blob (navegador)
   if (typeof blobData === "string" && blobData.startsWith("data:image")) {
     return blobData;

@@ -474,13 +474,13 @@
                 >
                 <select v-model="formData.proyecto" class="form-field w-full">
                   <option
-                    v-for="proyecto in proyectoDisponible"
-                    :key="proyecto.id"
-                    :value="proyecto.id"
-                    :label="proyecto.nombre"
+                    v-for="contrato in contratoStore.contratoOptions"
+                    :key="contrato.id"
+                    :value="contrato.id"
+                    :label="contrato.nombre"
                     class="form-field w-full h-20"
                   >
-                    {{ proyecto.nombre }}
+                    {{ contrato.nombre }}
                   </option>
                 </select>
               </div>
@@ -493,7 +493,7 @@
                   class="form-field w-full text-xs"
                 >
                   <option
-                    v-for="sitio in sitiosDisponibles"
+                    v-for="sitio in sitiosStore.sitioOptions"
                     :key="sitio.id"
                     :value="sitio.id"
                   >
@@ -900,7 +900,7 @@
               <tbody class="divide-y divide-gray-200">
                 <tr v-for="(item, index) in historialLaboral" :key="index">
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ toDateInputFormat(item.fechaHistoriaLaboral) }}
+                    {{ (item.fechaHistoriaLaboral) }}
                   </td>
                   <td class="px-6 py-4 text-xs text-gray-500">
                     {{ item.detalleHistoriaLaboral }}
@@ -922,22 +922,19 @@
     </div>
     <SearchModal
       :show="showSearchModal"
-      :items="searchResults"
-      :current-page="currentPage"
-      :items-per-page="itemsPerPage"
-      :total-items="totalItems"
-      :total-pages="totalPages"
-      :is-loading="isLoading"
-      :page-size-options="pageSizeOptions"
-      @search="
-        (term) => {
-          buscarPersonal(term);
-        }
-      "
+      :items="personalStore.searchResults"
+      :current-page="personalStore.currentPage"
+      :items-per-page="personalStore.itemsPerPage"
+      :total-items="personalStore.totalItems"
+      :total-pages="personalStore.totalPages"
+      :is-loading="personalStore.searchLoading"
+      :page-size-options="personalStore.pageSizeOptions"
+      @search="  (term) =>  personalStore.searchEmployees(authStore.selectedCompany, term)"
+      @update:show="showSearchModal = $event"
       @close="showSearchModal = false"
-      @select="loadEmployee"
-      @page-change="handlePageChange"
-      @change-page-size="handlePageSizeChange"
+      @select-employee="onEmployeeSelected"
+      @page-change="(page) => personalStore.searchEmployees(authStore.selectedCompany, personalStore.searchQuery, page)"
+      @change-page-size="(size) => personalStore.changePageSize(size)"
     />
   </div>
 </template>
@@ -946,50 +943,39 @@
 import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
-import { personalService } from "@/api/RRHH/personal";
 import { useAreaStore } from "../../stores/MasterData/area.store";
 import { useBancoStore } from "../../stores/MasterData/banco.store";
 import { useCargoStore } from "../../stores/MasterData/cargo.store";
 import { useContratoStore } from "../../stores/MasterData/contrato.store";
 import { useSitioStore } from "../../stores/MasterData/sitio.store";
-import { historialService } from "@/api/RRHH/historial";
-import { cuentaPersonalService } from "@/api/RRHH/cuentaPersonal";
+import { usePersonalStore } from "../../stores/MasterData/personal.store";
+
+import { educationlevel, maritalStatus, SexoOption, pruebaAntidrogaSelect, tipoContratoSelect } from "@/utils/selectOptions";
 import { Icon } from "@iconify/vue";
 import { push } from "notivue";
+import { storeToRefs } from "pinia";
 // Estados de busqueda y paginacion
 const authStore = useAuthStore();
-const searchQuery = ref("");
 const tipoConexion = authStore.selectedCompany;
 const showSearchModal = ref(false);
-const isLoading = ref(false);
-const searchResults = ref([]);
-const currentPage = ref(1);
-const itemsPerPage = ref(20);
-const totalItems = ref(0);
-const totalPages = ref(0);
-const pageSizeOptions = ref([10, 20, 50, 100]);
 const areaStore = useAreaStore();
 const bancoStore = useBancoStore();
 const cargoStore = useCargoStore();
 const contratoStore = useContratoStore();
 const sitiosStore = useSitioStore();
-
-const historialLaboral = ref([]);
-const loadingHistorial = ref(false);
+const personalStore = usePersonalStore();
+const { historialLaboral, loadingHistorial} = storeToRefs(personalStore);
 
 
 //carga Areas, Cargos, Proyectos, sitios al montar el componente
 onMounted(async () => {
-  try {
-    
+  try {   
 
     await areaStore.fetchAreas(tipoConexion, false);        
-    await bancoStore.fetchBancos(tipoConexion);
-    await cargoStore.fetchCargos(tipoConexion);
-    await contratoStore.fetchContratos(tipoConexion);
-    await sitiosStore.fetchSitios(tipoConexion);
-    
-
+    await bancoStore.fetchBancos(tipoConexion, false);
+    await cargoStore.fetchCargos(tipoConexion,false);
+    await sitiosStore.fetchSitios(tipoConexion,false);
+    await contratoStore.fetchContratos(tipoConexion,false);
 
   } catch (error) {
     push.error("Error al cargar servicios: ", {
@@ -1055,55 +1041,55 @@ const formData = reactive({
   noEspecificado: "",
 });
 
-// Historial
-const loadHistorial = async (idPersona) => {
-  try {
-    loadingHistorial.value = true;
-    const response = await historialService.getHistorialPersonal(
-      tipoConexion,
-      idPersona
-    );
-    historialLaboral.value = response.data || [];
-  } catch (error) {
-    push.error({
-      title: "Error al cargar historial",
-      message: error.message || "Ocurrió un error al cargar el historial laboral.",
-    });
-  } finally {
-    loadingHistorial.value = false;
-  }
-};
-// Pestañas
+
+// Pestañas y UI
+
+const currentTab = ref("datos");
 const tabs = [
   { id: "datos", name: "Datos", icon: "lucide:user" },
   { id: "fotos", name: "Fotos", icon: "lucide:camera" },
   { id: "historial", name: "Historial", icon: "lucide:history" },
 ];
 
-const currentTab = ref("datos");
+// Manejo de seleccion de empleado
+const onEmployeeSelected = async (employee) => {
+  
+  try {
 
-// Métodos
+    console.log("Empleado seleccionado:", employee);
 
-const handlePageChange = (newPage) => {
-  currentPage.value = newPage;
-  buscarPersonal();
-};
+    Object.keys(formData).forEach((key) => {
+      formData[key] = formData[key] !== null && formData[key] !== undefined 
+        ? formData[key] // Mantener valor por defecto
+        : null;
+    });
 
-const handlePageSizeChange = (newSize) => {
-  itemsPerPage.value = newSize;
-  currentPage.value = 1; // Reiniciar a la primera página
-  buscarPersonal();
-};
+    const employeeData = await personalStore.loadEmployeeDetails(
+    authStore.selectedCompany,
+      employee,
+      areaStore,
+      cargoStore,
+      sitiosStore
+      
+    );
+    console.log("Datos del empleado cargados:", employeeData);
+    Object.assign(formData, employeeData); // Asignar los datos del empleado al formulario
+    currentTab.value = "datos"; // Cambiar a la pestaña de datos
+    showSearchModal.value = false; // Cerrar el modal de búsqueda
+  } catch (error) {
+    push.error("Error al cargar datos del empleado: ", {
+      title: "Error cargando empleado",
+      message: error.message || "Ocurrió un error al cargar los datos del empleado.",
+    });
+  }
+
+}
+
+// Métodos del modal
 
 const openSearchModal = () => {
-  showSearchModal.value = true;
-  searchQuery.value = null; // Limpiar la consulta de búsqueda
-};
-
-const changePageSize = (newSize) => {
-  itemsPerPage.value = newSize;
-  currentPage.value = 1; // Reiniciar a la primera página
-  buscarPersonal(searchQuery.value);
+  showSearchModal.value = true;  
+  
 };
 
 const handleFileChange = (event) => {
@@ -1114,214 +1100,6 @@ const handleFileChange = (event) => {
       formData.imagenPerfil = e.target.result;
     };
     reader.readAsDataURL(file);
-  }
-};
-
-const guardarPersonal = () => {
-  console.log("Guardando personal...", formData);
-};
-
-const cancelarEdicion = () => {
-  console.log("Cancelando edición...");
-};
-
-// Métodos del modal
-const buscarPersonal = async (searchTerm = null) => {
-  showSearchModal.value = true;
-  isLoading.value = true;
-
-  if (searchTerm !== null) {
-    searchQuery.value = searchTerm;
-  }
-
-  try {
-    const response = await personalService.getPersonal(
-      tipoConexion,
-      searchQuery.value,
-      currentPage.value,
-      itemsPerPage.value
-    );
-    searchResults.value = response.data;
-    totalItems.value = response.pagination?.totalRecords || 0;
-    totalPages.value = response.pagination?.totalPages || 0;
-  } catch (error) {
-    push.error({
-      title: "Error al buscar personal",
-      message: error.message || "Ocurrió un error al buscar personal.",
-    });
-    // Usa tu sistema de notificaciones (ej: toast)
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const toDateInputFormat = (dateString) => {
-  if (!dateString) return "";
-
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "";
-
-  return date.toISOString().split("T")[0]; // Formato yyyy-MM-dd
-};
-
-
-
-const blobToDataURL = async (blobData) => {
-  // Si es un Buffer (Node.js) o Blob (navegador)
-  if (typeof blobData === "string" && blobData.startsWith("data:image")) {
-    return blobData;
-  }
-
-  // Si es un string base64 sin prefijo (como el que recibes del backend)
-  if (typeof blobData === "string" && blobData.startsWith("/9j")) {
-    return `data:image/jpeg;base64,${blobData}`;
-  }
-
-  // Si es un Buffer o Blob (código original)
-  const blob = new Blob([blobData], { type: "image/jpeg" });
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
-};
-
-const loadEmployee = async (employee) => {
-  try {
-    Object.keys(formData).forEach((key) => {
-      formData[key] = ""; // Limpia el formulario
-    });
-
-    const sitioNumerico = parseInt(employee.ubicacion, 10);
-    const sitioValido = sitiosDisponibles.value.find((s) => s.id === sitioNumerico);
-    
-    Object.assign(formData, {
-      idPersonal: employee.id_Personal,
-      cedula: employee.cedula,
-      nombres: employee.nombres,
-      apellidos: employee.apellidos,
-      sexo: employee.sexo,
-      estadoCivil: employee.estado_Civil?.toUpperCase(),
-      instruccion: employee.instruccion?.toUpperCase(),
-      tipoSangre: employee.tipo_Sangre,
-      provincia: employee.provincia,
-      parroquia: employee.parroquia,
-      direccion: employee.direccion,
-      edad: employee.edad,
-      email: employee.email,
-      fechaNacimiento: toDateInputFormat(employee.fecha_Nacimiento),
-      libretaMilitar: employee.libreta_Militar,
-      pasaporte: employee.pasaporte,
-      estado_Personal: employee.estado_Personal,
-      peso: employee.peso,
-      estatura: employee.estatura,
-      ciudad: employee.ciudad,
-      telefono: employee.telefono,
-      celular: employee.movil,
-      sitio: sitioValido ? sitioValido.id : "",
-      pruebaAntidroga: employee.prueba_Antidroga,
-      fechaEntrada: toDateInputFormat(employee.fecha_Entrada),
-      fechaSalida:
-        employee.estado_Personal === 1
-          ? "en_funciones"
-          : toDateInputFormat(employee.fecha_Salida),
-      foto: employee.foto ? await blobToDataURL(employee.foto) : null,
-    });
-    
-
-    
-    const [cuentasResponse, contratoResponse] = await Promise.all([
-    cuentaPersonalService.getCuentaPersonal(tipoConexion, employee.id_Personal)
-    .catch(error => {
-      push.error({
-        title: "Error al cargar cuentas bancarias",
-        message: error.message || "Ocurrió un error al cargar las cuentas bancarias.",
-      });
-      return { success: false, data: [] };
-    }),
-    personalService.getPersonalContrato(tipoConexion,employee.id_Personal)
-    .catch(error => {
-      push.error({
-        title: "Error al cargar contrato",
-        message: error.message || "Ocurrió un error al cargar el contrato.",
-      });
-      return { success: false, data: null };
-    }),
-  ]);
-    // Cargar datos de la cuenta bancaria
-    if (cuentasResponse?.success && cuentasResponse.data) {
-       const cuenta = cuentasResponse.data[0];
-      formData.banco = cuenta.idBanco;
-      formData.cuentaBanco = cuenta.numCuenta ? cuenta.numCuenta : "";
-      formData.tipoCuenta = cuenta.tipoCuenta  === "AHO       " ? "Ahorros" : "Corriente";
-    }
-
-    console.log("Datos de la cuenta bancaria:", formData.banco, formData.cuentaBanco, formData.tipoCuenta);
-    console.log("Datos del contrato:", contratoResponse.data);
-    // Cargar datos del contrato
-    if (contratoResponse?.success && contratoResponse.data) {
-      //area
-      const areaContrato = contratoResponse.data.area;
-      const areaEncontrada = areaStore.areas.find(
-        (a) => a.nombre === areaContrato
-      );
-      //cargo
-      const cargoContrato = contratoResponse.data.descripcion;
-      const cargoEncontrado = cargoDisponibles.value.find(
-        (c) => c.nombre === cargoContrato
-      );
-      //contrato
-      const proyectoId = contratoResponse.data.idProyecto;
-      let proyectoEncontrado = proyectoDisponible.value.find(
-        (p) => p.id === proyectoId
-      );
-      if (!proyectoEncontrado) {
-        // Si no se encuentra el proyecto, intenta cargar todos los proyectos
-        proyectoEncontrado = todosProyectoCache.find(
-          (p) => p.id === proyectoId
-        );
-      }    
-      
-      Object.assign(formData, {
-        nroContrato: contratoResponse.data.nroContrato,
-        area: areaEncontrada ? areaEncontrada.id : "",
-        cargo: cargoEncontrado ? cargoEncontrado.id : "",
-        proyecto: proyectoEncontrado ? proyectoEncontrado.id : "",
-
-        fechaInicio: toDateInputFormat(contratoResponse.data.fechaInicio),
-        fechaFin: toDateInputFormat(contratoResponse.data.fechaFin),
-        periodo: contratoResponse.data.periodo,
-        tipoContrato: contratoResponse.data.tipoContrato,
-        estadoContrato: contratoResponse.data.estado,
-        iess: contratoResponse.data.iess === 1,
-        fechaAfiliacion: toDateInputFormat(
-          contratoResponse.data.fechaAfiliacion
-        ),
-        reservaRol: contratoResponse.data.reservaRol === 1,
-        acumFondoReserva: contratoResponse.data.acu_fondo === 1,
-        xiii: contratoResponse.data.xiii === 1,
-        xiv: contratoResponse.data.xiv === 1,
-        observaciones: contratoResponse.data.observaciones,
-        rec_Extra: contratoResponse.data.rec_Extra === 1,
-        acu_fondo: contratoResponse.data.acu_fondo === 1,
-        desc_Seg: contratoResponse.data.desc_Seg === 1,
-        idProyecto: contratoResponse.data.idProyecto,
-        sueldo: contratoResponse.data.sueldo,
-      });
-    }
-    
-    await loadHistorial(employee.id_Personal);
-    // Actualiza formData
-    showSearchModal.value = false;
-    currentTab.value = "datos";
-    
-  } catch (error) {
-       push.error({
-      title: "Error al cargar personal",
-      message: error.message || "Ocurrió un error al cargar personal.",
-    });
-
-    showSearchModal.value = false;
   }
 };
 

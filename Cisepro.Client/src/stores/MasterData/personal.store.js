@@ -118,7 +118,8 @@ export const usePersonalStore = defineStore("MasterData/personal", {
             tipoConexion,
             employee.id_Personal,
             areaStore,
-            cargoStore
+            cargoStore,
+            sitiosStore
           ),
         ]);
 
@@ -167,28 +168,31 @@ export const usePersonalStore = defineStore("MasterData/personal", {
       }
     },
 
-    async loadContractDetails(tipoConexion, idPersonal, areaStore, cargoStore) {
+    async loadContractDetails(tipoConexion, idPersonal, areaStore, cargoStore, sitiosStore) {
       try {
         const response = await personalService.getPersonalContrato(
           tipoConexion,
           idPersonal
         );
+        console.log("response contrato:", response);
         if (response.success && response.data) {
           const contrato = response.data;
           const areaContrato = contrato.area;
           const areaEncontrada = areaStore.areasOptions.find(
             (a) => a.nombre === areaContrato
           );
-
+          
           const cargoContrato = contrato.descripcion;
           const cargoEncontrado = cargoStore.cargoOptions.find(
             (c) => c.nombre === cargoContrato
           );
 
+          
           return {
             nroContrato: contrato.nroContrato,
             area: areaEncontrada ? areaEncontrada.id : "",
             cargo: cargoEncontrado ? cargoEncontrado.id : "",
+            proyecto: contrato.idProyecto,
             fechaInicio: toDateInputFormat(contrato.fechaInicio),
             fechaFin: toDateInputFormat(contrato.fechaFin),
             periodo: contrato.periodo,
@@ -206,8 +210,12 @@ export const usePersonalStore = defineStore("MasterData/personal", {
             desc_Seg: contrato.desc_Seg === 1,
             idProyecto: contrato.idProyecto,
             sueldo: contrato.sueldo,
+            
           };
+          
+          
         }
+        
         return {};
       } catch (error) {
         push.error({
@@ -226,13 +234,14 @@ export const usePersonalStore = defineStore("MasterData/personal", {
           tipoConexion,
           idPersonal
         );
+        
         if (response.data) {
           this.historialLaboral = response.data.map((item) => ({
-            fechaHsitorialLaboral: toDateInputFormat(item.FechaHistoriaLaboral),
-            detalleHistorialLaboral: item.DetalleHistoriaLaboral
+            fecha: toDateInputFormat(item.fechaHistoriaLaboral),
+            detalle: item.detalleHistoriaLaboral
           }));
         }
-        return this.historialLaboral;
+        
       } catch (error) {
         push({
           type: "error al cargar historial laboral",

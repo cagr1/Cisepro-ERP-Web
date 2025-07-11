@@ -900,10 +900,10 @@
               <tbody class="divide-y divide-gray-200">
                 <tr v-for="(item, index) in historialLaboral" :key="index">
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ (item.fechaHistoriaLaboral) }}
+                    {{ item.fecha }}
                   </td>
                   <td class="px-6 py-4 text-xs text-gray-500">
-                    {{ item.detalleHistoriaLaboral }}
+                    {{ item.detalle }}
                   </td>
                 </tr>
                 <tr v-if="historialLaboral.length === 0">
@@ -1056,7 +1056,7 @@ const onEmployeeSelected = async (employee) => {
   
   try {
 
-    console.log("Empleado seleccionado:", employee);
+    
 
     Object.keys(formData).forEach((key) => {
       formData[key] = formData[key] !== null && formData[key] !== undefined 
@@ -1072,7 +1072,7 @@ const onEmployeeSelected = async (employee) => {
       sitiosStore
       
     );
-    console.log("Datos del empleado cargados:", employeeData);
+    
     Object.assign(formData, employeeData); // Asignar los datos del empleado al formulario
     currentTab.value = "datos"; // Cambiar a la pestaña de datos
     showSearchModal.value = false; // Cerrar el modal de búsqueda

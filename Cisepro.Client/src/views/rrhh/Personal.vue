@@ -928,13 +928,14 @@
       :total-items="personalStore.totalItems"
       :total-pages="personalStore.totalPages"
       :is-loading="personalStore.searchLoading"
-      :page-size-options="personalStore.pageSizeOptions"
-      @search="  (term) =>  personalStore.searchEmployees(authStore.selectedCompany, term)"
+      :page-size-options="personalStore.pageSizesOptions"
+      @search="(term) =>  personalStore.searchEmployees(authStore.selectedCompany, term)"
       @update:show="showSearchModal = $event"
       @close="showSearchModal = false"
       @select-employee="onEmployeeSelected"
-      @page-change="(page) => personalStore.searchEmployees(authStore.selectedCompany, personalStore.searchQuery, page)"
+      @page-change="(page) => personalStore.searchEmployees(authStore.selectedCompany, personalStore.searchQuery, page, personalStore.itemsPerPage) "
       @change-page-size="(size) => personalStore.changePageSize(size)"
+      
     />
   </div>
 </template>

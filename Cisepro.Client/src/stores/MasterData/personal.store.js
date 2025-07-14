@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { personalService } from "@/api/RRHH/personal";
 import { cuentaPersonalService } from "@/api/RRHH/cuentaPersonal";
 import { historialService } from "@/api/RRHH/historial";
+import { useAuthStore } from "@/stores/auth.store";
 import { push } from "notivue";
 import { toDateInputFormat } from "@/utils/dateUtils";
 import { blobToDataURL } from "@/utils/fileUtils";
@@ -22,17 +23,19 @@ export const usePersonalStore = defineStore("MasterData/personal", {
     //Paginacion
     currentPage: 1,
     itemsPerPage: 20,
-    pageSize: 20,
     totalItems: 0,
     totalPages: 0,
     pageSizesOptions: [10, 20, 50, 100],
   }),
   actions: {
+    
+    
+    
     async searchEmployees(
       tipoConexion,
       searchTerm = null,
       page = 1,
-      pageSize = 20
+      pageSize = this.itemsPerPage 
     ) {
       this.searchLoading = true;
       try {
@@ -47,6 +50,7 @@ export const usePersonalStore = defineStore("MasterData/personal", {
         this.totalPages = response.pagination?.totalPages || 0;
         this.currentPage = page;
         this.itemsPerPage = pageSize;
+        this.searchQuery = searchTerm || this.searchQuery;
 
         return response.data;
       } catch (error) {
@@ -59,6 +63,7 @@ export const usePersonalStore = defineStore("MasterData/personal", {
         throw error;
       } finally {
         this.isLoading = false;
+        this.searchLoading = false;
       }
     },
 
@@ -255,9 +260,10 @@ export const usePersonalStore = defineStore("MasterData/personal", {
     },
 
     changePageSize(newSize) {
-      this.itemsPerPage = newSize;
+      this.itemsPerPage = Number(newSize);
       this.currentPage = 1; // Reset to first page on page size change
-      return this.searchEmployees(this.searchQuery);
+      const authStore = useAuthStore();
+      return this.searchEmployees(authStore.selectedCompany, this.searchQuery, 1, this.itemsPerPage);
     },
 
     handlePageChange(newPage) {

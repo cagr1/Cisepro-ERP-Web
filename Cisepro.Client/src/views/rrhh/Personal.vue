@@ -67,6 +67,7 @@
       <div class="p-6">
         <!-- Pestaña Datos Personales -->
         <div v-if="currentTab === 'datos'">
+          <form ref="FormRef">
           <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <!-- Columna de la foto - Reducida -->
             <div class="space-y-2 flex flex-col -mr-8 ">
@@ -826,7 +827,7 @@
               </div>
             </div>
           </div>
-
+          </form>
           <!-- --- -->
         </div>
 
@@ -941,7 +942,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, nextTick, computed } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import SearchModal from "@/components/Personal/SearchModal.vue";
 import { useAreaStore } from "../../stores/MasterData/area.store";
@@ -950,11 +951,13 @@ import { useCargoStore } from "../../stores/MasterData/cargo.store";
 import { useContratoStore } from "../../stores/MasterData/contrato.store";
 import { useSitioStore } from "../../stores/MasterData/sitio.store";
 import { usePersonalStore } from "../../stores/MasterData/personal.store";
+import { setFormDisabledState, useReadonlyForm} from "@/utils/disabledForm";
 
 import { educationlevel, maritalStatus, SexoOption, pruebaAntidrogaSelect, tipoContratoSelect } from "@/utils/selectOptions";
 import { Icon } from "@iconify/vue";
 import { push } from "notivue";
 import { storeToRefs } from "pinia";
+
 // Estados de busqueda y paginacion
 const authStore = useAuthStore();
 const tipoConexion = authStore.selectedCompany;
@@ -966,6 +969,11 @@ const contratoStore = useContratoStore();
 const sitiosStore = useSitioStore();
 const personalStore = usePersonalStore();
 const { historialLaboral, loadingHistorial} = storeToRefs(personalStore);
+const formRef = ref(null);
+const { isReadonly, enableForm, disableForm} = useReadonlyForm();
+
+// Computed para manejar el estado del formulario
+const isEditingExisting = computed(() => !!personalStore.currentEmployee?.idPersonal);
 
 
 //carga Areas, Cargos, Proyectos, sitios al montar el componente
@@ -1053,17 +1061,20 @@ const tabs = [
 ];
 
 // Manejo de seleccion de empleado
-const onEmployeeSelected = async (employee) => {
+const onEmployeeSelected = async (employee, viewMode = false) => {
   
   try {
 
     
-
+    // Resetear los datos del formulario si no estamos en modo vista
+    if (!viewMode) {    
     Object.keys(formData).forEach((key) => {
       formData[key] = formData[key] !== null && formData[key] !== undefined 
         ? formData[key] // Mantener valor por defecto
         : null;
-    });
+    }); 
+    }
+    
 
     const employeeData = await personalStore.loadEmployeeDetails(
     authStore.selectedCompany,
@@ -1073,10 +1084,22 @@ const onEmployeeSelected = async (employee) => {
       sitiosStore
       
     );
-    
+
     Object.assign(formData, employeeData); // Asignar los datos del empleado al formulario
     currentTab.value = "datos"; // Cambiar a la pestaña de datos
     showSearchModal.value = false; // Cerrar el modal de búsqueda
+    
+    //esperar a que el DOM se actualice
+    await nextTick();
+
+    if (viewMode){
+      disableForm(formRef, formData);
+    } 
+    else {
+      enableForm(formRef, formData);
+    }
+
+    
   } catch (error) {
     push.error("Error al cargar datos del empleado: ", {
       title: "Error cargando empleado",
@@ -1102,6 +1125,23 @@ const handleFileChange = (event) => {
     };
     reader.readAsDataURL(file);
   }
+};
+
+// Método para crear nuevo empleado
+const newEmployee = () => {
+  // Resetear el formulario
+  Object.keys(formData).forEach(key => {
+    formData[key] = null;
+  });
+  
+  // Resetear el empleado actual en el store
+  personalStore.currentEmployee = null;
+  
+  // Habilitar el formulario
+  enableForm(formRef, formData);
+  
+  // Cambiar a la pestaña de datos
+  currentTab.value = "datos";
 };
 
 </script>

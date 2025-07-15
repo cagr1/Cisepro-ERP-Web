@@ -170,9 +170,10 @@
                       >
                         <div class="flex justify-start space-x-2">
                           <button
-                            @click="$emit('view', item)"
+                            @click="handleView(item)"
                             title="Ver"
                             class="text-green-600 hover:text-green-900"
+                            :disabled=" props.isLoading"
                           >
                             <i class="ri-eye-line text-lg"></i>
                           </button>
@@ -280,6 +281,7 @@
 import { computed, ref, nextTick, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { Icon } from "@iconify/vue";
+import { push } from "notivue";
 
 const props = defineProps({
   show: Boolean,
@@ -387,12 +389,22 @@ const handlePageSizeChange = (newValue) => {
   emit("page-change", 1); // Reset to first page on page size change
 };
 
-const handleKeyDown = (e) => {
-  if ((e.ctrlKey && e.key === "a") || e.key === "Home") {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-};
+//Boton ver
+const handleView = (item) => {
+ try {
+   
+  emit('select-employee', item, true);
+  emit('close');
+
+ } catch (error) {
+  push.error(
+    {
+      title: "Error al ver el personal",
+      message: error.message || "Ocurrió un error al intentar ver el personal.",
+    });
+ }
+}
+;
 
 const sortBy = (key) => {
   if (key === "acciones") return; // No ordenar por acciones

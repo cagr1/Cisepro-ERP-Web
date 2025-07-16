@@ -83,6 +83,8 @@ export const usePersonalStore = defineStore("MasterData/personal", {
         const sitioValido = sitiosStore.sitioOptions.find(
           (sitio) => sitio.id === sitioNumerico
         );
+
+        const estadoPersonal = employee.estado_Personal || 1; // Default to activo if not provided
         
         const employeeData = {
           idPersonal: employee.id_Personal,
@@ -124,7 +126,7 @@ export const usePersonalStore = defineStore("MasterData/personal", {
             employee.id_Personal,
             areaStore,
             cargoStore,
-            sitiosStore
+            estadoPersonal
           ),
         ]);
 
@@ -153,15 +155,20 @@ export const usePersonalStore = defineStore("MasterData/personal", {
           tipoConexion,
           idPersonal
         );
-        if (response.success && response.data) {
+        if (response.success && response.data && response.data.length > 0) {
           const cuenta = response.data[0];
           return {
-            banco: cuenta.idBanco,
-            cuentaBanco: cuenta.numCuenta ? cuenta.numCuenta : "",
+            banco: cuenta.idBanco || 0,
+            cuentaBanco: cuenta.numCuenta || "",
             tipoCuenta: cuenta.tipoCuenta === "AHO" ? "Ahorros" : "Corriente",
           };
         }
-        return {};
+        return {
+          banco: 0,
+          cuentaBanco: "",
+          tipoCuenta: "",
+
+        };
       } catch (error) {
         push({
           type: "error al cargar cuentas bancarias",
@@ -173,11 +180,15 @@ export const usePersonalStore = defineStore("MasterData/personal", {
       }
     },
 
-    async loadContractDetails(tipoConexion, idPersonal, areaStore, cargoStore, sitiosStore) {
+    async loadContractDetails(tipoConexion, idPersonal, areaStore, cargoStore, estadoPersonal) {
       try {
+              
+        
+
         const response = await personalService.getPersonalContrato(
           tipoConexion,
-          idPersonal
+          idPersonal,
+          estadoPersonal
         );
         console.log("response contrato:", response);
         if (response.success && response.data) {

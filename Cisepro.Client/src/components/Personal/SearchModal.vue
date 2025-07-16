@@ -4,13 +4,13 @@
       <div class="modal-container">
         <!-- Encabezado mejorado -->
         <div class="modal-header">
-          <Icon icon="lucide:file-search" class="mr-2 text-white" />
+          <Icon icon="heroicons:magnifying-glass" class="mr-2 text-white" />
           <h2 class="text-white font-semibold text-lg">Búsqueda de Personal</h2>
           <button
             @click="$emit('close')"
             class="text-white hover:text-gray-400"
           >
-            <i class="ri-close-line text-2xl"></i>
+            <Icon icon="heroicons:x-mark" />
           </button>
         </div>
 

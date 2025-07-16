@@ -64,7 +64,8 @@ namespace Cisepro.Services.Talento_Humano
 
             var result = await conn.QueryFirstOrDefaultAsync<ContratoDTO>(
                 sql,
-                new { @id_personal = idPersonal },
+                new { @id_personal = idPersonal,
+                @estado = estado },
                 commandType: System.Data.CommandType.StoredProcedure
                 );
 

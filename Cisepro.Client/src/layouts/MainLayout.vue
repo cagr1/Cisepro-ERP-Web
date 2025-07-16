@@ -56,7 +56,7 @@
                     ]"
                   >
                     <div class="flex items-center">
-                      <i :class="`${item.icon} text-white/90 hover:text-white text-xl`" :style="{ minWidth: '20px' }"></i>
+                      <Icon :icon="item.icon" class="text-white/90 hover:text-white text-xl" :style="{minWidth: '20px'}"/>
                       <span 
                         v-if="sidebarOpen" 
                         class="text-sm font-medium ml-3 transition-opacity duration-300"
@@ -64,12 +64,13 @@
                         {{ item.name }}
                       </span>
                     </div>
-                    <i
+                    <Icon
                       v-if="sidebarOpen"
-                      :class="`ri-arrow-down-s-line transition-transform duration-200 ${
-                        openSubmenus[item.name] ? 'rotate-180' : ''
-                      }`"
-                    ></i>
+                      icon="ri:arrow-down-s-line"
+                      class="transition-transform duration-200"
+                      :class="{'rotate-180': openSubmenus[item.name]}"
+                      
+                    />
                   </button>
                   
                   <!-- Submenu expandido -->
@@ -96,7 +97,8 @@
                               { 'bg-white/20 text-white': isActive },
                             ]"
                           >
-                            <i :class="`${child.icon} text-base mr-3`" style="min-width: 16px;"></i>
+                            <Icon :icon="child.icon" class="text-base mr-3" style="min-width: 16px;"/>
+                            
                             {{ child.name }}
                           </a>
                         </RouterLink>
@@ -124,7 +126,7 @@
                       { 'bg-white/20': isActive }
                     ]"
                   >
-                    <i :class="`${item.icon} text-white text-xl`" :style="{ minWidth: '20px' }"></i>
+                    <Icon :icon="item.icon" class="text-xl "  style="min-Width: 20px;"/>
                     <span 
                       v-if="sidebarOpen" 
                       class="text-sm font-medium ml-3 transition-opacity duration-300"
@@ -214,6 +216,7 @@ import { computed, ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import { storeToRefs } from "pinia";
+import { Icon } from "@iconify/vue";
 import ciseproLogo from "@/assets/images/cisepro.png";
 import seportpacLogo from "@/assets/images/seportpac.png";
 
@@ -235,11 +238,11 @@ const menuItems = [
   {
     name: "Dashboard",
     path: "/dashboard",
-    icon: "ri-dashboard-line",
+    icon: "ri:dashboard-fill",
   },
   {
     name: "Administración",
-    icon: "ri-settings-5-line",
+    icon: "heroicons:users",
     children: [
       { name: "Usuarios", path: "/admin/users", icon: "ri-user-line" },
       { name: "Roles", path: "/admin/roles", icon: "ri-shield-keyhole-line" },
@@ -247,28 +250,28 @@ const menuItems = [
   },
   {
     name: "Contabilidad",
-    icon: "ri-calculator-line",
+    icon: "heroicons:scale",
     children: [
       {
         name: "Balance General",
         path: "/contabilidad/balance",
-        icon: "ri-line-chart-line",
+        icon: "heroicons:presentation-chart-line",
       },
       {
         name: "Estado de Resultados",
         path: "/contabilidad/resultados",
-        icon: "ri-bar-chart-2-line",
+        icon: "heroicons:chart-bar",
       },
     ],
   },
   {
     name: "RRHH",
-    icon: "ri-group-line",
+    icon: "heroicons:user-group",
     children: [
       {
         name: "Personal",
         path: "/rrhh/personal",
-        icon: "ri-user-3-line",
+        icon: "heroicons:users",
       },
     ],
   },

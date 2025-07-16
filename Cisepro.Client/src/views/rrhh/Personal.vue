@@ -1,39 +1,47 @@
 <template>
-  <div class="min-h-screen bg-gray-10 p-1">
+  <div class="min-h-screen bg-gray-10 p-6">
     
     
 
     <!-- Barra de acciones superior -->
-    <div class="bg-white rounded-lg shadow-md p-3 mb-2 sticky top-0 z-5">
+    <div class="bg-white border border-slate-200 rounded-lg shadow-md p-3 mb-6 sticky top-0 z-5">
       <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-semibold text-gray-800">
-          Gestión de Personal
-        </h1>
-        <div class="flex space-x-2">
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+            <Icon icon="heroicons:user-group" class="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-slate-900">Gestión de Personal</h1>
+            <p class="text-sm text-slate-500">Administra la información del personal</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
           <button
             @click="openSearchModal"
-            class="flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+            
+             class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
           >
-            <Icon icon="lucide:file-search" class="w-5 h-5 mr-2" /> Buscar
+            <Icon icon="heroicons:magnifying-glass" class="w-5 h-5 mr-2" /> Buscar
           </button>
           <button
             @click="nuevoPersonal"
-            class="flex items-center px-4 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-colors"
+            
+             class="inline-flex items-center px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
           >
-            <Icon icon="lucide:circle-plus" class="w-5 h-5 mr-2" /> Nuevo
+            <Icon icon="heroicons:plus" class="w-5 h-5 mr-2" /> Nuevo
           </button>
           <button
             @click="guardarPersonal"
-            class="flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+           class="inline-flex items-center px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 shadow-sm"
           >
             
-            <Icon icon="lucide:save" class="w-5 h-5 mr-2" /> Guardar
+            <Icon icon="heroicons:check" class="w-5 h-5 mr-2" /> Guardar
           </button>
           <button
             @click="cancelarEdicion"
-            class="flex items-center px-4 py-2 border border-red-700 text-red-700 rounded-lg hover:bg-red-700 hover:text-white transition-colors"
+            class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 shadow-sm"
           >
-            <Icon icon="material-symbols:cancel-outline" class="w-5 h-5 mr-2" />
+            <Icon icon="heroicons:x-mark" class="w-5 h-5 mr-2" />
             Cancelar
           </button>
         </div>
@@ -41,7 +49,7 @@
     </div>
 
     <!-- Pestañas -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4 ">
+    <div class="bg-white border broder-slate-200 rounded-lg shadow-md overflow-hidden mb-4 ">
       <div class="border-b border-gray-200">
         <nav class="flex -mb-px">
           <button
@@ -56,7 +64,7 @@
             ]"
           >
             <div class="flex items-center">
-              <Icon :icon="tab.icon" class="mr-2"></Icon>
+              <Icon :icon="tab.icon" class="w-4 h-4 mr-2"></Icon>
               {{ tab.name }}
             </div>
           </button>
@@ -64,49 +72,52 @@
       </div>
 
       <!-- Contenido de las pestañas -->
-      <div class="p-6">
+      <div class="p-8">
         <!-- Pestaña Datos Personales -->
-        <div v-if="currentTab === 'datos'">
-          <form ref="FormRef">
+        <div v-if="currentTab === 'datos'"  >
+          
+         
+          
+          <form ref="FormRef" class="space-y-8">
+
+
           <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <!-- Columna de la foto - Reducida -->
             <div class="space-y-2 flex flex-col -mr-8 ">
               <div class=" relative flex flex-col items-center justify-center">
-                <div class="relative w-32 h-32 mr-7">
-                  <div
-                    v-if="formData.estado_Personal !== undefined"
-                    class="absolute inset-0 rounded-full border-[3px] animate-pulse-ring"
-                    :class="{
-                      'border-green-500': formData.estado_Personal === 1,
-                      'border-red-500': formData.estado_Personal === 0,
-                      'border-gray-500': formData.estado_Personal === undefined,
-                    }"
-                  ></div>
-
-                  <div
-                    class="relative w-full h-full rounded-full bg-gray-200 mb-2 overflow-hidden border-2 border-white shadow-sm z-10"
-                    
-                  >
-                    <img
-                      v-if="formData.foto"
-                      :src="formData.foto"
-                      class="w-full h-full object-cover"
-                      alt="Foto de perfil"
-                    />
+                <div class="relative">
+                  <div class="relative w-32 h-32">
+                    <!-- Status Ring -->
                     <div
-                      v-else
-                      class="w-full h-full flex items-center justify-center text-gray-400"
-                    >
-                      <i class="ri-user-line text-6xl"></i>
+                      v-if="formData.estado_Personal !== undefined"
+                      class="absolute -inset-1 rounded-full border-2 animate-pulse"
+                      :class="{
+                        'border-emerald-500': formData.estado_Personal === 1,
+                        'border-red-500': formData.estado_Personal === 0,
+                        'border-slate-400': formData.estado_Personal === undefined,
+                      }"
+                    ></div>
+                    
+                    <!-- Photo Container -->
+                    <div class="relative w-full h-full rounded-full bg-slate-100 overflow-hidden border-4 border-white shadow-lg">
+                      <img
+                        v-if="formData.foto"
+                        :src="formData.foto"
+                        class="w-full h-full object-cover"
+                        alt="Foto de perfil"
+                      />
+                      <div
+                        v-else
+                        class="w-full h-full flex items-center justify-center text-slate-400"
+                      >
+                        <Icon icon="heroicons:user" class="w-16 h-16" />
+                      </div>
                     </div>
                   </div>
-
-                  <label
-                    for="dropzone-file"
-                    class="  text-xs text-blue-600 hover:text-blue-800 cursor-pointer"
-                  >
-                    <i class="ri-camera-line text-sm"></i>
-                    Cambiar foto
+                  
+                  <!-- Photo Upload Button -->
+                  <label class="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors shadow-lg">
+                    <Icon icon="heroicons:camera" class="w-4 h-4 text-white" />
                     <input
                       id="dropzone-file"
                       type="file"
@@ -116,6 +127,8 @@
                   </label>
                 </div>
               </div>
+              
+              
               <div class="pt-11">
                 
               <div>
@@ -975,7 +988,7 @@ const { isReadonly, enableForm, disableForm} = useReadonlyForm();
 // Computed para manejar el estado del formulario
 const isEditingExisting = computed(() => !!personalStore.currentEmployee?.idPersonal);
 
-
+//https://tiapatty.mikareno.com/ddd/academic/get-stats-all-classroom-average:
 //carga Areas, Cargos, Proyectos, sitios al montar el componente
 onMounted(async () => {
   try {   
@@ -1055,9 +1068,9 @@ const formData = reactive({
 
 const currentTab = ref("datos");
 const tabs = [
-  { id: "datos", name: "Datos", icon: "lucide:user" },
-  { id: "fotos", name: "Fotos", icon: "lucide:camera" },
-  { id: "historial", name: "Historial", icon: "lucide:history" },
+  { id: "datos", name: "Datos", icon: "heroicons:user" },
+  { id: "fotos", name: "Fotos", icon: "heroicons:camera" },
+  { id: "historial", name: "Historial", icon: "heroicons:clock" },
 ];
 
 // Manejo de seleccion de empleado

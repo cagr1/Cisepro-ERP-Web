@@ -44,11 +44,12 @@ export const personalService = {
                 throw error;
             }
         },
-        async getPersonalContrato(tipoConexion, idPersonal) {
+        async getPersonalContrato(tipoConexion, idPersonal, estado_Personal) {
             try {
                 const params = {
                     tipoConexion: tipoConexion,
-                    id: idPersonal
+                    id: idPersonal,
+                    estado: estado_Personal === 0
                 };
 
                 const response = await api.get('/Contrato/Get-Contrato-PorPersonal', { 

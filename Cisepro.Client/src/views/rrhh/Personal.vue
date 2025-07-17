@@ -1,45 +1,46 @@
 <template>
   <div class="min-h-screen bg-gray-10 p-6">
-    
-    
-
     <!-- Barra de acciones superior -->
-    <div class="bg-white border border-slate-200 rounded-lg shadow-md p-3 mb-6 sticky top-0 z-5">
+    <div
+      class="bg-white border border-slate-200 rounded-lg shadow-md p-3 mb-6 sticky top-0 z-10"
+    >
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-4">
-          <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+          <div
+            class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center"
+          >
             <Icon icon="heroicons:user-group" class="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 class="text-2xl font-bold text-slate-900">Gestión de Personal</h1>
-            <p class="text-sm text-slate-500">Administra la información del personal</p>
+            <h1 class="text-2xl font-bold text-slate-900">Gestión Personal</h1>
+            <p class="text-sm text-slate-500">
+              Administra la información del personal
+            </p>
           </div>
         </div>
         <div class="flex items-center space-x-3">
           <button
             @click="openSearchModal"
-            
-             class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm bg-white text-slate-700 rounded-md hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            <Icon icon="heroicons:magnifying-glass" class="w-5 h-5 mr-2" /> Buscar
+            <Icon icon="heroicons:magnifying-glass" class="w-5 h-5 mr-2" />
+            Buscar
           </button>
           <button
             @click="nuevoPersonal"
-            
-             class="inline-flex items-center px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+            class="inline-flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
           >
             <Icon icon="heroicons:plus" class="w-5 h-5 mr-2" /> Nuevo
           </button>
           <button
             @click="guardarPersonal"
-           class="inline-flex items-center px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 shadow-sm"
+            class="inline-flex items-center px-3 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 shadow-sm"
           >
-            
             <Icon icon="heroicons:check" class="w-5 h-5 mr-2" /> Guardar
           </button>
           <button
             @click="cancelarEdicion"
-            class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 shadow-sm"
+            class="inline-flex items-center px-3 py-2 text-sm bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 shadow-sm"
           >
             <Icon icon="heroicons:x-mark" class="w-5 h-5 mr-2" />
             Cancelar
@@ -49,7 +50,9 @@
     </div>
 
     <!-- Pestañas -->
-    <div class="bg-white border broder-slate-200 rounded-lg shadow-md overflow-hidden mb-4 ">
+    <div
+      class="bg-white border border-slate-200 rounded-lg shadow-md overflow-hidden mb-4"
+    >
       <div class="border-b border-gray-200">
         <nav class="flex -mb-px">
           <button
@@ -74,19 +77,15 @@
       <!-- Contenido de las pestañas -->
       <div class="p-8">
         <!-- Pestaña Datos Personales -->
-        <div v-if="currentTab === 'datos'"  >
-          
-         
-          
+        <div v-if="currentTab === 'datos'">
           <form ref="FormRef" class="space-y-8">
-
-
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-            <!-- Columna de la foto - Reducida -->
-            <div class="space-y-2 flex flex-col -mr-8 ">
-              <div class=" relative flex flex-col items-center justify-center">
-                <div class="relative">
-                  <div class="relative w-32 h-32">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+              <!-- Columna de la foto - Reducida -->
+              <div class="space-y-2 flex flex-col">
+                <div
+                  class="flex flex-col items-center md:items-middle space-y-4"
+                >
+                  <div class="w-32 h-32 relative">
                     <!-- Status Ring -->
                     <div
                       v-if="formData.estado_Personal !== undefined"
@@ -94,12 +93,15 @@
                       :class="{
                         'border-emerald-500': formData.estado_Personal === 1,
                         'border-red-500': formData.estado_Personal === 0,
-                        'border-slate-400': formData.estado_Personal === undefined,
+                        'border-slate-400':
+                          formData.estado_Personal === undefined,
                       }"
                     ></div>
-                    
+
                     <!-- Photo Container -->
-                    <div class="relative w-full h-full rounded-full bg-slate-100 overflow-hidden border-4 border-white shadow-lg">
+                    <div
+                      class="w-full h-full rounded-full bg-slate-100 overflow-hidden border-4 border-white shadow-lg"
+                    >
                       <img
                         v-if="formData.foto"
                         :src="formData.foto"
@@ -113,10 +115,10 @@
                         <Icon icon="heroicons:user" class="w-16 h-16" />
                       </div>
                     </div>
-                  </div>
-                  
-                  <!-- Photo Upload Button -->
-                  <label class="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors shadow-lg">
+                     <!-- Photo Upload Button -->
+                  <label
+                    class=" absolute bottom-1 -right-3 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors shadow-lg"
+                  >
                     <Icon icon="heroicons:camera" class="w-4 h-4 text-white" />
                     <input
                       id="dropzone-file"
@@ -125,721 +127,723 @@
                       @change="handleFileChange"
                     />
                   </label>
+                  </div>
+
+                 
+                </div>
+
+                <div class="pt-11">
+                  <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1"
+                      >Provincia</label
+                    >
+                    <input
+                      type="text"
+                      v-model="formData.provincia"
+                      class="w-max-[170px] form-field"
+                    />
+                  </div>
+                  <div class="mt-2">
+                    <label class="block text-xs font-medium text-gray-600 mb-1"
+                      >Banco</label
+                    >
+                    <select
+                      v-model="formData.banco"
+                      class="w-full max-w-[170px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option
+                        v-for="banco in bancoStore.bancoOptions"
+                        :key="banco.id"
+                        :value="banco.id"
+                        :label="banco.nombre"
+                        class="form-field w-full h-20"
+                      >
+                        {{ banco.nombre }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="mt-2">
+                    <label class="block text-xs font-medium text-gray-600 mb-1"
+                      >Edad</label
+                    >
+                    <input
+                      type="number"
+                      v-model="formData.edad"
+                      class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
                 </div>
               </div>
-              
-              
-              <div class="pt-11">
-                
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Provincia</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.provincia"
-                  class="w-max-[160px] form-field"
-                />
-              </div>
-              <div class="mt-2">
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Banco</label
-                >
-                <select v-model="formData.banco" 
-                class="w-full max-w-[140px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500">
-                  <option
-                    v-for="banco in bancoStore.bancoOptions"
-                    :key="banco.id"
-                    :value="banco.id"
-                    :label="banco.nombre"
-                    class="form-field w-full h-20"
+
+              <!-- Grupo 1: Datos básicos -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Cédula</label
                   >
-                    {{ banco.nombre }}
-                  </option>
-                </select>
-              </div>
-              <div class="mt-2">
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Edad</label
-                >
-                <input
-                  type="number"
-                  v-model="formData.edad"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              </div>
-              
-            </div>
-
-            <!-- Grupo 1: Datos básicos -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Cédula</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.cedula"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="0703686868"
-                />
-              </div>
-
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Id Personal</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.idPersonal"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Email</label
-                >
-                <input
-                  type="email"
-                  v-model="formData.email"
-                  class="max-w-[160px] form-field"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Ciudad</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.ciudad"
-                  class="form-field max-w-[160px]"
-                />
-              </div>
-
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Tipo Cta</label
-                >
-                <select
-                  v-model="formData.tipoCuenta"
-                  class="form-field max-w-[160px]"
-                >
-                  <option value="Corriente">Corriente</option>
-                  <option value="Ahorros">Ahorros</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Grupo 2: Datos personales -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Nombres</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.nombres"
-                  class="w-max-[160px] form-field"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Sexo</label
-                >
-                <select
-                  v-model="formData.sexo"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option
-                    v-for="option in SexoOption"
-                    :key="option.value"
-                    :value="option.value"
-                  >
-                    {{ option.text }}
-                  </option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Peso</label
-                >
-                <input
-                  type="number"
-                  v-model="formData.peso"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Parroquia</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.parroquia"
-                  class="form-field max-w-[160px]"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >CTA Banco</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.cuentaBanco"
-                  class="form-field max-w-[160px]"
-                />
-              </div>
-            </div>
-
-            <!-- Grupo 3: Datos laborales -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Apellidos</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.apellidos"
-                  class="w-max-[160px] form-field"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Estado Civil</label
-                >
-                <select
-                  v-model="formData.estadoCivil"
-                  class="w-max-[180px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option
-                    v-for="option in maritalStatus"
-                    :key="option.value"
-                    :value="option.value"
-                  >
-                    {{ option.text }}
-                  </option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Estatura</label
-                >
-                <input
-                  type="number"
-                  v-model="formData.estatura"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Teléfono</label
-                >
-                <input
-                  type="tel"
-                  v-model="formData.telefono"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Celular</label
-                >
-                <input
-                  type="tel"
-                  v-model="formData.celular"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            <!-- Grupo 4: Datos de contacto -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >F. Nacimiento</label
-                >
-                <input
-                  type="date"
-                  v-model="formData.fechaNacimiento"
-                  class="w-max-[160px] appearance-none h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Instrucción Primaria</label
-                >
-                <select
-                  v-model="formData.instruccion"
-                  class="form-field max-w-[160px]"
-                >
-                  <option
-                    v-for="option in educationlevel"
-                    :key="option.value"
-                    :value="option.value"
-                  >
-                    {{ option.text }}
-                  </option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Tipo Sangre</label
-                >
-                <select
-                  v-model="formData.tipoSangre"
-                  class="w-max-[180px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Contrato</label
-                >
-                <input
-                  type="tel"
-                  v-model="formData.nroContrato"
-                  class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Credencial</label
-                >
-                <input
-                  type="checkbox"
-                  v-model="formData.credencial"
-                  class="w-4 h-4 p-0"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-            <!-- Dirección - Ocupa 2 columnas -->
-            <div class="md:col-span-3 py-0">
-              <label class="block text-xs font-medium text-gray-600 mb-1"
-                >Dirección</label
-              >
-              <input
-                type="text"
-                v-model="formData.direccion"
-                class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Lib Militar</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.libretaMilitar"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Pasaporte</label
-                >
-                <input
-                  type="text"
-                  v-model="formData.pasaporte"
-                  class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-          </div>
-          <!-- Seccion Operativa -->
-          <div class="">
-            <h2 class="text-lg font-medium text-gray-900 mb-2">
-              Información Operativa
-            </h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb4">
-            <!-- Columna 1 -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Ingreso</label
-                >
-                <input
-                  type="date"
-                  v-model="formData.fechaEntrada"
-                  class="form-field w-full"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Proyecto</label
-                >
-                <select v-model="formData.proyecto" class="form-field w-full">
-                  <option
-                    v-for="contrato in contratoStore.contratoOptions"
-                    :key="contrato.id"
-                    :value="contrato.id"
-                    :label="contrato.nombre"
-                    class="form-field w-full h-20"
-                  >
-                    {{ contrato.nombre }}
-                  </option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Ubicacion</label
-                >
-                <select
-                  v-model="formData.sitio"
-                  class="form-field w-full text-xs"
-                >
-                  <option
-                    v-for="sitio in sitiosStore.sitioOptions"
-                    :key="sitio.id"
-                    :value="sitio.id"
-                  >
-                    {{ sitio.nombre }}
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Columna 2 -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">
-                  Fecha de salida
-                </label>
-                <div
-                  v-if="formData.fechaSalida === 'en_funciones'"
-                  class="form-field w-full bg-gray-100 italic text-gray-500 text-center"
-                >
-                  En funciones
+                  <input
+                    type="text"
+                    v-model="formData.cedula"
+                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="0703686868"
+                  />
                 </div>
-                <input
-                  v-else
-                  type="date"
-                  v-model="formData.fechaSalida"
-                  class="form-field w-full"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Inicio Pro</label
-                >
-                <input
-                  type="date"
-                  v-model="formData.fechaInicio"
-                  class="form-field w-full"
-                />
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Id Personal</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.idPersonal"
+                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    v-model="formData.email"
+                    class="max-w-[160px] form-field"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Ciudad</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.ciudad"
+                    class="form-field max-w-[160px]"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Tipo Cta</label
+                  >
+                  <select
+                    v-model="formData.tipoCuenta"
+                    class="form-field max-w-[160px]"
+                  >
+                    <option value="Corriente">Corriente</option>
+                    <option value="Ahorros">Ahorros</option>
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Área</label
-                >
-                <select
-                  v-model="formData.area"
-                  class="form-field w-full text-xs"
-                >
-                  <option
-                    v-for="area in areaStore.areasOptions"
-                    :key="area.id"
-                    :value="area.id"
+              <!-- Grupo 2: Datos personales -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Nombres</label
                   >
-                    {{ area.nombre }}
-                  </option>
-                </select>
+                  <input
+                    type="text"
+                    v-model="formData.nombres"
+                    class="w-max-[160px] form-field"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Sexo</label
+                  >
+                  <select
+                    v-model="formData.sexo"
+                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option
+                      v-for="option in SexoOption"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Peso</label
+                  >
+                  <input
+                    type="number"
+                    v-model="formData.peso"
+                    class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Parroquia</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.parroquia"
+                    class="form-field max-w-[160px]"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >CTA Banco</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.cuentaBanco"
+                    class="form-field max-w-[160px]"
+                  />
+                </div>
+              </div>
+
+              <!-- Grupo 3: Datos laborales -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Apellidos</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.apellidos"
+                    class="w-max-[160px] form-field"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Estado Civil</label
+                  >
+                  <select
+                    v-model="formData.estadoCivil"
+                    class="w-max-[180px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option
+                      v-for="option in maritalStatus"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Estatura</label
+                  >
+                  <input
+                    type="number"
+                    v-model="formData.estatura"
+                    class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Teléfono</label
+                  >
+                  <input
+                    type="tel"
+                    v-model="formData.telefono"
+                    class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Celular</label
+                  >
+                  <input
+                    type="tel"
+                    v-model="formData.celular"
+                    class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              <!-- Grupo 4: Datos de contacto -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >F. Nacimiento</label
+                  >
+                  <input
+                    type="date"
+                    v-model="formData.fechaNacimiento"
+                    class="w-max-[160px] appearance-none h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Instrucción Primaria</label
+                  >
+                  <select
+                    v-model="formData.instruccion"
+                    class="form-field max-w-[160px]"
+                  >
+                    <option
+                      v-for="option in educationlevel"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Tipo Sangre</label
+                  >
+                  <select
+                    v-model="formData.tipoSangre"
+                    class="w-max-[180px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Contrato</label
+                  >
+                  <input
+                    type="tel"
+                    v-model="formData.nroContrato"
+                    class="max-w-[100px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Credencial</label
+                  >
+                  <input
+                    type="checkbox"
+                    v-model="formData.credencial"
+                    class="w-4 h-4 p-0"
+                  />
+                </div>
               </div>
             </div>
-
-            <!-- Columna 3 -->
-            <div class="space-y-2">
-              <div>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+              <!-- Dirección - Ocupa 2 columnas -->
+              <div class="md:col-span-3 py-0">
                 <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Cargo</label
-                >
-                <select
-                  v-model="formData.cargo"
-                  class="form-field w-full text-xs"
-                >
-                  <option
-                    v-for="cargo in cargoStore.cargoOptions"
-                    :key="cargo.id"
-                    :value="cargo.id"
-                  >
-                    {{ cargo.nombre }}
-                  </option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Fin Pro</label
+                  >Dirección</label
                 >
                 <input
-                  type="date"
-                  v-model="formData.fechaFin"
-                  class="form-field w-full"
+                  type="text"
+                  v-model="formData.direccion"
+                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Observación</label
-                >
-                <textarea
-                  v-model="formData.observaciones"
-                  class="form-field w-full"
-                ></textarea>
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Lib Militar</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.libretaMilitar"
+                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Pasaporte</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.pasaporte"
+                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
               </div>
             </div>
-
-            <!-- Columna 4 -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Tipo Contrato</label
-                >
-                <select
-                  v-model="formData.tipoContrato"
-                  class="form-field w-full"
-                >
-                  <option
-                    v-for="option in tipoContratoSelect"
-                    :key="option.value"
-                    :value="option.value"
-                  >
-                    {{ option.text }}
-                  </option>
-                </select>
-              </div>
-              <div class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="formData.iess"
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  id="afiliadoIESS"
-                />
-                <label
-                  class="text-xs font-medium text-gray-600 cursor-pointer"
-                  for="afiliadoIESS"
-                >
-                  Afiliado IESS
-                </label>
-              </div>
-              <!-- Fecha de Afiliación (siempre visible) -->
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Fecha Afiliación</label
-                >
-                <input
-                  type="date"
-                  v-model="formData.fechaAfiliacion"
-                  :disabled="!formData.afiliadoIESS"
-                  class="form-field w-full"
-                  :class="{
-                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
-                  }"
-                />
-              </div>
-
-              <!-- XIII Sueldo (siempre visible) -->
-              <div class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="formData.xiii"
-                  :disabled="!formData.afiliadoIESS"
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  :class="{
-                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
-                  }"
-                  id="XIII"
-                />
-                <label
-                  class="text-xs font-medium text-gray-600 cursor-pointer"
-                  for="XIII"
-                >
-                  XIII Sueldo
-                </label>
-              </div>
-
-              <!-- XIV Sueldo (siempre visible) -->
-              <div class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="formData.xiv"
-                  :disabled="!formData.afiliadoIESS"
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  :class="{
-                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
-                  }"
-                  id="XIV"
-                />
-                <label
-                  class="text-xs font-medium text-gray-600 cursor-pointer"
-                  for="XIV"
-                >
-                  XIV Sueldo
-                </label>
-              </div>
-
-              <!-- Fondo de Reserva (siempre visible) -->
-              <div class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="formData.reservaRol"
-                  :disabled="!formData.afiliadoIESS"
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  :class="{
-                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
-                  }"
-                  id="fondoReserva"
-                />
-                <label
-                  class="text-xs font-medium text-gray-600 cursor-pointer"
-                  for="fondoReserva"
-                >
-                  Fondo de Reserva
-                </label>
-              </div>
-
-              <!-- Acumulado Fondo Reserva (siempre visible) -->
-              <div class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="formData.acumFondoReserva"
-                  :disabled="!formData.afiliadoIESS"
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  :class="{
-                    'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
-                  }"
-                  id="acumFondoReserva"
-                />
-                <label
-                  class="text-xs font-medium text-gray-600 cursor-pointer"
-                  for="acumFondoReserva"
-                >
-                  Acumulado F. Reserva
-                </label>
-              </div>
+            <!-- Seccion Operativa -->
+            <div class="">
+              <h2 class="text-lg font-medium text-gray-900 mb-2">
+                Información Operativa
+              </h2>
             </div>
-
-            <!-- Columna 5 -->
-            <div class="space-y-2">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1"
-                  >Prueba Antidroga</label
-                >
-                <select
-                  v-model="formData.pruebaAntidroga"
-                  class="form-field w-full"
-                >
-                  <option
-                    v-for="option in pruebaAntidrogaSelect"
-                    :key="option.value"
-                    :value="option.value"
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb4">
+              <!-- Columna 1 -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Ingreso</label
                   >
-                    {{ option.text }}
-                  </option>
-                </select>
+                  <input
+                    type="date"
+                    v-model="formData.fechaEntrada"
+                    class="form-field w-full"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Proyecto</label
+                  >
+                  <select v-model="formData.proyecto" class="form-field w-full">
+                    <option
+                      v-for="contrato in contratoStore.contratoOptions"
+                      :key="contrato.id"
+                      :value="contrato.id"
+                      :label="contrato.nombre"
+                      class="form-field w-full h-20"
+                    >
+                      {{ contrato.nombre }}
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Ubicacion</label
+                  >
+                  <select
+                    v-model="formData.sitio"
+                    class="form-field w-full text-xs"
+                  >
+                    <option
+                      v-for="sitio in sitiosStore.sitioOptions"
+                      :key="sitio.id"
+                      :value="sitio.id"
+                    >
+                      {{ sitio.nombre }}
+                    </option>
+                  </select>
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="formData.historiaClinica"
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                  id="historiaClinica"
-                />
-                <label
-                  class="text-xs font-medium text-gray-600"
-                  for="historiaClinica"
-                  >Historia Clínica</label
-                >
+
+              <!-- Columna 2 -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">
+                    Fecha de salida
+                  </label>
+                  <div
+                    v-if="formData.fechaSalida === 'en_funciones'"
+                    class="form-field w-full bg-gray-100 italic text-gray-500 text-center"
+                  >
+                    En funciones
+                  </div>
+                  <input
+                    v-else
+                    type="date"
+                    v-model="formData.fechaSalida"
+                    class="form-field w-full"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Inicio Pro</label
+                  >
+                  <input
+                    type="date"
+                    v-model="formData.fechaInicio"
+                    class="form-field w-full"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Área</label
+                  >
+                  <select
+                    v-model="formData.area"
+                    class="form-field w-full text-xs"
+                  >
+                    <option
+                      v-for="area in areaStore.areasOptions"
+                      :key="area.id"
+                      :value="area.id"
+                    >
+                      {{ area.nombre }}
+                    </option>
+                  </select>
+                </div>
               </div>
-              <div class="flex flex-col gap-1">
+
+              <!-- Columna 3 -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Cargo</label
+                  >
+                  <select
+                    v-model="formData.cargo"
+                    class="form-field w-full text-xs"
+                  >
+                    <option
+                      v-for="cargo in cargoStore.cargoOptions"
+                      :key="cargo.id"
+                      :value="cargo.id"
+                    >
+                      {{ cargo.nombre }}
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Fin Pro</label
+                  >
+                  <input
+                    type="date"
+                    v-model="formData.fechaFin"
+                    class="form-field w-full"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Observación</label
+                  >
+                  <textarea
+                    v-model="formData.observaciones"
+                    class="form-field w-full"
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Columna 4 -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Tipo Contrato</label
+                  >
+                  <select
+                    v-model="formData.tipoContrato"
+                    class="form-field w-full"
+                  >
+                    <option
+                      v-for="option in tipoContratoSelect"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </option>
+                  </select>
+                </div>
                 <div class="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    v-model="formData.discapacitado"
+                    v-model="formData.iess"
                     class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    id="discapacitado"
+                    id="afiliadoIESS"
                   />
                   <label
                     class="text-xs font-medium text-gray-600 cursor-pointer"
-                    for="discapacitado"
-                    >Discapacitado</label
+                    for="afiliadoIESS"
                   >
+                    Afiliado IESS
+                  </label>
                 </div>
-                <input
-                  v-if="formData.discapacitado"
-                  type="text"
-                  v-model="formData.discapacitadoDetalle"
-                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
-                  placeholder="Número o serie"
-                />
-              </div>
+                <!-- Fecha de Afiliación (siempre visible) -->
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Fecha Afiliación</label
+                  >
+                  <input
+                    type="date"
+                    v-model="formData.fechaAfiliacion"
+                    :disabled="!formData.afiliadoIESS"
+                    class="form-field w-full"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                    }"
+                  />
+                </div>
 
-              <!-- Examen Psicológico (checkbox + input condicional) -->
-              <div class="flex flex-col gap-1">
+                <!-- XIII Sueldo (siempre visible) -->
                 <div class="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    v-model="formData.examenPsicologico"
+                    v-model="formData.xiii"
+                    :disabled="!formData.afiliadoIESS"
                     class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    id="examenPsicologico"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                    }"
+                    id="XIII"
                   />
                   <label
                     class="text-xs font-medium text-gray-600 cursor-pointer"
-                    for="examenPsicologico"
-                    >Examen Psicológico</label
+                    for="XIII"
                   >
+                    XIII Sueldo
+                  </label>
                 </div>
-                <input
-                  v-if="formData.examenPsicologico"
-                  type="text"
-                  v-model="formData.examenPsicologicoDetalle"
-                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
-                  placeholder="Número o serie"
-                />
-              </div>
 
-              <!-- Curso Vigilante (checkbox + input condicional) -->
-              <div class="flex flex-col gap-1">
+                <!-- XIV Sueldo (siempre visible) -->
                 <div class="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    v-model="formData.cursoVigilante"
+                    v-model="formData.xiv"
+                    :disabled="!formData.afiliadoIESS"
                     class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    id="cursoVigilante"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                    }"
+                    id="XIV"
                   />
                   <label
                     class="text-xs font-medium text-gray-600 cursor-pointer"
-                    for="cursoVigilante"
-                    >Curso Vigilante</label
+                    for="XIV"
+                  >
+                    XIV Sueldo
+                  </label>
+                </div>
+
+                <!-- Fondo de Reserva (siempre visible) -->
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    v-model="formData.reservaRol"
+                    :disabled="!formData.afiliadoIESS"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                    }"
+                    id="fondoReserva"
+                  />
+                  <label
+                    class="text-xs font-medium text-gray-600 cursor-pointer"
+                    for="fondoReserva"
+                  >
+                    Fondo de Reserva
+                  </label>
+                </div>
+
+                <!-- Acumulado Fondo Reserva (siempre visible) -->
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    v-model="formData.acumFondoReserva"
+                    :disabled="!formData.afiliadoIESS"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
+                    }"
+                    id="acumFondoReserva"
+                  />
+                  <label
+                    class="text-xs font-medium text-gray-600 cursor-pointer"
+                    for="acumFondoReserva"
+                  >
+                    Acumulado F. Reserva
+                  </label>
+                </div>
+              </div>
+
+              <!-- Columna 5 -->
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Prueba Antidroga</label
+                  >
+                  <select
+                    v-model="formData.pruebaAntidroga"
+                    class="form-field w-full"
+                  >
+                    <option
+                      v-for="option in pruebaAntidrogaSelect"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </option>
+                  </select>
+                </div>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    v-model="formData.historiaClinica"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    id="historiaClinica"
+                  />
+                  <label
+                    class="text-xs font-medium text-gray-600"
+                    for="historiaClinica"
+                    >Historia Clínica</label
                   >
                 </div>
-                <input
-                  v-if="formData.cursoVigilante"
-                  type="text"
-                  v-model="formData.cursoVigilanteDetalle"
-                  class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
-                  placeholder="Número o serie"
-                />
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      v-model="formData.discapacitado"
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      id="discapacitado"
+                    />
+                    <label
+                      class="text-xs font-medium text-gray-600 cursor-pointer"
+                      for="discapacitado"
+                      >Discapacitado</label
+                    >
+                  </div>
+                  <input
+                    v-if="formData.discapacitado"
+                    type="text"
+                    v-model="formData.discapacitadoDetalle"
+                    class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                    placeholder="Número o serie"
+                  />
+                </div>
+
+                <!-- Examen Psicológico (checkbox + input condicional) -->
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      v-model="formData.examenPsicologico"
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      id="examenPsicologico"
+                    />
+                    <label
+                      class="text-xs font-medium text-gray-600 cursor-pointer"
+                      for="examenPsicologico"
+                      >Examen Psicológico</label
+                    >
+                  </div>
+                  <input
+                    v-if="formData.examenPsicologico"
+                    type="text"
+                    v-model="formData.examenPsicologicoDetalle"
+                    class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                    placeholder="Número o serie"
+                  />
+                </div>
+
+                <!-- Curso Vigilante (checkbox + input condicional) -->
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      v-model="formData.cursoVigilante"
+                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      id="cursoVigilante"
+                    />
+                    <label
+                      class="text-xs font-medium text-gray-600 cursor-pointer"
+                      for="cursoVigilante"
+                      >Curso Vigilante</label
+                    >
+                  </div>
+                  <input
+                    v-if="formData.cursoVigilante"
+                    type="text"
+                    v-model="formData.cursoVigilanteDetalle"
+                    class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 ml-6"
+                    placeholder="Número o serie"
+                  />
+                </div>
               </div>
             </div>
-          </div>
           </form>
           <!-- --- -->
         </div>
@@ -943,13 +947,22 @@
       :total-pages="personalStore.totalPages"
       :is-loading="personalStore.searchLoading"
       :page-size-options="personalStore.pageSizesOptions"
-      @search="(term) =>  personalStore.searchEmployees(authStore.selectedCompany, term)"
+      @search="
+        (term) => personalStore.searchEmployees(authStore.selectedCompany, term)
+      "
       @update:show="showSearchModal = $event"
       @close="showSearchModal = false"
       @select-employee="onEmployeeSelected"
-      @page-change="(page) => personalStore.searchEmployees(authStore.selectedCompany, personalStore.searchQuery, page, personalStore.itemsPerPage) "
+      @page-change="
+        (page) =>
+          personalStore.searchEmployees(
+            authStore.selectedCompany,
+            personalStore.searchQuery,
+            page,
+            personalStore.itemsPerPage
+          )
+      "
       @change-page-size="(size) => personalStore.changePageSize(size)"
-      
     />
   </div>
 </template>
@@ -964,9 +977,15 @@ import { useCargoStore } from "../../stores/MasterData/cargo.store";
 import { useContratoStore } from "../../stores/MasterData/contrato.store";
 import { useSitioStore } from "../../stores/MasterData/sitio.store";
 import { usePersonalStore } from "../../stores/MasterData/personal.store";
-import { setFormDisabledState, useReadonlyForm} from "@/utils/disabledForm";
+import { setFormDisabledState, useReadonlyForm } from "@/utils/disabledForm";
 
-import { educationlevel, maritalStatus, SexoOption, pruebaAntidrogaSelect, tipoContratoSelect } from "@/utils/selectOptions";
+import {
+  educationlevel,
+  maritalStatus,
+  SexoOption,
+  pruebaAntidrogaSelect,
+  tipoContratoSelect,
+} from "@/utils/selectOptions";
 import { Icon } from "@iconify/vue";
 import { push } from "notivue";
 import { storeToRefs } from "pinia";
@@ -981,24 +1000,24 @@ const cargoStore = useCargoStore();
 const contratoStore = useContratoStore();
 const sitiosStore = useSitioStore();
 const personalStore = usePersonalStore();
-const { historialLaboral, loadingHistorial} = storeToRefs(personalStore);
+const { historialLaboral, loadingHistorial } = storeToRefs(personalStore);
 const formRef = ref(null);
-const { isReadonly, enableForm, disableForm} = useReadonlyForm();
+const { isReadonly, enableForm, disableForm } = useReadonlyForm();
 
 // Computed para manejar el estado del formulario
-const isEditingExisting = computed(() => !!personalStore.currentEmployee?.idPersonal);
+const isEditingExisting = computed(
+  () => !!personalStore.currentEmployee?.idPersonal
+);
 
 //https://tiapatty.mikareno.com/ddd/academic/get-stats-all-classroom-average:
 //carga Areas, Cargos, Proyectos, sitios al montar el componente
 onMounted(async () => {
-  try {   
-
-    await areaStore.fetchAreas(tipoConexion, false);        
+  try {
+    await areaStore.fetchAreas(tipoConexion, false);
     await bancoStore.fetchBancos(tipoConexion, false);
-    await cargoStore.fetchCargos(tipoConexion,false);
-    await sitiosStore.fetchSitios(tipoConexion,false);
-    await contratoStore.fetchContratos(tipoConexion,false);
-
+    await cargoStore.fetchCargos(tipoConexion, false);
+    await sitiosStore.fetchSitios(tipoConexion, false);
+    await contratoStore.fetchContratos(tipoConexion, false);
   } catch (error) {
     push.error("Error al cargar servicios: ", {
       title: "Error",
@@ -1063,7 +1082,6 @@ const formData = reactive({
   noEspecificado: "",
 });
 
-
 // Pestañas y UI
 
 const currentTab = ref("datos");
@@ -1075,58 +1093,50 @@ const tabs = [
 
 // Manejo de seleccion de empleado
 const onEmployeeSelected = async (employee, viewMode = false) => {
-  
   try {
-
-    
     // Resetear los datos del formulario si no estamos en modo vista
-    if (!viewMode) {    
-    Object.keys(formData).forEach((key) => {
-      formData[key] = formData[key] !== null && formData[key] !== undefined 
-        ? formData[key] // Mantener valor por defecto
-        : null;
-    }); 
+    if (!viewMode) {
+      Object.keys(formData).forEach((key) => {
+        formData[key] =
+          formData[key] !== null && formData[key] !== undefined
+            ? formData[key] // Mantener valor por defecto
+            : null;
+      });
     }
-    
 
     const employeeData = await personalStore.loadEmployeeDetails(
-    authStore.selectedCompany,
+      authStore.selectedCompany,
       employee,
       areaStore,
       cargoStore,
       sitiosStore
-      
     );
 
     Object.assign(formData, employeeData); // Asignar los datos del empleado al formulario
     currentTab.value = "datos"; // Cambiar a la pestaña de datos
     showSearchModal.value = false; // Cerrar el modal de búsqueda
-    
+
     //esperar a que el DOM se actualice
     await nextTick();
 
-    if (viewMode){
+    if (viewMode) {
       disableForm(formRef, formData);
-    } 
-    else {
+    } else {
       enableForm(formRef, formData);
     }
-
-    
   } catch (error) {
     push.error("Error al cargar datos del empleado: ", {
       title: "Error cargando empleado",
-      message: error.message || "Ocurrió un error al cargar los datos del empleado.",
+      message:
+        error.message || "Ocurrió un error al cargar los datos del empleado.",
     });
   }
-
-}
+};
 
 // Métodos del modal
 
 const openSearchModal = () => {
-  showSearchModal.value = true;  
-  
+  showSearchModal.value = true;
 };
 
 const handleFileChange = (event) => {
@@ -1143,24 +1153,23 @@ const handleFileChange = (event) => {
 // Método para crear nuevo empleado
 const newEmployee = () => {
   // Resetear el formulario
-  Object.keys(formData).forEach(key => {
+  Object.keys(formData).forEach((key) => {
     formData[key] = null;
   });
-  
+
   // Resetear el empleado actual en el store
   personalStore.currentEmployee = null;
-  
+
   // Habilitar el formulario
   enableForm(formRef, formData);
-  
+
   // Cambiar a la pestaña de datos
   currentTab.value = "datos";
 };
-
 </script>
 
 <style>
-/* Estilos para inputs de fecha */
+
 @keyframes pulse-ring {
   0% {
     transform: scale(0.8);

@@ -34,7 +34,7 @@
             <img
               :src="selectedCompany === 'Cisepro' ? ciseproLogo : seportpacLogo "
               
-              class="h-8 w-auto flex-shrink-0"
+              class="h-7 w-auto flex-shrink-0"
             />
           </div>
         </div>
@@ -51,7 +51,7 @@
                     @mouseenter="!sidebarOpen ? showTooltip(item.name, $event) : null"
                     @mouseleave="!sidebarOpen ? hideTooltip() : null"
                     :class="[
-                      'w-full flex items-center p-3 text-white hover:bg-white/10 rounded-xl transition-all duration-200',
+                      'w-full flex items-center p-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200',
                       sidebarOpen ? 'justify-between' : 'justify-center'
                     ]"
                   >
@@ -146,9 +146,9 @@
     <button 
       @click="toggleSidebar"
       :class="[
-        'fixed top-6 z-50 w-7 h-7 bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:scale-105',
-        sidebarOpen ? 'left-60' : 'left-12'
-      ]"
+        'fixed top-6 z-50 w-5 h-5 bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:scale-105',
+  ]" :style="{left: sidebarOpen ? '15.35rem' : '3.35rem'}"
+  
     >
       <svg 
         :class="['w-4 h-4 transition-transform duration-300', sidebarOpen ? 'rotate-180' : '']" 
@@ -203,7 +203,7 @@
     <div
       v-if="tooltip.show && !sidebarOpen"
       :style="{ top: tooltip.y + 'px', left: tooltip.x + 'px' }"
-      class="fixed z-50 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-xl pointer-events-none transform transition-opacity duration-200"
+      class="fixed z-50 px-3 py-2 bg-gray-600 text-white text-sm rounded-lg shadow-xl pointer-events-none transform transition-opacity duration-200"
     >
       {{ tooltip.text }}
       <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-gray-900"></div>

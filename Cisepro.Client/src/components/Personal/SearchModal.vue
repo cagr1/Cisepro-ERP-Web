@@ -391,7 +391,10 @@ const handlePageSizeChange = (newValue) => {
 
 //Boton ver
 const handleView = (item) => {
- try {
+ 
+  if (props.isLoading) return;
+ 
+  try {
    
   emit('select-employee', item, true);
   emit('close');

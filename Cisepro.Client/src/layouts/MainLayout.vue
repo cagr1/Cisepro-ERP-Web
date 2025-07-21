@@ -194,7 +194,7 @@
       </header>
 
       <!-- Content -->
-      <div class="p-6">
+      <div class="p-1">
         <router-view />
       </div>
     </div>

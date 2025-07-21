@@ -9,6 +9,7 @@ using Cisepro.Services.Activos_Fijos.Depreciaciones;
 using Cisepro.Services.Contabilidad.Bancos;
 using Cisepro.Services.Talento_Humano;
 using Cisepro.Services.EstructuraEmpresa;
+using Microsoft.EntityFrameworkCore;
 
 
 
@@ -25,7 +26,11 @@ namespace Cisepro.Services.Configuration
                 configuration.GetConnectionString("Cisepro") :
                 configuration.GetConnectionString("Seportpac");
 
-                return new AppDbContext(connectionString);
+                var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlServer(connectionString)
+                .Options;
+                
+                return new AppDbContext(options);
             });
                         
             //Activos Fijos

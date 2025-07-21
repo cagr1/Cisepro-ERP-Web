@@ -16,14 +16,14 @@ public partial class AppDbContext : DbContext
     //}
 
     
-    public AppDbContext(string connectionString) : base(GetOptions(connectionString)) { }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    private static DbContextOptions<AppDbContext> GetOptions(string connectionString)
-    {
-        return new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer(connectionString)
-            .Options;
-    }
+    //private static DbContextOptions<AppDbContext> GetOptions(string connectionString)
+    //{
+    //    return new DbContextOptionsBuilder<AppDbContext>()
+    //        .UseSqlServer(connectionString)
+    //        .Options;
+    //}
 
     public virtual DbSet<ActividadInventario> ActividadInventarios { get; set; }
 
@@ -535,9 +535,9 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<VehiculosOtro> VehiculosOtros { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=192.168.0.5;Database=SYSCISEPRO;TrustServerCertificate= true;User Id=sa;Password=C1s3pr0c14;");
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Server=192.168.0.5;Database=SYSCISEPRO;TrustServerCertificate= true;User Id=sa;Password=C1s3pr0c14;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

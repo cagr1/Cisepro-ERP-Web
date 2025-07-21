@@ -77,8 +77,8 @@
       <!-- Contenido de las pestañas -->
       <div class="p-8">
         <!-- Pestaña Datos Personales -->
-        <div v-if="currentTab === 'datos'">
-          <form ref="FormRef" class="space-y-8">
+        <div v-show="currentTab === 'datos'">
+          <form ref="formRef" class="space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
               <!-- Columna de la foto - Reducida -->
               <div class="space-y-2 flex flex-col">
@@ -1102,6 +1102,8 @@ const onEmployeeSelected = async (employee, viewMode = false) => {
             ? formData[key] // Mantener valor por defecto
             : null;
       });
+
+      
     }
 
     const employeeData = await personalStore.loadEmployeeDetails(
@@ -1118,12 +1120,10 @@ const onEmployeeSelected = async (employee, viewMode = false) => {
 
     //esperar a que el DOM se actualice
     await nextTick();
-
-    if (viewMode) {
-      disableForm(formRef, formData);
-    } else {
-      enableForm(formRef, formData);
-    }
+  
+    
+    viewMode ? disableForm(formRef, formData) : enableForm(formRef, formData);
+    
   } catch (error) {
     push.error("Error al cargar datos del empleado: ", {
       title: "Error cargando empleado",
@@ -1180,6 +1180,12 @@ const newEmployee = () => {
     transform: scale(1.2);
     opacity: 0;
   }
+}
+
+.disabled-field {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: #f3f4f6;
 }
 
 .animate-pulse-ring {

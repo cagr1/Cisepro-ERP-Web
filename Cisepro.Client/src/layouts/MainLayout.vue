@@ -8,10 +8,18 @@
     >
       <div class="h-full flex flex-col">
         <!-- Logo -->
-        <div class="p-4 border-b border-white/10 flex items-center justify-center relative  min-h-[72px]">
-           <!-- Logo expandido -->
-          <div v-if="sidebarOpen" class="flex items-center gap-3 transition-all duration-300 opacity-100">
-            <div v-if="selectedCompany === 'Cisepro'" class="flex items-center gap-3">
+        <div
+          class="p-4 border-b border-white/10 flex items-center justify-center relative min-h-[72px]"
+        >
+          <!-- Logo expandido -->
+          <div
+            v-if="sidebarOpen"
+            class="flex items-center gap-3 transition-all duration-300 opacity-100"
+          >
+            <div
+              v-if="selectedCompany === 'Cisepro'"
+              class="flex items-center gap-3"
+            >
               <img
                 src="../assets/images/cisepro.png"
                 alt="Cisepro"
@@ -28,12 +36,14 @@
               <span class="text-white font-semibold text-lg">SEPORTPAC</span>
             </div>
           </div>
-          
+
           <!-- Logo minimizado -->
-          <div v-else class="flex items-center w-full transition-all  duration-300 opacity-100">
+          <div
+            v-else
+            class="flex items-center w-full transition-all duration-300 opacity-100"
+          >
             <img
-              :src="selectedCompany === 'Cisepro' ? ciseproLogo : seportpacLogo "
-              
+              :src="selectedCompany === 'Cisepro' ? ciseproLogo : seportpacLogo"
               class="h-7 w-auto flex-shrink-0"
             />
           </div>
@@ -48,17 +58,23 @@
                 <div class="relative group">
                   <button
                     @click="toggleSubmenu(item)"
-                    @mouseenter="!sidebarOpen ? showTooltip(item.name, $event) : null"
+                    @mouseenter="
+                      !sidebarOpen ? showTooltip(item.name, $event) : null
+                    "
                     @mouseleave="!sidebarOpen ? hideTooltip() : null"
                     :class="[
                       'w-full flex items-center p-2 text-white hover:bg-white/10 rounded-xl transition-all duration-200',
-                      sidebarOpen ? 'justify-between' : 'justify-center'
+                      sidebarOpen ? 'justify-between' : 'justify-center',
                     ]"
                   >
                     <div class="flex items-center">
-                      <Icon :icon="item.icon" class="text-white/90 hover:text-white text-xl" :style="{minWidth: '20px'}"/>
-                      <span 
-                        v-if="sidebarOpen" 
+                      <Icon
+                        :icon="item.icon"
+                        class="text-white/90 hover:text-white text-xl"
+                        :style="{ minWidth: '20px' }"
+                      />
+                      <span
+                        v-if="sidebarOpen"
                         class="text-sm font-medium ml-3 transition-opacity duration-300"
                       >
                         {{ item.name }}
@@ -68,12 +84,10 @@
                       v-if="sidebarOpen"
                       icon="ri:arrow-down-s-line"
                       class="transition-transform duration-200"
-                      :class="{'rotate-180': openSubmenus[item.name]}"
-                      
+                      :class="{ 'rotate-180': openSubmenus[item.name] }"
                     />
                   </button>
-                  
-                  <!-- Submenu expandido -->
+
                   <transition
                     enter-active-class="transition-all duration-300 ease-out"
                     leave-active-class="transition-all duration-300 ease-in"
@@ -82,7 +96,10 @@
                     leave-from-class="max-h-96 opacity-100"
                     leave-to-class="max-h-0 opacity-0"
                   >
-                    <ul v-show="openSubmenus[item.name] && sidebarOpen" class="ml-8 space-y-1 overflow-hidden">
+                    <ul
+                      v-show="openSubmenus[item.name] && sidebarOpen"
+                      class="ml-8 space-y-1 overflow-hidden"
+                    >
                       <li v-for="child in item.children" :key="child.name">
                         <RouterLink
                           :to="child.path"
@@ -97,8 +114,12 @@
                               { 'bg-white/20 text-white': isActive },
                             ]"
                           >
-                            <Icon :icon="child.icon" class="text-base mr-3" style="min-width: 16px;"/>
-                            
+                            <Icon
+                              :icon="child.icon"
+                              class="text-base mr-3"
+                              style="min-width: 16px"
+                            />
+
                             {{ child.name }}
                           </a>
                         </RouterLink>
@@ -107,7 +128,7 @@
                   </transition>
                 </div>
               </template>
-              
+
               <!-- Items simples -->
               <div v-else class="relative group">
                 <RouterLink
@@ -117,18 +138,22 @@
                 >
                   <a
                     @click="navigate"
-                    @mouseenter="!sidebarOpen ? showTooltip(item.name, $event) : null"
+                    @mouseenter=" !sidebarOpen ? showTooltip(item.name, $event) : null"
                     @mouseleave="!sidebarOpen ? hideTooltip() : null"
                     :href="item.path"
                     :class="[
                       'flex items-center p-3 text-white hover:bg-white/10 rounded-xl transition-all duration-200',
                       sidebarOpen ? 'justify-start' : 'justify-center',
-                      { 'bg-white/20': isActive }
+                      { 'bg-white/20': isActive },
                     ]"
                   >
-                    <Icon :icon="item.icon" class="text-xl "  style="min-Width: 20px;"/>
-                    <span 
-                      v-if="sidebarOpen" 
+                    <Icon
+                      :icon="item.icon"
+                      class="text-xl"
+                      style="min-width: 20px"
+                    />
+                    <span
+                      v-if="sidebarOpen"
                       class="text-sm font-medium ml-3 transition-opacity duration-300"
                     >
                       {{ item.name }}
@@ -143,26 +168,34 @@
     </aside>
 
     <!-- Toggle Button -->
-    <button 
+    <button
       @click="toggleSidebar"
       :class="[
         'fixed top-6 z-50 w-5 h-5 bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:scale-105',
-  ]" :style="{left: sidebarOpen ? '15.35rem' : '3.35rem'}"
-  
+      ]"
+      :style="{ left: sidebarOpen ? '15.35rem' : '3.35rem' }"
     >
-      <svg 
-        :class="['w-4 h-4 transition-transform duration-300', sidebarOpen ? 'rotate-180' : '']" 
-        fill="none" 
-        stroke="currentColor" 
+      <svg
+        :class="[
+          'w-4 h-4 transition-transform duration-300',
+          sidebarOpen ? 'rotate-180' : '',
+        ]"
+        fill="none"
+        stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"
+        />
       </svg>
     </button>
 
     <!-- Main Content -->
-    <div 
-      class="flex-1 transition-all duration-300" 
+    <div
+      class="flex-1 transition-all duration-300"
       :class="sidebarOpen ? 'ml-64' : 'ml-16'"
     >
       <!-- Navbar -->
@@ -172,7 +205,10 @@
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-3">
               <img
-                :src="user.photo || 'https://img.icons8.com/?size=100&id=23265&format=png&color=000000'"
+                :src="
+                  user.photo ||
+                  'https://img.icons8.com/?size=100&id=23265&format=png&color=000000'
+                "
                 class="w-10 h-10 rounded-full object-cover shadow-md"
                 alt="User photo"
               />
@@ -206,7 +242,9 @@
       class="fixed z-50 px-3 py-2 bg-gray-600 text-white text-sm rounded-lg shadow-xl pointer-events-none transform transition-opacity duration-200"
     >
       {{ tooltip.text }}
-      <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-gray-900"></div>
+      <div
+        class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-gray-900"
+      ></div>
     </div>
   </div>
 </template>
@@ -229,9 +267,9 @@ const { selectedCompany } = storeToRefs(authStore);
 // Tooltip state
 const tooltip = reactive({
   show: false,
-  text: '',
+  text: "",
   x: 0,
-  y: 0
+  y: 0,
 });
 
 const menuItems = [
@@ -293,16 +331,14 @@ const toggleSubmenu = (item) => {
     setTimeout(() => {
       openSubmenus.value[item.name] = true;
     }, 300);
-  } else
-  {
+  } else {
     openSubmenus.value[item.name] = !openSubmenus.value[item.name];
   }
-  
 };
 
 const showTooltip = (text, event) => {
   if (sidebarOpen.value) return;
-  
+
   const rect = event.currentTarget.getBoundingClientRect();
   tooltip.text = text;
   tooltip.x = rect.right + 10;
@@ -318,10 +354,12 @@ const sidebarStyle = computed(() => {
   const company = selectedCompany.value;
   const colors = {
     Seportpac: {
-      background: "linear-gradient(135deg, rgb(38, 50, 56) 0%, rgb(55, 71, 79) 100%)",
+      background:
+        "linear-gradient(135deg, rgb(38, 50, 56) 0%, rgb(55, 71, 79) 100%)",
     },
     Cisepro: {
-      background: "linear-gradient(135deg, rgb(13, 71, 161) 0%, rgb(25, 118, 210) 100%)",
+      background:
+        "linear-gradient(135deg, rgb(13, 71, 161) 0%, rgb(25, 118, 210) 100%)",
     },
   };
 
@@ -352,8 +390,7 @@ const logout = () => {
 };
 </script>
 
-<style scoped>
-/* Scrollbar personalizado para el sidebar */
+<style>
 nav::-webkit-scrollbar {
   width: 4px;
 }

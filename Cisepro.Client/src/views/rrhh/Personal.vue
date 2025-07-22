@@ -371,21 +371,16 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-600 mb-1"
-                    >Instrucción Primaria</label
-                  >
-                  <select
-                    v-model="formData.instruccion"
-                    class="form-field max-w-[160px]"
-                  >
-                    <option
-                      v-for="option in educationlevel"
-                      :key="option.value"
-                      :value="option.value"
-                    >
-                      {{ option.text }}
-                    </option>
-                  </select>
+                  <autocomplete
+                  v-model = formData.instruccion
+                  :options="educationlevel"
+                  label="Instrucción Primaria"
+                  placeholder="Buscar nivel"
+                  option-value="value"
+                  option-label="text"
+                  />
+                  
+                  
                 </div>
 
                 <div>
@@ -425,7 +420,7 @@
                   <input
                     type="checkbox"
                     v-model="formData.credencial"
-                    class="w-4 h-4 p-0"
+                    class="hero-checkbox"
                   />
                 </div>
               </div>
@@ -468,12 +463,12 @@
               </div>
             </div>
             <!-- Seccion Operativa -->
-            <div class="">
+            <div class="mt-6">
               <h2 class="text-lg font-medium text-gray-900 mb-2">
                 Información Operativa
               </h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 ">
               <!-- Columna 1 -->
               <div class="space-y-2">
                 <div>
@@ -486,38 +481,31 @@
                     class="form-field w-full"
                   />
                 </div>
-                <div>
-                  <label class="block text-xs font-medium text-gray-600 mb-1"
-                    >Proyecto</label
-                  >
-                  <select v-model="formData.proyecto" class="form-field w-full">
-                    <option
-                      v-for="contrato in contratoStore.contratoOptions"
-                      :key="contrato.id"
-                      :value="contrato.id"
-                      :label="contrato.nombre"
-                      class="form-field w-full h-20"
-                    >
-                      {{ contrato.nombre }}
-                    </option>
-                  </select>
+                <div class="space-y-2">
+                  <Autocomplete
+                    v-model="formData.proyecto"
+                    :options="contratoStore.contratoOptions"
+                    label="Proyecto"
+                    placeholder="Buscar proyecto.."
+                    option-value="id"
+                    option-label="nombre"
+                  />
+                  
+                 
                 </div>
                 <div>
-                  <label class="block text-xs font-medium text-gray-600 mb-1"
-                    >Ubicacion</label
-                  >
-                  <select
+                  
+                   <Autocomplete
                     v-model="formData.sitio"
-                    class="form-field w-full text-xs"
-                  >
-                    <option
-                      v-for="sitio in sitiosStore.sitioOptions"
-                      :key="sitio.id"
-                      :value="sitio.id"
-                    >
-                      {{ sitio.nombre }}
-                    </option>
-                  </select>
+                    :options="sitiosStore.sitioOptions"
+                    label="Ubicacion"
+                    placeholder="Buscar sitio.."
+                    option-value="id"
+                    option-label="nombre"
+                  />
+                  
+                  
+                  
                 </div>
               </div>
 
@@ -633,7 +621,7 @@
                   <input
                     type="checkbox"
                     v-model="formData.iess"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    class="hero-checkbox"
                     id="afiliadoIESS"
                   />
                   <label
@@ -665,7 +653,7 @@
                     type="checkbox"
                     v-model="formData.xiii"
                     :disabled="!formData.afiliadoIESS"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    class="hero-checkbox"
                     :class="{
                       'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
                     }"
@@ -685,7 +673,7 @@
                     type="checkbox"
                     v-model="formData.xiv"
                     :disabled="!formData.afiliadoIESS"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    class="hero-checkbox"
                     :class="{
                       'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
                     }"
@@ -705,7 +693,7 @@
                     type="checkbox"
                     v-model="formData.reservaRol"
                     :disabled="!formData.afiliadoIESS"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    class="hero-checkbox"
                     :class="{
                       'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
                     }"
@@ -725,7 +713,7 @@
                     type="checkbox"
                     v-model="formData.acumFondoReserva"
                     :disabled="!formData.afiliadoIESS"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    class="hero-checkbox"
                     :class="{
                       'opacity-50 cursor-not-allowed': !formData.afiliadoIESS,
                     }"
@@ -763,7 +751,7 @@
                   <input
                     type="checkbox"
                     v-model="formData.historiaClinica"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    class="hero-checkbox"
                     id="historiaClinica"
                   />
                   <label
@@ -777,7 +765,7 @@
                     <input
                       type="checkbox"
                       v-model="formData.discapacitado"
-                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      class="hero-checkbox"
                       id="discapacitado"
                     />
                     <label
@@ -801,7 +789,7 @@
                     <input
                       type="checkbox"
                       v-model="formData.examenPsicologico"
-                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      class="hero-checkbox"
                       id="examenPsicologico"
                     />
                     <label
@@ -825,7 +813,7 @@
                     <input
                       type="checkbox"
                       v-model="formData.cursoVigilante"
-                      class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      class="hero-checkbox"
                       id="cursoVigilante"
                     />
                     <label
@@ -978,6 +966,7 @@ import { useContratoStore } from "../../stores/MasterData/contrato.store";
 import { useSitioStore } from "../../stores/MasterData/sitio.store";
 import { usePersonalStore } from "../../stores/MasterData/personal.store";
 import { setFormDisabledState, useReadonlyForm } from "@/utils/disabledForm";
+import  Autocomplete  from "@/components/autocomplete.vue";
 
 import {
   educationlevel,

@@ -42,7 +42,7 @@
                 </button>
               </div>
 
-              <div class="relative" ref="exportMenuRef">
+              <div class="relative z-20" ref="exportMenuRef">
                 <button
                   @click="showExportMenu = !showExportMenu"
                   class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 transition-colors focus:outline-none"

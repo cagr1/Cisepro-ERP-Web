@@ -197,13 +197,13 @@ export const usePersonalStore = defineStore("MasterData/personal", {
           const areaEncontrada = areaStore.areasOptions.find(
             (a) => a.nombre === areaContrato
           );
-          
+          console.log("areaEncontrada:", areaEncontrada);
           const cargoContrato = contrato.descripcion;
           const cargoEncontrado = cargoStore.cargoOptions.find(
             (c) => c.nombre === cargoContrato
           );
 
-          
+          console.log("cargoEncontrado:", cargoEncontrado);
           return {
             nroContrato: contrato.nroContrato,
             area: areaEncontrada ? areaEncontrada.id : "",

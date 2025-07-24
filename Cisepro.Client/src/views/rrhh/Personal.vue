@@ -144,23 +144,19 @@
                     />
                   </div>
                   <div class="mt-2">
-                    <label class="block text-xs font-medium text-gray-600 mb-1"
-                      >Banco</label
-                    >
-                    <select
-                      v-model="formData.banco"
-                      class="w-full max-w-[170px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option
-                        v-for="banco in bancoStore.bancoOptions"
-                        :key="banco.id"
-                        :value="banco.id"
-                        :label="banco.nombre"
-                        class="form-field w-full h-20"
-                      >
-                        {{ banco.nombre }}
-                      </option>
-                    </select>
+                     <Autocomplete
+                    v-model="formData.proyecto"
+                    :options="bancoStore.bancoOptions"
+                    label="Banco"
+                    placeholder="Buscar banco.."
+                    option-value="id"
+                    option-label="banco"
+                    class="w-full"
+                    max-height="200px"
+                  />
+                    
+                    
+                    
                   </div>
                   <div class="mt-2">
                     <label class="block text-xs font-medium text-gray-600 mb-1"
@@ -489,6 +485,8 @@
                     placeholder="Buscar proyecto.."
                     option-value="id"
                     option-label="nombre"
+                    class="w-full"
+                    max-height="300px"
                   />
                   
                  
@@ -1109,7 +1107,7 @@ const onEmployeeSelected = async (employee, viewMode = false) => {
 
     //esperar a que el DOM se actualice
     await nextTick();
-  
+    console.log(formData);
     
     viewMode ? disableForm(formRef, formData) : enableForm(formRef, formData);
     

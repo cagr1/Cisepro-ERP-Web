@@ -457,7 +457,7 @@ button {
 .modal-container {
   width: 90%;
   max-width: 870px;
-  max-height: 90vh;
+  max-height: 85vh;
   background-color: #fff;
   border-radius: 12px;
   display: flex;
@@ -467,7 +467,7 @@ button {
 
 
 .modal-header {
-  padding: 8px 20px;
+  padding: 6px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -487,7 +487,7 @@ button {
 
 .search-container {
    height: 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.0rem;
 }
 
 /* Footer ajustado */

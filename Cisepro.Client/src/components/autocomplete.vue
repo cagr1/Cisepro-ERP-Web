@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full ">
+  <div class="relative w-full " ref="container">
     <label class="block text-xs font-medium text-gray-600 mb-1">
       {{ label }}
     </label>
@@ -9,7 +9,7 @@
       type="text"
       v-model="searchText"
       @input="handleInput"
-      @focus="showDropdown = true"
+      @focus="openDropdown"
       @blur="handleBlur"
       class="form-field max-w-[160px]"
       :placeholder="placeholder"
@@ -19,7 +19,16 @@
     <!-- Lista desplegable -->
     <ul
       v-show="showDropdown && filteredOptions.length > 0"
-      class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-[200px] overflow-y-auto"
+      class="absolute z-50 w-full bg-white border border-gray-300 rounded-md shadow-lg overflow-y-auto"
+      :class="{
+        'mt-1 bottom-full': shouldOpenUpward,
+        'mt-1': !shouldOpenUpward
+      }"
+      :style="{
+        'max-height': maxHeight,
+        'min-width': '200px'
+      }"
+      ref="dropdown"
     >
       <li
         v-for="option in filteredOptions"
@@ -35,7 +44,12 @@
     <!-- Mensaje cuando no hay resultados -->
     <div
       v-if="showDropdown && filteredOptions.length === 0"
-      class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg px-3 py-2 text-sm text-gray-500"
+       class="absolute z-50 w-full bg-white border border-gray-300 rounded-md shadow-lg px-3 py-2 text-sm text-gray-500"
+      :class="{
+        'mt-1 bottom-full': shouldOpenUpward,
+        'mt-1': !shouldOpenUpward
+      }"
+      :style="{ 'min-width': '200px' }"
     >
       No se encontraron resultados
     </div>
@@ -43,12 +57,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted, nextTick } from "vue";
 
 const props = defineProps({
   modelValue: {
-    type: [String, Number],
-    default: "",
+    type: [String, Number],    
   },
   options: {
     type: Array,
@@ -56,8 +69,7 @@ const props = defineProps({
     default: () => [],
   },
   label: {
-    type: String,
-    default: "",
+    type: String,    
   },
   placeholder: {
     type: String,
@@ -72,9 +84,12 @@ const props = defineProps({
     default: "value",
   },
   disabled: {
-    type: Boolean,
-    default: false
+    type: Boolean,    
   },
+  maxHeight: {
+    type: String,
+    default: "300px",
+  },  
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -82,25 +97,15 @@ const emit = defineEmits(["update:modelValue"]);
 const searchText = ref("");
 const showDropdown = ref(false);
 const selectedOption = ref(null);
-
+const shouldOpenUpward = ref(false);
+const container = ref(null);
+const dropdown = ref(null);
 // Métodos para obtener label y value de forma genérica
-const getOptionLabel = (option) => {
-  if (typeof option === "object") {
-    return option[props.optionLabel] || option.nombre || option.text || "";
-  }
-  return option;
-};
+const getOptionLabel = (option) => option?.[props.optionLabel] || option?.nombre || option?.text || "";
 
-const getOptionValue = (option) => {
-  if (typeof option === "object") {
-    return option[props.optionValue] || option.id || option.value || "";
-  }
-  return option;
-};
+const getOptionValue = (option) => option?.[props.optionValue] || option?.id || option?.value || "";
 
-const isOptionSelected = (option) => {
-  return getOptionValue(option) === props.modelValue;
-};
+const isOptionSelected = (option) => getOptionValue(option) === props.modelValue;
 
 
 // Filtra las opciones basadas en la búsqueda
@@ -108,11 +113,51 @@ const filteredOptions = computed(() => {
   if (!searchText.value) return props.options;
   
   const searchTerm = searchText.value.toLowerCase();
-  return props.options.filter(option => {
-    const label = getOptionLabel(option).toString().toLowerCase();
-    return label.includes(searchTerm);
-  });
+  return props.options.filter(option => getOptionLabel(option).toString().toLowerCase().includes(searchTerm));
+    });
+
+// Calcula la posición del dropdown
+const calculateDropdownPosition = async () => {
+  await nextTick();
+  if (!container.value || !dropdown.value) return;
+  
+  const containerRect = container.value.getBoundingClientRect();
+  const dropdownHeight = Math.min(
+    dropdown.value.scrollHeight,
+    parseInt(props.maxHeight)
+  );
+  
+  // Calcula espacio considerando scroll
+  const spaceBelow = window.innerHeight - containerRect.bottom - window.scrollY;
+  const spaceAbove = containerRect.top + window.scrollY;
+  
+  shouldOpenUpward.value = spaceBelow < dropdownHeight && spaceAbove >= dropdownHeight;
+  
+  // Ajusta altura máxima real
+  if (shouldOpenUpward.value) {
+    dropdown.value.style.maxHeight = `${Math.min(dropdownHeight, spaceAbove - 10)}px`;
+  } else {
+    dropdown.value.style.maxHeight = `${Math.min(dropdownHeight, spaceBelow - 10)}px`;
+  }
+};
+
+// Añade listener para scroll y resize
+onMounted(() => {
+  window.addEventListener('scroll', calculateDropdownPosition);
+  window.addEventListener('resize', calculateDropdownPosition);
 });
+
+// Limpia listeners
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', calculateDropdownPosition);
+  window.removeEventListener('resize', calculateDropdownPosition);
+});
+
+const openDropdown = () => {
+  showDropdown.value = true;
+  calculateDropdownPosition();
+};
+
 
 
 // Verifica si una opción está seleccionada
@@ -126,6 +171,7 @@ const selectOption = (option) => {
 // Maneja el input del usuario
 const handleInput = () => {
   showDropdown.value = true;
+  calculateDropdownPosition();
 };
 
 
@@ -135,23 +181,11 @@ const handleInput = () => {
 const handleBlur = () => {
   setTimeout(() => {
     showDropdown.value = false;
-    
-    // Restaura el texto mostrado si no se seleccionó nada
-    if (selectedOption.value) {
-      const currentValue = getOptionValue(selectedOption.value);
-      if (props.modelValue !== currentValue) {
-        const foundOption = props.options.find(opt => 
-          getOptionValue(opt) === props.modelValue
-        );
-        searchText.value = foundOption ? getOptionLabel(foundOption) : "";
-      }
-    } else if (props.modelValue) {
+    if (selectedOption.value && props.modelValue !== getOptionValue(selectedOption.value)) {
       const foundOption = props.options.find(opt => 
         getOptionValue(opt) === props.modelValue
       );
       searchText.value = foundOption ? getOptionLabel(foundOption) : "";
-    } else {
-      searchText.value = "";
     }
   }, 200);
 };
@@ -162,27 +196,14 @@ watch(() => props.modelValue, (newVal) => {
   const foundOption = props.options.find(opt => 
     getOptionValue(opt) === newVal
   );
-  if (foundOption) {
-    selectedOption.value = foundOption;
-    searchText.value = getOptionLabel(foundOption);
-  } else {
-    searchText.value = "";
-    selectedOption.value = null;
-  }
+   searchText.value = foundOption ? getOptionLabel(foundOption) : "";
 }, { immediate: true });
 
 // Actualiza cuando cambian las opciones
-watch(() => props.options, (newOptions) => {
-  if (props.modelValue) {
-    const foundOption = newOptions.find(opt => 
-      getOptionValue(opt) === props.modelValue
-    );
-    if (foundOption) {
-      searchText.value = getOptionLabel(foundOption);
-    }
-  }
+// Recalcular posición cuando cambian las opciones
+watch(() => props.options, () => {
+  if (showDropdown.value) calculateDropdownPosition();
 });
-
 
 </script>
 

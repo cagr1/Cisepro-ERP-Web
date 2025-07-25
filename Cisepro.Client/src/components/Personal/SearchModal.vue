@@ -19,7 +19,7 @@
           <!-- Barra de búsqueda y exportación -->
           <div class="search-container">
             <div
-              class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 p-4 bg-gray-10 rounded-lg"
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2  p-2 bg-gray-10 rounded-lg"
             >
               <div class="relative flex-grow max-w-md">
                 <i
@@ -48,7 +48,7 @@
                   class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 transition-colors focus:outline-none"
                   aria-label="Opciones de exportación"
                 >
-                  <i class="ri-more-2-fill text-gray-600 text-xl"></i>
+                  <Icon icon="heroicons:ellipsis-vertical" />
                 </button>
 
                 <transition
@@ -477,32 +477,39 @@ button {
 }
 
 .modal-body {
-  flex: 1;
-  display: flex;
-  padding: 16px;
+  
+  
+  padding: 8px 16px;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
   overflow-y: auto;
 }
 
 .search-container {
-   height: 2rem;
-  margin-bottom: 1.0rem;
+  padding-top: 0.1rem;
+  margin-bottom: 0.1rem;
 }
 
 /* Footer ajustado */
 .modal-footer {
-  padding: 1rem;
-  border-top: 1px solid #e2e8f0;
+  padding:  0.75rem;
+  border-top: 1px solid #e5e7eb;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer > div:first-child {
+  text-align: left;
+  margin-right: auto;
 }
 
 .table-outer-container {
   flex: 1;
-  min-height: 0; /* Crucial para flexbox */
-  padding: 0 8px;
-  margin: 8px 0;
+  
+  padding: 1px 3px;
+  margin-top: 0;
+  
 }
 
 .table-container {
@@ -512,14 +519,17 @@ button {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  min-height: 300px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  min-height: 180px;
 }
 
 .table-wrapper {
   flex: 1;
   overflow: auto;
   display: flex;
+  min-width: 100%;
+  border-radius: 4px ;
+  background: #888;
 }
 
 table {
@@ -537,23 +547,23 @@ thead {
 }
 
 th {
-  padding: 12px 16px; /* Padding reducido */
-  font-size: 0.75rem;
+  padding: 6px 8px !important; /* Padding reducido */
+  font-size: 0.75rem !important;
   font-weight: 500;
   text-align: left;
   white-space: nowrap;
 }
 
 td {
-  padding: 6px 10px; /* Padding reducido para filas más compactas */
-  font-size: 0.70rem;
-  white-space: nowrap;
+  padding: 4px 6px !important; /* Padding reducido para filas más compactas */
+  font-size: 0.7rem !important;
+  
 }
 
 /* Paginación más compacta */
 .pagination-container {
-  padding: 8px 0;
-  margin-top: 8px;
+  padding: 2px 0;
+  margin-top: 4px;
 }
 
 
@@ -579,7 +589,7 @@ td {
 .table-wrapper::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 6px;
-  border: 2px solid #f1f1f1;
+  
 }
 
 .hover\:bg-gray-100:hover {

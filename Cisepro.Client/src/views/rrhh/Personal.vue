@@ -27,7 +27,7 @@
             Buscar
           </button>
           <button
-            @click="nuevoPersonal"
+            @click="newEmployee"
             class="inline-flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
           >
             <Icon icon="heroicons:plus" class="w-5 h-5 mr-2" /> Nuevo
@@ -145,11 +145,11 @@
                   </div>
                   <div class="mt-2">
                      <Autocomplete
-                    v-model="formData.proyecto"
+                    v-model="formData.banco"
                     :options="bancoStore.bancoOptions"
                     label="Banco"
                     placeholder="Buscar banco.."
-                    option-value="id"
+                    option-value="banco"
                     option-label="banco"
                     class="w-full"
                     max-height="200px"
@@ -228,6 +228,21 @@
                     <option value="Ahorros">Ahorros</option>
                   </select>
                 </div>
+                
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Lib Militar</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.libretaMilitar"
+                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                
+              
+
               </div>
 
               <!-- Grupo 2: Datos personales -->
@@ -288,6 +303,16 @@
                     type="text"
                     v-model="formData.cuentaBanco"
                     class="form-field max-w-[160px]"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Pasaporte</label
+                  >
+                  <input
+                    type="text"
+                    v-model="formData.pasaporte"
+                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -367,15 +392,29 @@
                   />
                 </div>
                 <div>
-                  <autocomplete
+                  <!-- <autocomplete
                   v-model = formData.instruccion
                   :options="educationlevel"
                   label="Instrucción Primaria"
                   placeholder="Buscar nivel"
                   option-value="value"
                   option-label="text"
-                  />
-                  
+                  /> -->
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Estado Civil</label
+                  >
+                  <select
+                    v-model="formData.instruccion"
+                    class="w-max-[180px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option
+                      v-for="option in educationlevel"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.text }}
+                    </option>
+                  </select>
                   
                 </div>
 
@@ -417,13 +456,19 @@
                     type="checkbox"
                     v-model="formData.credencial"
                     class="hero-checkbox"
+                    :class="{
+                      'opacity-50 cursor-not-allowed': !formData.credencial,
+                    }"
+                    id="credencial"               
+                    
+
                   />
                 </div>
               </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 ">
               <!-- Dirección - Ocupa 2 columnas -->
-              <div class="md:col-span-3 py-0">
+              <div class="md:col-span-3 ">
                 <label class="block text-xs font-medium text-gray-600 mb-1"
                   >Dirección</label
                 >
@@ -433,30 +478,9 @@
                   class="w-full h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              <div class="space-y-2">
-                <div>
-                  <label class="block text-xs font-medium text-gray-600 mb-1"
-                    >Lib Militar</label
-                  >
-                  <input
-                    type="text"
-                    v-model="formData.libretaMilitar"
-                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
-              <div class="space-y-2">
-                <div>
-                  <label class="block text-xs font-medium text-gray-600 mb-1"
-                    >Pasaporte</label
-                  >
-                  <input
-                    type="text"
-                    v-model="formData.pasaporte"
-                    class="max-w-[130px] h-8 px-2 text-xs border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
+              
+              
+              
             </div>
             <!-- Seccion Operativa -->
             <div class="mt-6">
@@ -500,11 +524,21 @@
                     placeholder="Buscar sitio.."
                     option-value="id"
                     option-label="nombre"
-                  />
-                  
+                  />                
                   
                   
                 </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Sueldo</label
+                  >
+                  <input
+                    type="number"
+                    v-model="formData.sueldo"
+                    class="form-field w-full"
+                  />
+                </div>
+
               </div>
 
               <!-- Columna 2 -->
@@ -553,6 +587,16 @@
                       {{ area.nombre }}
                     </option>
                   </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1"
+                    >Sueldo Extra</label
+                  >
+                  <input
+                    type="number"
+                    v-model="formData.extra"
+                    class="form-field w-full"
+                  />
                 </div>
               </div>
 
@@ -722,6 +766,21 @@
                     for="acumFondoReserva"
                   >
                     Acumulado F. Reserva
+                  </label>
+                </div>
+                <!-- Cobra Quincena -->
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    v-model="formData.cobraQuincena"
+                    class="hero-checkbox"
+                    id="cobraQuincena"
+                  />
+                  <label
+                    class="text-xs font-medium text-gray-600 cursor-pointer"
+                    for="cobraQuincena"
+                  >
+                    Cobra Quincena
                   </label>
                 </div>
               </div>
@@ -965,6 +1024,7 @@ import { useSitioStore } from "../../stores/MasterData/sitio.store";
 import { usePersonalStore } from "../../stores/MasterData/personal.store";
 import { setFormDisabledState, useReadonlyForm } from "@/utils/disabledForm";
 import  Autocomplete  from "@/components/autocomplete.vue";
+import { validators, validationClass } from "../../utils/validators";
 
 import {
   educationlevel,
@@ -1012,6 +1072,33 @@ onMounted(async () => {
     });
   }
 });
+// Validaciones
+
+//Estado para mensajes de error
+const errors = reactive({
+  nombres: '',
+  cedula:''
+});
+
+//validar campo especifico 
+const validateField = (fieldName, validatorType) => {
+  const value = formData[fieldName];
+  const result = validators[validatorType](value);
+  
+  if (result.valid) {
+    errors[fieldName] = '';
+  } else {
+    errors[fieldName] = result.message;
+  }
+};
+
+//validar antes de enviar el formulario
+const validateForm = () => {
+  validateField('nombres', 'alpha');
+  validateField('cedula', 'cedula');
+  
+  return Object.values(errors).every(msg => msg === '');
+};
 
 // Estado del formulario
 const formData = reactive({
@@ -1023,10 +1110,11 @@ const formData = reactive({
   instruccion: "primaria",
   tipoSangre: "O+",
   provincia: "",
+  ciudad: "",
   parroquia: "",
   direccion: "",
   email: "",
-  banco: "banco1",
+  banco: "",
   cuenta: "",
   contrato: "",
   fechaNacimiento: "",
@@ -1037,16 +1125,16 @@ const formData = reactive({
   ciudad: "",
   telefono: "",
   celular: "",
-  tipo: "tipo1",
+  tipo: "",
   imagenPerfil: null,
   credencial: false,
   fechaIngreso: "",
-  tipoContrato: "indefinido",
+  tipoContrato: "",
   pagoRol: "",
   fechaSalida: "",
   area: "",
-  cargo: "cargo1",
-  proyecto: "proyecto1",
+  cargo: "",
+  proyecto: "",
   inicioProyecto: "",
   sitio: "",
   observacion: "",

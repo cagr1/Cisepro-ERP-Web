@@ -162,6 +162,7 @@ export const usePersonalStore = defineStore("MasterData/personal", {
             cuentaBanco: cuenta.numCuenta || "",
             tipoCuenta: cuenta.tipoCuenta === "AHO" ? "Ahorros" : "Corriente",
           };
+          
         }
         return {
           banco: 0,

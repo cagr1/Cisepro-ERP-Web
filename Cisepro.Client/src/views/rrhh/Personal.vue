@@ -1024,7 +1024,7 @@ import { useSitioStore } from "../../stores/MasterData/sitio.store";
 import { usePersonalStore } from "../../stores/MasterData/personal.store";
 import { setFormDisabledState, useReadonlyForm } from "@/utils/disabledForm";
 import  Autocomplete  from "@/components/autocomplete.vue";
-import { validators, validationClass } from "../../utils/validators";
+//import { validators, validationClass } from "@/utils/validators";
 
 import {
   educationlevel,

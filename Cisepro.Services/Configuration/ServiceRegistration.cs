@@ -9,6 +9,7 @@ using Cisepro.Services.Activos_Fijos.Depreciaciones;
 using Cisepro.Services.Contabilidad.Bancos;
 using Cisepro.Services.Talento_Humano;
 using Cisepro.Services.EstructuraEmpresa;
+using Cisepro.Services.Dashboard;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -54,6 +55,8 @@ namespace Cisepro.Services.Configuration
             services.AddScoped<PersonalService>();
             services.AddScoped<HistorialService>();
             services.AddScoped<CuentaPersonalService>();
+            //Dashboard
+            services.AddScoped<DashboardService>();
             
 
         }

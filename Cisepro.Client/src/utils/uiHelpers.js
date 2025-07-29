@@ -8,22 +8,7 @@ export function updateVariacion(elementId, value) {
   element.textContent = `${isPositive ? '+' : ''}${value.toFixed(2)}%`;
 }
 
-export function updateCardYears() {
-  const dateInput = document.getElementById('startDate').value;
-  if (dateInput) {
-    const date = new Date(dateInput + 'T00:00:00Z');
-    const currentYear = date.getUTCFullYear();
-    const previousYear = currentYear - 1;
-    document.querySelectorAll('.card-year-actual').forEach(el => el.textContent = currentYear);
-    document.querySelectorAll('.card-year-previous').forEach(el => el.textContent = previousYear);
-  }
-}
 
-export function setDefaultDates() {
-  const currentYear = new Date().getFullYear();
-  document.getElementById('startDate').value = `${currentYear}-01-01`;
-  document.getElementById('endDate').value = `${currentYear}-12-31`;
-}
 
 export function updateStats(ventas, acumulado, ventasPrevious, acumuladoPrevious, porcentajeActual, porcentajePrevious, utilidadesData, utilidadesAcumuladasData, porcentajeUtilidades, marginEarningsData, liquidezData) {
     const formatter = new Intl.NumberFormat('en-US', {
@@ -31,27 +16,47 @@ export function updateStats(ventas, acumulado, ventasPrevious, acumuladoPrevious
         currency: 'USD'
     });
 
-    const margenNetoPorcentaje = parseFloat((marginEarningsData.totalEarnings * 100).toFixed(2));
+     // Validar y normalizar datos
+    const safeVentas = ventas?.data?.totalSales ? ventas.data : { totalSales: 0 };
+    const safeAcumulado = acumulado?.data?.totalSales ? acumulado.data : { totalSales: 0 };
+    const safeVentasPrevious = ventasPrevious?.data?.totalSales ? ventasPrevious.data : { totalSales: 0 };
+    const safeAcumuladoPrevious = acumuladoPrevious?.data?.totalSales ? acumuladoPrevious.data : { totalSales: 0 };
+    const safePorcentajeActual = porcentajeActual || { variationPercentage: 0 };
+    const safePorcentajePrevious = porcentajePrevious || { variationPercentage: 0 };
+    const safeUtilidades = utilidadesData?.data ? utilidadesData.data : { totalEarnings: 0 };
+    const safeUtilidadesAcumuladas = utilidadesAcumuladasData?.data ? utilidadesAcumuladasData.data : { totalEarnings: 0 };
+    const safePorcentajeUtilidades = porcentajeUtilidades || { variationPercentage: 0 };
+    const safeMarginEarnings = marginEarningsData?.data ? marginEarningsData.data : { totalEarnings: 0 };
+    const safeLiquidez = liquidezData?.data ? liquidezData.data : { liquidityLevel: 0 };
+
+    // Calcular métricas
+    const margenNetoPorcentaje = parseFloat((safeMarginEarnings.totalEarnings * 100).toFixed(2));
     const metaMargenNetoUtilidades = 50.00;
     const variacionMargenNetoUtilidades = parseFloat((margenNetoPorcentaje - metaMargenNetoUtilidades).toFixed(2));
     const metaLiquidez = 1.5;
-    const variacionliquidez = parseFloat((liquidezData.liquidityLevel - metaLiquidez).toFixed(2));
+    const variacionliquidez = parseFloat((safeLiquidez.liquidityLevel - metaLiquidez).toFixed(2));
 
-    document.getElementById('ventasRango').textContent = formatter.format(ventas.totalSales);
-    document.getElementById('ventasAcumuladas').textContent = formatter.format(acumulado.totalSales) + ' acumulado';
-    document.getElementById('ventasRangoPrevious').textContent = formatter.format(ventasPrevious.totalSales);
-    document.getElementById('ventasAcumuladasPrevious').textContent = formatter.format(acumuladoPrevious.totalSales) + ' acumulado';
-    document.getElementById('porcentajeVentasActual').textContent = `${porcentajeActual}%`;
-    document.getElementById('porcentajeVentasPrevio').textContent = `${porcentajePrevious}%`;
-    document.getElementById('utilidadesActuales').textContent = formatter.format(utilidadesData.totalEarnings);
-    document.getElementById('utilidadesAcumuladas').textContent = formatter.format(utilidadesAcumuladasData.totalEarnings) + ' acumulado';
-    document.getElementById('porcentajeUtilidades').textContent = `${porcentajeUtilidades}%`;
-    document.getElementById('margenUtilidadNeta').textContent = `${margenNetoPorcentaje}%`;
-    document.getElementById('liquidezCorriente').textContent = `${liquidezData.liquidityLevel}%`;
+    // Actualizar UI de forma segura
+    const updateElement = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    };
 
-    updateVariacion('porcentajeVentasActual', porcentajeActual.variationPercentage);
-    updateVariacion('porcentajeVentasPrevio', porcentajePrevious.variationPercentage);
-    updateVariacion('porcentajeUtilidades', porcentajeUtilidades.variationPercentage);
+    updateElement('ventasRango', formatter.format(safeVentas.totalSales));
+    updateElement('ventasAcumuladas', formatter.format(safeAcumulado.totalSales) + ' acumulado');
+    updateElement('ventasRangoPrevious', formatter.format(safeVentasPrevious.totalSales));
+    updateElement('ventasAcumuladasPrevious', formatter.format(safeAcumuladoPrevious.totalSales) + ' acumulado');
+    updateElement('porcentajeVentasActual', `${safePorcentajeActual.variationPercentage}%`);
+    updateElement('porcentajeVentasPrevio', `${safePorcentajePrevious.variationPercentage}%`);
+    updateElement('utilidadesActuales', formatter.format(safeUtilidades.totalEarnings));
+    updateElement('utilidadesAcumuladas', formatter.format(safeUtilidadesAcumuladas.totalEarnings) + ' acumulado');
+    updateElement('porcentajeUtilidades', `${safePorcentajeUtilidades.variationPercentage}%`);
+    updateElement('margenUtilidadNeta', `${margenNetoPorcentaje}%`);
+    updateElement('liquidezCorriente', `${safeLiquidez.liquidityLevel}%`);
+
+    updateVariacion('porcentajeVentasActual', safePorcentajeActual.variationPercentage);
+    updateVariacion('porcentajeVentasPrevio', safePorcentajePrevious.variationPercentage);
+    updateVariacion('porcentajeUtilidades', safePorcentajeUtilidades.variationPercentage);
     updateVariacion('variacionMargen', variacionMargenNetoUtilidades);
     updateVariacion('variacionLiquidez', variacionliquidez);
 }

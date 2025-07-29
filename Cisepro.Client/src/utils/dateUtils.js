@@ -9,13 +9,15 @@ export const toDateInputFormat = (dateString) => {
 };
 
 //transforma string a formato de fecha para input HTML
-export function formatDateWithTime(dateString, isEndDate = false, subtratcYear = false) {
+export function formatDateWithTime(dateString, isEndDate = false, subtractYear = false) {
+  if (!dateString) return null;
   
   const date = new Date(dateString + 'T00:00:00Z');
   if (subtractYear) date.setFullYear(date.getFullYear() - 1);
   isEndDate ? date.setUTCHours(23, 59, 59) : date.setUTCHours(0, 0, 0);
   return date.toISOString().slice(0, 19).replace('T', ' ');
 }
+
 
 //Obtiene las fechas por defecto del anio actual 
 

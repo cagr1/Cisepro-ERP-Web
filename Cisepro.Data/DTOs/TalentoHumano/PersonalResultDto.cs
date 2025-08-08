@@ -7,19 +7,12 @@ namespace Cisepro.Data.DTOs.TalentoHumano
     public class PersonalResultDto
     {
         public int TotalRegistros { get; set; }
-
         public int Id_Personal { get; set; }
-
         public string Cedula { get; set; } = null!;
-
         public string Apellidos { get; set; } = null!;
         public string Nombres { get; set; } = null!;
-                
-
         public string Provincia { get; set; } = null!;
-
         public string Direccion { get; set; } = null!;
-
         public DateTime? Fecha_Nacimiento { get; set; }
 
         public string Sexo { get; set; } = null!;

@@ -67,7 +67,7 @@
             </div>
 
             <!-- Contenido principal -->
-            <div v-if="!loading && !error">
+            <div v-show="!loading && !error">
                 <div class="cards-container">
                     <!-- Card Ventas Netas -->
                     <div class="data-card ingresos">
@@ -145,15 +145,13 @@
                     <!-- Contenedor Gráfico Financiero -->
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h3 class="text-lg font-semibold mb-4 text-center">Ingresos, Egresos y Utilidades</h3>
-                        <div id="financialChart" style="width: 100%; height: 400px;"></div>
+                        <div class="chart-container" ref="financialChartRef" style="width: 100%; height: 400px;"></div>
                     </div>
 
                     <!-- Contenedor para otro gráfico -->
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h3 class="text-lg font-semibold mb-4 text-center">Ventas por Categoria</h3>
-                        <div class="chart-container" style="height: 350px">
-                            <div id="salesChart" style="width: 100%; height: 400px;"></div>
-                        </div>
+                        <div class="chart-container" ref="salesChartRef" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
 
@@ -334,14 +332,25 @@ const loadChartData = async (startDateFormatted, endDateFormatted) => {
     salesData.value = normalizeApiData(salesResponse, []);
 
     // Renderizar gráficos después de que los datos estén disponibles y el DOM se haya actualizado
-    await nextTick();
-    if (financialChartRef.value && financialData.value.length > 0) {
-      renderFinancialChart(financialChartRef.value, financialData.value);
+   
+  await nextTick();
+
+     // Esperar hasta que el contenedor tenga dimensiones
+
+     
+
+
+    if (financialChartRef.value && financialData.value.length > 0) {  
+      
+     renderFinancialChart(financialChartRef.value, financialData.value);      
+      
+      
     }
-    if (salesChartRef.value && salesData.value.length > 0) {
-      renderSalesCategoryChart(salesChartRef.value, salesData.value);
-    }
-  } catch (err) {
+    if ( salesChartRef.value && salesData.value.length > 0) {
+       
+      renderSalesCategoryChart(salesChartRef.value, salesData.value);    
+     
+  }} catch (err) {
     console.error('Error al cargar datos de gráficos:', err);
     push.error({
       title: "Error",
@@ -378,8 +387,13 @@ const handleLoadData = async () => {
        
              await Promise.all([
             loadMainData(startDateFormatted, endDateFormatted, previousStartDate, previousEndDate),
-            loadChartData(startDateFormatted, endDateFormatted)
+            
             ]);     
+
+            loading.value = false;
+            await nextTick();
+            await loadChartData(startDateFormatted, endDateFormatted);
+            
         }            
 
      catch (err) {
@@ -490,6 +504,15 @@ onMounted(() => {
 <style scoped>
 body {
   font-family: "Inter", system-ui, sans-serif;
+}
+
+.chart-container {
+  position: relative;
+}
+
+.chart-container > div {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .cards-container {

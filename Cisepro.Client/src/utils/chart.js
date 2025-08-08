@@ -1,6 +1,6 @@
 import * as echarts from 'echarts';
 
-const chartIntances = {
+const chartInstances = {
     financialChart: null,
     salesChart:null
 };
@@ -13,10 +13,18 @@ export function renderFinancialChart(chartDom, data) {
       return;
     }
 
+if (!chartDom || chartDom.clientWidth === 0 || chartDom.clientHeight === 0) {
+  console.warn('El contenedor del gráfico no tiene dimensiones todavía.');
+  return;
+}
+
     // Limpiar instancia anterior si existe
     if (chartInstances.financialChart) {
       chartInstances.financialChart.dispose();
     }
+
+
+
 
     // Inicializar el gráfico
     chartInstances.financialChart = echarts.init(chartDom);
@@ -57,7 +65,7 @@ export function renderFinancialChart(chartDom, data) {
       xAxis: {
         type: 'category',
         boundaryGap: false,
-        data: data.map(d => d.NameMonth),
+        data: data.map(d => d.nameMonth),
         axisLabel: {
           rotate: 30,
           fontWeight: 'bold'
@@ -102,7 +110,7 @@ export function renderFinancialChart(chartDom, data) {
           itemStyle: {
             color: '#5470C6'
           },
-          data: data.map(d => d.TotalIncome)
+          data: data.map(d => d.totalIncome)
         },
         {
           name: 'Egresos',
@@ -127,7 +135,7 @@ export function renderFinancialChart(chartDom, data) {
           itemStyle: {
             color: '#EE6666'
           },
-          data: data.map(d => -Math.abs(d.TotalExpenses))
+          data: data.map(d => -Math.abs(d.totalExpenses))
         },
         {
           name: 'Utilidad',
@@ -155,7 +163,7 @@ export function renderFinancialChart(chartDom, data) {
               yAxis: 0
             }]
           },
-          data: data.map(d => d.TotalEarnings)
+          data: data.map(d => d.totalEarnings)
         }
       ]
     };
@@ -183,6 +191,8 @@ export function renderSalesCategoryChart(chartDom, data) {
     if (chartInstances.salesChart) {
       chartInstances.salesChart.dispose();
     }
+
+    
 
     // Inicializar el gráfico
     chartInstances.salesChart = echarts.init(chartDom);
@@ -246,8 +256,7 @@ export function renderSalesCategoryChart(chartDom, data) {
       }]
     };
 
-    // Inicializar el gráfico
-    chartInstances.salesChart = echarts.init(chartDom);
+    
 
     // Aplicar la configuración
     chartInstances.salesChart.setOption(option);

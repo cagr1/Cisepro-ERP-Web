@@ -129,6 +129,8 @@ namespace Cisepro.Services.Talento_Humano
             return (results, totalRecords);
         }
 
+
+
     }
 
 

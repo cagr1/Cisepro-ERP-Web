@@ -5,7 +5,7 @@ using Cisepro.Data.DTOs.Dashboard;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace Cisepro.Services.Dashboard
 {
@@ -344,6 +344,37 @@ namespace Cisepro.Services.Dashboard
 
             return result;
         }
+
+        //Metodo para obtener guardias por canton
+
+        public async Task<List<CantonGuardiasDTO>> GetGuardiasPorCantonAsync(TipoConexion tipoCon)
+        {
+            using var _context = _contextFactory(tipoCon);
+            var result = new List<CantonGuardiasDTO>();
+
+            using var command = _context.Database.GetDbConnection().CreateCommand();
+
+            command.CommandText = "sp_ObtenerGuardiasPorCanton";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await _context.Database.OpenConnectionAsync();
+            using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                result.Add(new CantonGuardiasDTO
+                {
+                    DPA_DESCAN = reader["DPA_DESCAN"].ToString(),
+                    DPA_PRO = reader["DPA_PRO"].ToString(),
+                    TotalGuardias = Convert.ToInt32(reader["TotalGuardias"].ToString())
+                    
+                });
+            }
+
+            return result;
+        }
+
+
 
 
 

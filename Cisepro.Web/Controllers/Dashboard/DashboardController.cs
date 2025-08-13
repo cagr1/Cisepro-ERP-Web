@@ -252,5 +252,25 @@ namespace Cisepro.Web.Controllers.Dashboard
             }
         }
 
+        //Endpoint para obtener guardias por canton
+        [HttpGet("guardians-by-canton")]
+        public async Task<IActionResult> GetGuardiansByCanton([FromQuery] TipoConexion tipoConexion)
+        {
+            try
+            {
+                var result = await _dashboardService.GetGuardiasPorCantonAsync(tipoConexion);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(
+                    new
+                    {
+                        success = false,
+                        message = ex.Message
+                    });
+            }
+        }
+
     }
 }

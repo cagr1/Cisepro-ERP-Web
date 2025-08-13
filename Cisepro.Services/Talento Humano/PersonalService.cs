@@ -131,6 +131,30 @@ namespace Cisepro.Services.Talento_Humano
 
 
 
+
+        //public async Task<int> CreatePersonalAsync(TipoConexion tipoCon, PersonalCreateDTO dto)
+        //{
+        //    using var context = _contextFactory(tipoCon);
+
+        //    var parameters = new[]
+        //    {
+        //    new SqlParameter("@CEDULA", dto.Cedula ?? (object)DBNull.Value),
+        //    new SqlParameter("@APELLIDOS", dto.Apellidos ?? (object)DBNull.Value),
+        //    new SqlParameter("@NOMBRES", dto.Nombres ?? (object)DBNull.Value),
+        //    new SqlParameter("@PROVINCIA", dto.Provincia ?? (object)DBNull.Value),
+        //    new SqlParameter("@DIRECCION", dto.Direccion ?? (object)DBNull.Value),
+        //    new SqlParameter("@FECHA_NACIMIENTO", dto.FechaNacimiento ?? (object)DBNull.Value),
+        //    new SqlParameter("@SEXO", dto.Sexo ?? (object)DBNull.Value),
+        //    new SqlParameter("@CIUDAD", dto.Ciudad ?? (object)DBNull.Value),
+        //    new SqlParameter("@EMAIL", dto.Email ?? (object)DBNull.Value),
+        //    new SqlParameter("@TELEFONO", dto.Telefono ?? (object)DBNull.Value),
+        //    new SqlParameter("@ESTADO_PERSONAL", dto.EstadoPersonal)
+        //};
+
+        //}
+
+
+
     }
 
 

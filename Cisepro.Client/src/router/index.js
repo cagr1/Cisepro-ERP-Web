@@ -16,13 +16,33 @@ const routes = [
     children: [
       {
         path: "",
-        redirect: "/dashboard",
+        redirect: "/Dashboard/Financiero",
       },
       {
         path: "/dashboard",
         name: "Dashboard",
-        component: () => import("../views/Dashboard.vue"),
+        redirect: "/dashboard/financiero",
+        component: () => import("../views/DashboardContainer.vue"),
+        children: [
+          {
+            path: "financiero",
+            name: "DashboardFinanciero",
+            component: () => import("../views/Dashboard/Financiero.vue"),
+          },
+          {
+            path: "operativo",
+            name: "DashboardOperativo",
+            component: () => import("../views/Dashboard/Operativo.vue"),
+          },
+          {
+            path: "rrhh",
+            name: "DashboardRRHH",
+            component: () => import("../views/Dashboard/RRHH.vue"),
+          },
+        ]
+
       },
+      
       {
         path: "administration",
         name: "Administración",

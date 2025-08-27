@@ -1,6 +1,7 @@
 <template>
-    <div class="flex-1 flex flex-col ml-20 transition-all duration-300" id="mainContent">
-        <main class="pt-4 px-4">
+    <div class="flex-1 flex flex-col ml-10 transition-all duration-300" id="mainContent">
+      <!-- <div class="w-full transition-all" id="mainContent"> -->
+        <main class="px-4">
             <div class="mb-8 bg-white p-4 rounded-lg shadow-sm">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div class="md:flex-1 ml-10">

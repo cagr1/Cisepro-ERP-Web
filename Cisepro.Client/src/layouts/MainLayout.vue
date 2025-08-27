@@ -276,7 +276,7 @@ const menuItems = [
   {
     name: "Dashboard",
     path: "/dashboard",
-    icon: "ri:dashboard-fill",
+    icon: "heroicons:rectangle-group",
   },
   {
     name: "Administración",

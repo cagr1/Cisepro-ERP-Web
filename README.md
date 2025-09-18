@@ -14,7 +14,7 @@ Desarrollado con **.NET 8 + Vue.js 3 + TailwindCSS**, combina rendimiento, escal
 
 ## 📂 Estructura de la Solución
 
-```text
+
 CiseproERP.sln
 ├── Cisepro.Client     # Frontend en Vue.js + TailwindCSS + Vite + Pinia
 ├── Cisepro.Web        # Backend ASP.NET Core 8 (Web API)
@@ -22,8 +22,8 @@ CiseproERP.sln
 ├── Cisepro.Data       # Entidades, DTOs y acceso a datos (EF Core)
 └── Cisepro.Legacy     # Compatibilidad con funcionalidades antiguas
 
-
 ---
+
 
 ## 🛠️ Tecnologías usadas
 

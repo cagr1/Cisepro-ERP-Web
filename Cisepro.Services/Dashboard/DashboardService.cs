@@ -365,7 +365,7 @@ namespace Cisepro.Services.Dashboard
                 result.Add(new CantonGuardiasDTO
                 {
                     DPA_DESCAN = reader["DPA_DESCAN"].ToString(),
-                    DPA_PRO = reader["DPA_PRO"].ToString(),
+                    DPA_PRO = reader["DPA_PRO"].ToString().Trim(),
                     TotalGuardias = Convert.ToInt32(reader["TotalGuardias"].ToString())
                     
                 });

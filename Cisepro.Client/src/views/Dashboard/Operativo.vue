@@ -19,6 +19,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import * as echarts from "echarts";
+import api from "@/api";
 
 const props = defineProps({
   tipoCon: { type: String, default: "Produccion" },
@@ -28,7 +29,7 @@ const chartRef = ref(null);
 let chartInstance = null;
 const loading = ref(false);
 const geoJsonUrl = "https://raw.githubusercontent.com/.../ecuador-cantones.geojson"; // reemplaza por tu fuente ArcGIS
-const apiUrlBase = "/api/dashboard/guardians-by-canton"; // ajusta según tu baseUrl
+
 
 const detailVisible = ref(false);
 const detailName = ref("");

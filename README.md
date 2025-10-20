@@ -21,9 +21,9 @@ CiseproERP.sln
 ├── Cisepro.Services   # Lógica de negocio
 ├── Cisepro.Data       # Entidades, DTOs y acceso a datos (EF Core)
 └── Cisepro.Legacy     # Compatibilidad con funcionalidades antiguas
-
-
+```
 ---
+
 
 ## 🛠️ Tecnologías usadas
 

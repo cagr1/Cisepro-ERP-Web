@@ -69,6 +69,8 @@ public partial class ActivoFijoGeneral
 
     public int? IdProoveedorGeneral { get; set; }
 
+    public int? IdSubactivo { get; set; }
+
     public virtual ICollection<ActivoFijoBaja> ActivoFijoBajas { get; set; } = new List<ActivoFijoBaja>();
 
     public virtual ICollection<DepreciacionesGeneral> DepreciacionesGenerals { get; set; } = new List<DepreciacionesGeneral>();

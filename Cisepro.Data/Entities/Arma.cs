@@ -29,5 +29,7 @@ public partial class Arma
 
     public string? Origen { get; set; }
 
+    public int? IdTipoArma { get; set; }
+
     public virtual ActivoFijoGeneral IdActivoFijoNavigation { get; set; } = null!;
 }

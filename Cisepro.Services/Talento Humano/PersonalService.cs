@@ -1,6 +1,5 @@
 ﻿using System;
 using Cisepro.Data.Context;
-using Cisepro.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Cisepro.Data.Enums;

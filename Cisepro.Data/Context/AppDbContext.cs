@@ -8,22 +8,14 @@ namespace Cisepro.Data.Context;
 
 public partial class AppDbContext : DbContext
 {
-    
-
-    //public AppDbContext(DbContextOptions<AppDbContext> options)
-    //    : base(options)
+    //public AppDbContext()
     //{
     //}
 
-    
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-    //private static DbContextOptions<AppDbContext> GetOptions(string connectionString)
-    //{
-    //    return new DbContextOptionsBuilder<AppDbContext>()
-    //        .UseSqlServer(connectionString)
-    //        .Options;
-    //}
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
+    {
+    }
 
     public virtual DbSet<ActividadInventario> ActividadInventarios { get; set; }
 
@@ -428,7 +420,7 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<RegistroPermisosPersonal> RegistroPermisosPersonals { get; set; }
 
     public virtual DbSet<RegistroSancionesPersonal> RegistroSancionesPersonals { get; set; }
-
+    //Esto se agrego para la depreciacion
     public virtual DbSet<RegistroDepreciaciones> RegistroDepreciaciones { get; set; }
 
     public virtual DbSet<RequisicionProductoServicio> RequisicionProductoServicios { get; set; }
@@ -485,11 +477,17 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<SubSeccionGeneral> SubSeccionGenerals { get; set; }
 
+    public virtual DbSet<SubactivoFijo> SubactivoFijos { get; set; }
+
     public virtual DbSet<SubgrupoSuministro> SubgrupoSuministros { get; set; }
 
     public virtual DbSet<SucursalGeneral> SucursalGenerals { get; set; }
 
     public virtual DbSet<Tag> Tags { get; set; }
+
+    public virtual DbSet<TblActivoMovimiento> TblActivoMovimientos { get; set; }
+
+    public virtual DbSet<TblCategoriaArma> TblCategoriaArmas { get; set; }
 
     public virtual DbSet<TblComparacion> TblComparacions { get; set; }
 
@@ -509,15 +507,23 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<TblPrestamo> TblPrestamos { get; set; }
 
+    public virtual DbSet<TblPresupuesto> TblPresupuestos { get; set; }
+
+    public virtual DbSet<TblPruebaAntidroga> TblPruebaAntidrogas { get; set; }
+
     public virtual DbSet<TblRolUser> TblRolUsers { get; set; }
 
     public virtual DbSet<TblRolesFirmado> TblRolesFirmados { get; set; }
 
     public virtual DbSet<TblSalidaPersonal> TblSalidaPersonals { get; set; }
 
+    public virtual DbSet<TblTipoArma> TblTipoArmas { get; set; }
+
     public virtual DbSet<Terreno> Terrenos { get; set; }
 
     public virtual DbSet<TicketsFarmaciaComecsa> TicketsFarmaciaComecsas { get; set; }
+
+    public virtual DbSet<TipoActivoGeneral> TipoActivoGenerals { get; set; }
 
     public virtual DbSet<TiqueteMaquinaRegistradoraCompra> TiqueteMaquinaRegistradoraCompras { get; set; }
 
@@ -535,9 +541,9 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<VehiculosOtro> VehiculosOtros { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=192.168.0.5;Database=SYSCISEPRO;TrustServerCertificate= true;User Id=sa;Password=C1s3pr0c14;");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=192.168.0.5;Database=SYSCISEPRO_copy;TrustServerCertificate=true;User Id=sa;Password=C1s3pr0c14;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -545,7 +551,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ActividadInventario>(entity =>
         {
-            entity.HasKey(e => e.IdActividad);
+            entity.HasKey(e => e.IdActividad).HasFillFactor(80);
 
             entity.ToTable("ACTIVIDAD_INVENTARIOS");
 
@@ -588,7 +594,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ActivoFijoGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdActivoFijo);
+            entity.HasKey(e => e.IdActivoFijo).HasFillFactor(80);
 
             entity.ToTable("ACTIVO_FIJO_GENERAL");
 
@@ -620,6 +626,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IdPersonal).HasColumnName("ID_PERSONAL");
             entity.Property(e => e.IdProoveedorGeneral).HasColumnName("ID_PROOVEEDOR_GENERAL");
             entity.Property(e => e.IdSitio).HasColumnName("ID_SITIO");
+            entity.Property(e => e.IdSubactivo).HasColumnName("ID_SUBACTIVO");
             entity.Property(e => e.IdSucursal).HasColumnName("ID_SUCURSAL");
             entity.Property(e => e.Mantenimiento).HasColumnName("MANTENIMIENTO");
             entity.Property(e => e.NombreActivo).HasColumnName("NOMBRE_ACTIVO");
@@ -677,7 +684,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ActivoFijoTransferencia>(entity =>
         {
-            entity.HasKey(e => e.IdTransferencia);
+            entity.HasKey(e => e.IdTransferencia).HasFillFactor(80);
 
             entity.ToTable("ACTIVO_FIJO_TRANSFERENCIAS");
 
@@ -700,7 +707,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<AgenteRetencion>(entity =>
         {
-            entity.HasKey(e => e.IdAgente);
+            entity.HasKey(e => e.IdAgente).HasFillFactor(80);
 
             entity.ToTable("AGENTE_RETENCION");
 
@@ -713,7 +720,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<AnticiposPrestamo>(entity =>
         {
-            entity.HasKey(e => e.IdAntipres);
+            entity.HasKey(e => e.IdAntipres).HasFillFactor(80);
 
             entity.ToTable("ANTICIPOS_PRESTAMOS");
 
@@ -753,7 +760,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<AreaGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdAreaGeneral);
+            entity.HasKey(e => e.IdAreaGeneral).HasFillFactor(80);
 
             entity.ToTable("AREA_GENERAL");
 
@@ -791,6 +798,7 @@ public partial class AppDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("FEC_CADUCIDAD_TENENCIA");
             entity.Property(e => e.IdActivoFijo).HasColumnName("ID_ACTIVO_FIJO");
+            entity.Property(e => e.IdTipoArma).HasColumnName("ID_TIPO_ARMA");
             entity.Property(e => e.NumMatriculaArma).HasColumnName("NUM_MATRICULA_ARMA");
             entity.Property(e => e.NumPermisoComando).HasColumnName("NUM_PERMISO_COMANDO");
             entity.Property(e => e.NumPermisoGobierno).HasColumnName("NUM_PERMISO_GOBIERNO");
@@ -806,7 +814,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<AsientosLibroDiario>(entity =>
         {
-            entity.HasKey(e => e.IdAsiento);
+            entity.HasKey(e => e.IdAsiento).HasFillFactor(80);
 
             entity.ToTable("ASIENTOS_LIBRO_DIARIO");
 
@@ -845,7 +853,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<AsignacionPersonal>(entity =>
         {
-            entity.HasKey(e => e.IdAsignacion);
+            entity.HasKey(e => e.IdAsignacion).HasFillFactor(80);
 
             entity.ToTable("ASIGNACION_PERSONAL");
 
@@ -997,7 +1005,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<At>(entity =>
         {
-            entity.HasKey(e => e.IdAts);
+            entity.HasKey(e => e.IdAts).HasFillFactor(80);
 
             entity.ToTable("ATS");
 
@@ -1020,7 +1028,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<AuditoriaGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdAuditoriaGeneral);
+            entity.HasKey(e => e.IdAuditoriaGeneral).HasFillFactor(80);
 
             entity.ToTable("AUDITORIA_GENERAL");
 
@@ -1070,7 +1078,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<AuxiliarFondoRotativo>(entity =>
         {
-            entity.HasKey(e => e.IdFondoRotativo);
+            entity.HasKey(e => e.IdFondoRotativo).HasFillFactor(80);
 
             entity.ToTable("AUXILIAR_FONDO_ROTATIVO");
 
@@ -1101,7 +1109,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<BalanceComprobacion>(entity =>
         {
-            entity.HasKey(e => e.IdBalance);
+            entity.HasKey(e => e.IdBalance).HasFillFactor(80);
 
             entity.ToTable("BALANCE_COMPROBACION");
 
@@ -1137,7 +1145,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Banco>(entity =>
         {
-            entity.HasKey(e => e.IdBanco);
+            entity.HasKey(e => e.IdBanco).HasFillFactor(80);
 
             entity.ToTable("BANCOS");
 
@@ -1214,7 +1222,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Bodega>(entity =>
         {
-            entity.HasKey(e => e.IdBodega);
+            entity.HasKey(e => e.IdBodega).HasFillFactor(80);
 
             entity.ToTable("BODEGA");
 
@@ -1244,7 +1252,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<CajaChica>(entity =>
         {
-            entity.HasKey(e => e.IdCajaChica);
+            entity.HasKey(e => e.IdCajaChica).HasFillFactor(80);
 
             entity.ToTable("CAJA_CHICA");
 
@@ -1331,7 +1339,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<CargoOcupacional>(entity =>
         {
-            entity.HasKey(e => e.IdCargoOcupacional);
+            entity.HasKey(e => e.IdCargoOcupacional).HasFillFactor(80);
 
             entity.ToTable("CARGO_OCUPACIONAL");
 
@@ -1354,7 +1362,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<CategoriaItem>(entity =>
         {
-            entity.HasKey(e => e.IdCategoriaItem);
+            entity.HasKey(e => e.IdCategoriaItem).HasFillFactor(80);
 
             entity.ToTable("CATEGORIA_ITEM");
 
@@ -1384,7 +1392,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<CategoriaUbicacion>(entity =>
         {
-            entity.HasKey(e => e.IdCategoriaUbicacion);
+            entity.HasKey(e => e.IdCategoriaUbicacion).HasFillFactor(80);
 
             entity.ToTable("CATEGORIA_UBICACION");
 
@@ -1409,7 +1417,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Categorium>(entity =>
         {
-            entity.HasKey(e => e.IdCategoria);
+            entity.HasKey(e => e.IdCategoria).HasFillFactor(80);
 
             entity.ToTable("CATEGORIA");
 
@@ -1466,7 +1474,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ChequesEmitido>(entity =>
         {
-            entity.HasKey(e => e.IdChequeEmitido);
+            entity.HasKey(e => e.IdChequeEmitido).HasFillFactor(80);
 
             entity.ToTable("CHEQUES_EMITIDOS");
 
@@ -1526,7 +1534,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Ciudade>(entity =>
         {
-            entity.HasKey(e => e.IdCiudad);
+            entity.HasKey(e => e.IdCiudad).HasFillFactor(80);
 
             entity.ToTable("CIUDADES");
 
@@ -1545,7 +1553,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ClienteGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdClienteGeneral);
+            entity.HasKey(e => e.IdClienteGeneral).HasFillFactor(80);
 
             entity.ToTable("CLIENTE_GENERAL");
 
@@ -1619,7 +1627,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<CodigoCargoOcupacional>(entity =>
         {
-            entity.HasKey(e => e.IdCodigo).HasName("PK__CODIGO_CARGO_OCU__2BE024C3");
+            entity.HasKey(e => e.IdCodigo)
+                .HasName("PK__CODIGO_CARGO_OCU__2BE024C3")
+                .HasFillFactor(80);
 
             entity.ToTable("CODIGO_CARGO_OCUPACIONAL");
 
@@ -1657,7 +1667,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ColorGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdColor);
+            entity.HasKey(e => e.IdColor).HasFillFactor(80);
 
             entity.ToTable("COLOR_GENERAL");
 
@@ -1685,7 +1695,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ComprobanteAjusteBodega>(entity =>
         {
-            entity.HasKey(e => e.IdComprobante);
+            entity.HasKey(e => e.IdComprobante).HasFillFactor(80);
 
             entity.ToTable("COMPROBANTE_AJUSTE_BODEGA");
 
@@ -1713,7 +1723,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ComprobanteDonacionBodega>(entity =>
         {
-            entity.HasKey(e => e.IdComprobante);
+            entity.HasKey(e => e.IdComprobante).HasFillFactor(80);
 
             entity.ToTable("COMPROBANTE_DONACION_BODEGA");
 
@@ -1741,7 +1751,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ComprobanteEgresoBanco>(entity =>
         {
-            entity.HasKey(e => e.IdComprobanteEgresoBancos);
+            entity.HasKey(e => e.IdComprobanteEgresoBancos).HasFillFactor(80);
 
             entity.ToTable("COMPROBANTE_EGRESO_BANCOS");
 
@@ -1873,7 +1883,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ComprobanteReingresoBodega>(entity =>
         {
-            entity.HasKey(e => e.IdComprobante);
+            entity.HasKey(e => e.IdComprobante).HasFillFactor(80);
 
             entity.ToTable("COMPROBANTE_REINGRESO_BODEGA");
 
@@ -1901,7 +1911,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ComprobanteRetencionCompra>(entity =>
         {
-            entity.HasKey(e => e.IdComprobanteRetencionCompra);
+            entity.HasKey(e => e.IdComprobanteRetencionCompra).HasFillFactor(80);
 
             entity.ToTable("COMPROBANTE_RETENCION_COMPRA");
 
@@ -1964,7 +1974,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ComprobantesCompra>(entity =>
         {
-            entity.HasKey(e => e.IdComprobanteCompra);
+            entity.HasKey(e => e.IdComprobanteCompra).HasFillFactor(80);
 
             entity.ToTable("COMPROBANTES_COMPRA");
 
@@ -2023,7 +2033,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ConceptoPago>(entity =>
         {
-            entity.HasKey(e => e.IdConceptoPago).HasName("PK_CONCPETO_PAGO");
+            entity.HasKey(e => e.IdConceptoPago)
+                .HasName("PK_CONCPETO_PAGO")
+                .HasFillFactor(80);
 
             entity.ToTable("CONCEPTO_PAGO");
 
@@ -2040,7 +2052,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ConceptosComprobanteEgresoBanco>(entity =>
         {
-            entity.HasKey(e => e.IdConceptoComprobanteEgresoBancos);
+            entity.HasKey(e => e.IdConceptoComprobanteEgresoBancos).HasFillFactor(80);
 
             entity.ToTable("CONCEPTOS_COMPROBANTE_EGRESO_BANCOS");
 
@@ -2196,7 +2208,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ContratoCliente>(entity =>
         {
-            entity.HasKey(e => e.IdContrato).HasName("PK__CONTRATO_CLIENTE__131476F9");
+            entity.HasKey(e => e.IdContrato)
+                .HasName("PK__CONTRATO_CLIENTE__131476F9")
+                .HasFillFactor(80);
 
             entity.ToTable("CONTRATO_CLIENTE");
 
@@ -2220,7 +2234,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ContratoProyecto>(entity =>
         {
-            entity.HasKey(e => e.IdProyecto).HasName("PK__CONTRATO__6D661D313198FE19");
+            entity.HasKey(e => e.IdProyecto)
+                .HasName("PK__CONTRATO__6D661D313198FE19")
+                .HasFillFactor(80);
 
             entity.ToTable("CONTRATO_PROYECTO");
 
@@ -2241,7 +2257,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ContribuyenteRetenido>(entity =>
         {
-            entity.HasKey(e => e.IdContribuyenteRetenido);
+            entity.HasKey(e => e.IdContribuyenteRetenido).HasFillFactor(80);
 
             entity.ToTable("CONTRIBUYENTE_RETENIDO");
 
@@ -2254,7 +2270,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ControlCombustible>(entity =>
         {
-            entity.HasKey(e => e.IdControlC);
+            entity.HasKey(e => e.IdControlC).HasFillFactor(80);
 
             entity.ToTable("CONTROL_COMBUSTIBLES");
 
@@ -2349,7 +2365,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<CortesContable>(entity =>
         {
-            entity.HasKey(e => e.IdCorte);
+            entity.HasKey(e => e.IdCorte).HasFillFactor(80);
 
             entity.ToTable("CORTES_CONTABLES");
 
@@ -2419,7 +2435,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DepreciacionesGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdDepreciacion);
+            entity.HasKey(e => e.IdDepreciacion).HasFillFactor(80);
 
             entity.ToTable("DEPRECIACIONES_GENERAL");
 
@@ -2442,7 +2458,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DescuentosRol>(entity =>
         {
-            entity.HasKey(e => e.IdRegistro).HasName("PK__DESCUENTOS_ROL__401C279A");
+            entity.HasKey(e => e.IdRegistro)
+                .HasName("PK__DESCUENTOS_ROL__401C279A")
+                .HasFillFactor(80);
 
             entity.ToTable("DESCUENTOS_ROL");
 
@@ -2485,7 +2503,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleBalanceComprobación>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle);
+            entity.HasKey(e => e.IdDetalle).HasFillFactor(80);
 
             entity.ToTable("DETALLE_BALANCE_COMPROBACIÓN");
 
@@ -2570,7 +2588,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleComprobanteEgresoBodega>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleComprobante);
+            entity.HasKey(e => e.IdDetalleComprobante).HasFillFactor(80);
 
             entity.ToTable("DETALLE_COMPROBANTE_EGRESO_BODEGA");
 
@@ -2594,7 +2612,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleComprobanteIngresoBodega>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleComprobante);
+            entity.HasKey(e => e.IdDetalleComprobante).HasFillFactor(80);
 
             entity.ToTable("DETALLE_COMPROBANTE_INGRESO_BODEGA");
 
@@ -2642,7 +2660,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleComprobanteRetencionCompra>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleComprobanteRetencionCompra);
+            entity.HasKey(e => e.IdDetalleComprobanteRetencionCompra).HasFillFactor(80);
 
             entity.ToTable("DETALLE_COMPROBANTE_RETENCION_COMPRA");
 
@@ -2746,7 +2764,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleEgresoSuministro>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleEgresoSuministros);
+            entity.HasKey(e => e.IdDetalleEgresoSuministros).HasFillFactor(80);
 
             entity.ToTable("DETALLE_EGRESO_SUMINISTROS");
 
@@ -2793,7 +2811,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleFacturaVentum>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleFacturaVenta);
+            entity.HasKey(e => e.IdDetalleFacturaVenta).HasFillFactor(80);
 
             entity.ToTable("DETALLE_FACTURA_VENTA");
 
@@ -2822,7 +2840,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleItemsPuesto>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle).HasName("PK__DETALLE_ITEMS_PU__6932806F");
+            entity.HasKey(e => e.IdDetalle)
+                .HasName("PK__DETALLE_ITEMS_PU__6932806F")
+                .HasFillFactor(80);
 
             entity.ToTable("DETALLE_ITEMS_PUESTO");
 
@@ -2888,7 +2908,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleLiquidacionCompra>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleLiquidacionCompras);
+            entity.HasKey(e => e.IdDetalleLiquidacionCompras).HasFillFactor(80);
 
             entity.ToTable("DETALLE_LIQUIDACION_COMPRAS");
 
@@ -2943,7 +2963,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleMayore>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle);
+            entity.HasKey(e => e.IdDetalle).HasFillFactor(80);
 
             entity.ToTable("DETALLE_MAYORES");
 
@@ -3022,7 +3042,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetalleOrdenTecnicaSupervision>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle).HasName("PK__DETALLE___B4F46A57459FF6C6");
+            entity.HasKey(e => e.IdDetalle)
+                .HasName("PK__DETALLE___B4F46A57459FF6C6")
+                .HasFillFactor(80);
 
             entity.ToTable("DETALLE_ORDEN_TECNICA_SUPERVISION");
 
@@ -3041,7 +3063,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DetallePlanillaCobrosPago>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle);
+            entity.HasKey(e => e.IdDetalle).HasFillFactor(80);
 
             entity.ToTable("DETALLE_PLANILLA_COBROS_PAGOS");
 
@@ -3628,7 +3650,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DireccionesFacturacionCliente>(entity =>
         {
-            entity.HasKey(e => e.IdDireccion).HasName("PK__DIRECCIO__FC7E9E8E3B226853");
+            entity.HasKey(e => e.IdDireccion)
+                .HasName("PK__DIRECCIO__FC7E9E8E3B226853")
+                .HasFillFactor(80);
 
             entity.ToTable("DIRECCIONES_FACTURACION_CLIENTE");
 
@@ -3644,7 +3668,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DocumentoNodeducible>(entity =>
         {
-            entity.HasKey(e => e.IdDocumentoNodeducible);
+            entity.HasKey(e => e.IdDocumentoNodeducible).HasFillFactor(80);
 
             entity.ToTable("DOCUMENTO_NODEDUCIBLE");
 
@@ -3672,7 +3696,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DocumentosContrato>(entity =>
         {
-            entity.HasKey(e => e.IdDocumento);
+            entity.HasKey(e => e.IdDocumento).HasFillFactor(80);
 
             entity.ToTable("DOCUMENTOS_CONTRATO");
 
@@ -3691,7 +3715,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DocumentosElectronico>(entity =>
         {
-            entity.HasKey(e => e.IdArc).HasName("PK__DOCUMENTOS_ELECT__25332734");
+            entity.HasKey(e => e.IdArc)
+                .HasName("PK__DOCUMENTOS_ELECT__25332734")
+                .HasFillFactor(80);
 
             entity.ToTable("DOCUMENTOS_ELECTRONICOS");
 
@@ -3735,7 +3761,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<EmpresaGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdEmpresa);
+            entity.HasKey(e => e.IdEmpresa).HasFillFactor(80);
 
             entity.ToTable("EMPRESA_GENERAL");
 
@@ -3764,7 +3790,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<EntregaEpp>(entity =>
         {
-            entity.HasKey(e => e.IdEpp);
+            entity.HasKey(e => e.IdEpp).HasFillFactor(80);
 
             entity.ToTable("ENTREGA_EPP");
 
@@ -3792,7 +3818,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<EntregaUniforme>(entity =>
         {
-            entity.HasKey(e => e.IdUniformes);
+            entity.HasKey(e => e.IdUniformes).HasFillFactor(80);
 
             entity.ToTable("ENTREGA_UNIFORMES");
 
@@ -3856,7 +3882,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<EquipoPuestoTrabajo>(entity =>
         {
-            entity.HasKey(e => e.IdEquipoPuestoTrabajo);
+            entity.HasKey(e => e.IdEquipoPuestoTrabajo).HasFillFactor(80);
 
             entity.ToTable("EQUIPO_PUESTO_TRABAJO");
 
@@ -4119,7 +4145,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<FacturaSecuenciale>(entity =>
         {
-            entity.HasKey(e => e.IdFacturaSecuencial).HasName("PK_FACTURA_COMPRA");
+            entity.HasKey(e => e.IdFacturaSecuencial)
+                .HasName("PK_FACTURA_COMPRA")
+                .HasFillFactor(80);
 
             entity.ToTable("FACTURA_SECUENCIALES");
 
@@ -4139,7 +4167,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<FacturaVentum>(entity =>
         {
-            entity.HasKey(e => e.IdFacturaVenta);
+            entity.HasKey(e => e.IdFacturaVenta).HasFillFactor(80);
 
             entity.ToTable("FACTURA_VENTA");
 
@@ -4233,7 +4261,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<FondoRotativo>(entity =>
         {
-            entity.HasKey(e => e.IdFondoRotativo);
+            entity.HasKey(e => e.IdFondoRotativo).HasFillFactor(80);
 
             entity.ToTable("FONDO_ROTATIVO");
 
@@ -4261,7 +4289,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<FormasPago>(entity =>
         {
-            entity.HasKey(e => e.IdFormaPago);
+            entity.HasKey(e => e.IdFormaPago).HasFillFactor(80);
 
             entity.ToTable("FORMAS_PAGO");
 
@@ -4275,7 +4303,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Foto>(entity =>
         {
-            entity.HasKey(e => e.IdFoto).HasName("PK__FOTO__620EA3A53751D76F");
+            entity.HasKey(e => e.IdFoto)
+                .HasName("PK__FOTO__620EA3A53751D76F")
+                .HasFillFactor(80);
 
             entity.ToTable("FOTO");
 
@@ -4308,7 +4338,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<GastosCajaChica>(entity =>
         {
-            entity.HasKey(e => e.IdGastosCajaCh).HasName("PK_GASTOS_CAJA_CHICA_1");
+            entity.HasKey(e => e.IdGastosCajaCh)
+                .HasName("PK_GASTOS_CAJA_CHICA_1")
+                .HasFillFactor(80);
 
             entity.ToTable("GASTOS_CAJA_CHICA");
 
@@ -4426,7 +4458,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<GrupoItem>(entity =>
         {
-            entity.HasKey(e => e.IdGrupoItem);
+            entity.HasKey(e => e.IdGrupoItem).HasFillFactor(80);
 
             entity.ToTable("GRUPO_ITEM");
 
@@ -4466,7 +4498,9 @@ public partial class AppDbContext : DbContext
                 .HasNoKey()
                 .ToTable("GRUPO_STITIO");
 
-            entity.HasIndex(e => e.Grupo, "ug").IsUnique();
+            entity.HasIndex(e => e.Grupo, "ug")
+                .IsUnique()
+                .HasFillFactor(80);
 
             entity.Property(e => e.DescDiff).HasColumnName("desc_diff");
             entity.Property(e => e.Grupo)
@@ -4524,7 +4558,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<HistoriaLaboral>(entity =>
         {
-            entity.HasKey(e => e.IdHistoriaLaboral);
+            entity.HasKey(e => e.IdHistoriaLaboral).HasFillFactor(80);
 
             entity.ToTable("HISTORIA_LABORAL");
 
@@ -4796,7 +4830,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<InventarioItem>(entity =>
         {
-            entity.HasKey(e => e.IdInventarioItem);
+            entity.HasKey(e => e.IdInventarioItem).HasFillFactor(80);
 
             entity.ToTable("INVENTARIO_ITEM");
 
@@ -4854,7 +4888,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<LibroDiarioGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdLibroDiario);
+            entity.HasKey(e => e.IdLibroDiario).HasFillFactor(80);
 
             entity.ToTable("LIBRO_DIARIO_GENERAL");
 
@@ -4878,7 +4912,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<LiquidacionCajaChica>(entity =>
         {
-            entity.HasKey(e => e.IdLiquidacionCch);
+            entity.HasKey(e => e.IdLiquidacionCch).HasFillFactor(80);
 
             entity.ToTable("LIQUIDACION_CAJA_CHICA");
 
@@ -4914,7 +4948,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<LiquidacionCompra>(entity =>
         {
-            entity.HasKey(e => e.IdLiquidacionCompras);
+            entity.HasKey(e => e.IdLiquidacionCompras).HasFillFactor(80);
 
             entity.ToTable("LIQUIDACION_COMPRAS");
 
@@ -5071,7 +5105,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<MayorGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdMayor);
+            entity.HasKey(e => e.IdMayor).HasFillFactor(80);
 
             entity.ToTable("MAYOR_GENERAL");
 
@@ -5149,7 +5183,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<NotaCreditoVentum>(entity =>
         {
-            entity.HasKey(e => e.IdNotaCredito);
+            entity.HasKey(e => e.IdNotaCredito).HasFillFactor(80);
 
             entity.ToTable("NOTA_CREDITO_VENTA");
 
@@ -5195,7 +5229,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<NotaDebitoCompra>(entity =>
         {
-            entity.HasKey(e => e.IdNotaDebitoCompra);
+            entity.HasKey(e => e.IdNotaDebitoCompra).HasFillFactor(80);
 
             entity.ToTable("NOTA_DEBITO_COMPRA");
 
@@ -5252,7 +5286,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Note>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__notes__0D3BA212");
+            entity.HasKey(e => e.Id)
+                .HasName("PK__notes__0D3BA212")
+                .HasFillFactor(80);
 
             entity.ToTable("notes");
 
@@ -5429,7 +5465,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<OrdenTecnicaSupervision>(entity =>
         {
-            entity.HasKey(e => e.IdOrden).HasName("PK_ID_ORDEN");
+            entity.HasKey(e => e.IdOrden)
+                .HasName("PK_ID_ORDEN")
+                .HasFillFactor(80);
 
             entity.ToTable("ORDEN_TECNICA_SUPERVISION");
 
@@ -5463,7 +5501,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PagosComprobantesCompra>(entity =>
         {
-            entity.HasKey(e => e.IdPagosComprobanteCompra).HasName("PK_PAGOS_FACTURA_COMPRA");
+            entity.HasKey(e => e.IdPagosComprobanteCompra)
+                .HasName("PK_PAGOS_FACTURA_COMPRA")
+                .HasFillFactor(80);
 
             entity.ToTable("PAGOS_COMPROBANTES_COMPRA");
 
@@ -5488,7 +5528,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PagosFacturaVentum>(entity =>
         {
-            entity.HasKey(e => e.IdPagoFacturaVenta);
+            entity.HasKey(e => e.IdPagoFacturaVenta).HasFillFactor(80);
 
             entity.ToTable("PAGOS_FACTURA_VENTA");
 
@@ -5516,7 +5556,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Paise>(entity =>
         {
-            entity.HasKey(e => e.IdPaises);
+            entity.HasKey(e => e.IdPaises).HasFillFactor(80);
 
             entity.ToTable("PAISES");
 
@@ -5582,7 +5622,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Parroquia>(entity =>
         {
-            entity.HasKey(e => e.IdParroquias);
+            entity.HasKey(e => e.IdParroquias).HasFillFactor(80);
 
             entity.ToTable("PARROQUIAS");
 
@@ -5605,9 +5645,9 @@ public partial class AppDbContext : DbContext
                 .HasNoKey()
                 .ToTable("password_resets");
 
-            entity.HasIndex(e => e.Email, "password_resets_email_index");
+            entity.HasIndex(e => e.Email, "password_resets_email_index").HasFillFactor(80);
 
-            entity.HasIndex(e => e.Token, "password_resets_token_index");
+            entity.HasIndex(e => e.Token, "password_resets_token_index").HasFillFactor(80);
 
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
@@ -5699,7 +5739,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Movil).HasColumnName("MOVIL");
             entity.Property(e => e.Nombres).HasColumnName("NOMBRES");
             entity.Property(e => e.NombresPatronoAnterior).HasColumnName("NOMBRES_PATRONO_ANTERIOR");
-            //entity.Property(e => e.Observacion).HasColumnName("OBSERVACION");
+            entity.Property(e => e.Observacion).HasColumnName("OBSERVACION");
             entity.Property(e => e.Parroquia).HasColumnName("PARROQUIA");
             entity.Property(e => e.Pasaporte)
                 .HasMaxLength(20)
@@ -5745,7 +5785,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PlanCuentasGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdPlan);
+            entity.HasKey(e => e.IdPlan).HasFillFactor(80);
 
             entity.ToTable("PLAN_CUENTAS_GENERAL");
 
@@ -5771,7 +5811,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PlanillaCobrosPago>(entity =>
         {
-            entity.HasKey(e => e.IdPlanilla);
+            entity.HasKey(e => e.IdPlanilla).HasFillFactor(80);
 
             entity.ToTable("PLANILLA_COBROS_PAGOS");
 
@@ -5801,7 +5841,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PorcentajeRet>(entity =>
         {
-            entity.HasKey(e => e.IdPorcentajeRetencion).HasName("PK_PORCENTAJE_RETENCION");
+            entity.HasKey(e => e.IdPorcentajeRetencion)
+                .HasName("PK_PORCENTAJE_RETENCION")
+                .HasFillFactor(80);
 
             entity.ToTable("PORCENTAJE_RET");
 
@@ -5830,7 +5872,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<PorcentajeRetencion>(entity =>
         {
-            entity.HasKey(e => e.IdPorcentajeRetencion).HasName("PK_PORCENTAJE_RETENCION_1");
+            entity.HasKey(e => e.IdPorcentajeRetencion)
+                .HasName("PK_PORCENTAJE_RETENCION_1")
+                .HasFillFactor(80);
 
             entity.ToTable("PORCENTAJE_RETENCION");
 
@@ -5883,7 +5927,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ProgramacionOperativo>(entity =>
         {
-            entity.HasKey(e => e.IdProgramacion).HasName("PK__PROGRAMACION__22C0CEDD");
+            entity.HasKey(e => e.IdProgramacion)
+                .HasName("PK__PROGRAMACION__22C0CEDD")
+                .HasFillFactor(80);
 
             entity.ToTable("PROGRAMACION_OPERATIVOS");
 
@@ -5944,7 +5990,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ProveedorGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdProveedorGeneral);
+            entity.HasKey(e => e.IdProveedorGeneral).HasFillFactor(80);
 
             entity.ToTable("PROVEEDOR_GENERAL");
 
@@ -5985,7 +6031,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Provincia>(entity =>
         {
-            entity.HasKey(e => e.IdProvincias).HasName("PK_PROVINCIAS_1");
+            entity.HasKey(e => e.IdProvincias)
+                .HasName("PK_PROVINCIAS_1")
+                .HasFillFactor(80);
 
             entity.ToTable("PROVINCIAS");
 
@@ -6131,13 +6179,6 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FKST");
         });
 
-        modelBuilder.Entity<RegistroDepreciaciones>(entity =>
-        {
-            entity.HasNoKey();
-            entity.ToView(null);
-        });
-
-
         modelBuilder.Entity<RegistroSancionesPersonal>(entity =>
         {
             entity.HasKey(e => e.IdRegistro);
@@ -6177,9 +6218,17 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FKSA");
         });
 
+        modelBuilder.Entity<RegistroDepreciaciones>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView(null);
+        });
+
+
+
         modelBuilder.Entity<RequisicionProductoServicio>(entity =>
         {
-            entity.HasKey(e => e.IdRequisicionPs);
+            entity.HasKey(e => e.IdRequisicionPs).HasFillFactor(80);
 
             entity.ToTable("REQUISICION_PRODUCTO_SERVICIO");
 
@@ -6221,7 +6270,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<ResponsableAutorizacionFondoRotativo>(entity =>
         {
-            entity.HasKey(e => e.IdResponsableAutoFr);
+            entity.HasKey(e => e.IdResponsableAutoFr).HasFillFactor(80);
 
             entity.ToTable("RESPONSABLE_AUTORIZACION_FONDO_ROTATIVO");
 
@@ -6242,7 +6291,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<RetencionIva>(entity =>
         {
-            entity.HasKey(e => e.IdRetencionIva);
+            entity.HasKey(e => e.IdRetencionIva).HasFillFactor(80);
 
             entity.ToTable("RETENCION_IVA");
 
@@ -6257,7 +6306,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<RetencionRentum>(entity =>
         {
-            entity.HasKey(e => e.IdRetencionRenta).HasName("PK_IMPUESTO_RENTA");
+            entity.HasKey(e => e.IdRetencionRenta)
+                .HasName("PK_IMPUESTO_RENTA")
+                .HasFillFactor(80);
 
             entity.ToTable("RETENCION_RENTA");
 
@@ -6273,7 +6324,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<RolPago>(entity =>
         {
-            entity.HasKey(e => e.IdRol);
+            entity.HasKey(e => e.IdRol).HasFillFactor(80);
 
             entity.ToTable("ROL_PAGO");
 
@@ -6356,7 +6407,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<RotacionVehiculo>(entity =>
         {
-            entity.HasKey(e => e.IdRotacion);
+            entity.HasKey(e => e.IdRotacion).HasFillFactor(80);
 
             entity.ToTable("ROTACION_VEHICULOS");
 
@@ -6398,7 +6449,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<RutaDocElectronico>(entity =>
         {
-            entity.HasKey(e => e.NombreRuta).HasName("PK__RUTA_DOC_ELECTRO__271B6FA6");
+            entity.HasKey(e => e.NombreRuta)
+                .HasName("PK__RUTA_DOC_ELECTRO__271B6FA6")
+                .HasFillFactor(80);
 
             entity.ToTable("RUTA_DOC_ELECTRONICO");
 
@@ -6454,7 +6507,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SeccionGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdSeccion);
+            entity.HasKey(e => e.IdSeccion).HasFillFactor(80);
 
             entity.ToTable("SECCION_GENERAL");
 
@@ -6490,7 +6543,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Secuencial>(entity =>
         {
-            entity.HasKey(e => e.IdSecuencial);
+            entity.HasKey(e => e.IdSecuencial).HasFillFactor(80);
 
             entity.ToTable("SECUENCIAL");
 
@@ -6556,7 +6609,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SecuencialSuministro>(entity =>
         {
-            entity.HasKey(e => e.IdSecuencialSuministros);
+            entity.HasKey(e => e.IdSecuencialSuministros).HasFillFactor(80);
 
             entity.ToTable("SECUENCIAL_SUMINISTROS");
 
@@ -6605,7 +6658,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SerieOcupacional>(entity =>
         {
-            entity.HasKey(e => e.IdSerieOcupacional);
+            entity.HasKey(e => e.IdSerieOcupacional).HasFillFactor(80);
 
             entity.ToTable("SERIE_OCUPACIONAL");
 
@@ -6704,7 +6757,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SolicitudCajaChica>(entity =>
         {
-            entity.HasKey(e => e.IdSolictudCch);
+            entity.HasKey(e => e.IdSolictudCch).HasFillFactor(80);
 
             entity.ToTable("SOLICITUD_CAJA_CHICA");
 
@@ -6753,7 +6806,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SolicitudFondoRotativo>(entity =>
         {
-            entity.HasKey(e => e.IdSolicitudFr);
+            entity.HasKey(e => e.IdSolicitudFr).HasFillFactor(80);
 
             entity.ToTable("SOLICITUD_FONDO_ROTATIVO");
 
@@ -6803,7 +6856,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SolicitudMensualSuministro>(entity =>
         {
-            entity.HasKey(e => e.IdSolicitudSuministros);
+            entity.HasKey(e => e.IdSolicitudSuministros).HasFillFactor(80);
 
             entity.ToTable("SOLICITUD_MENSUAL_SUMINISTROS");
 
@@ -6825,7 +6878,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SubGrupoGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdSubGrupo);
+            entity.HasKey(e => e.IdSubGrupo).HasFillFactor(80);
 
             entity.ToTable("SUB_GRUPO_GENERAL");
 
@@ -6845,7 +6898,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SubGrupoItem>(entity =>
         {
-            entity.HasKey(e => e.IdSubGrupoItem);
+            entity.HasKey(e => e.IdSubGrupoItem).HasFillFactor(80);
 
             entity.ToTable("SUB_GRUPO_ITEM");
 
@@ -6868,7 +6921,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SubGrupoUbicacion>(entity =>
         {
-            entity.HasKey(e => e.IdSubGrupoUbicacion);
+            entity.HasKey(e => e.IdSubGrupoUbicacion).HasFillFactor(80);
 
             entity.ToTable("SUB_GRUPO_UBICACION");
 
@@ -6890,7 +6943,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SubSeccionGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdSubSeccion);
+            entity.HasKey(e => e.IdSubSeccion).HasFillFactor(80);
 
             entity.ToTable("SUB_SECCION_GENERAL");
 
@@ -6906,6 +6959,20 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.IdSeccion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SUB_SECCION_GENERAL_SECCION_GENERAL");
+        });
+
+        modelBuilder.Entity<SubactivoFijo>(entity =>
+        {
+            entity.HasKey(e => e.IdSubactivo).HasName("PK__SUBACTIV__5852A0233F72B70E");
+
+            entity.ToTable("SUBACTIVO_FIJO");
+
+            entity.Property(e => e.IdSubactivo).HasColumnName("ID_SUBACTIVO");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .HasColumnName("DESCRIPCION");
+            entity.Property(e => e.Estado).HasColumnName("ESTADO");
+            entity.Property(e => e.IdTipoActivo).HasColumnName("ID_TIPO_ACTIVO");
         });
 
         modelBuilder.Entity<SubgrupoSuministro>(entity =>
@@ -6932,7 +6999,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<SucursalGeneral>(entity =>
         {
-            entity.HasKey(e => e.IdSucursal);
+            entity.HasKey(e => e.IdSucursal).HasFillFactor(80);
 
             entity.ToTable("SUCURSAL_GENERAL");
 
@@ -6952,7 +7019,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Tag>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tags__0F23EA84");
+            entity.HasKey(e => e.Id)
+                .HasName("PK__tags__0F23EA84")
+                .HasFillFactor(80);
 
             entity.ToTable("tags");
 
@@ -6967,6 +7036,32 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
+        });
+
+        modelBuilder.Entity<TblActivoMovimiento>(entity =>
+        {
+            entity.HasKey(e => e.IdActivoMovimiento);
+
+            entity.ToTable("tbl_ActivoMovimiento");
+
+            entity.Property(e => e.FechaMovimiento).HasColumnType("datetime");
+            entity.Property(e => e.Observacion).HasMaxLength(100);
+            entity.Property(e => e.TipoMovimiento).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<TblCategoriaArma>(entity =>
+        {
+            entity.HasKey(e => e.IdCategoriaArma).HasName("PK__tbl_CATE__209BB12AF9843A69");
+
+            entity.ToTable("tbl_CATEGORIA_ARMA");
+
+            entity.Property(e => e.IdCategoriaArma).HasColumnName("ID_CATEGORIA_ARMA");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true)
+                .HasColumnName("ACTIVO");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .HasColumnName("DESCRIPCION");
         });
 
         modelBuilder.Entity<TblComparacion>(entity =>
@@ -7031,7 +7126,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblMenuDosUser>(entity =>
         {
-            entity.HasKey(e => e.FldIdMenuDosUser);
+            entity.HasKey(e => e.FldIdMenuDosUser).HasFillFactor(80);
 
             entity.ToTable("tbl_menu_dos_user");
 
@@ -7050,7 +7145,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblMenuTresUser>(entity =>
         {
-            entity.HasKey(e => e.FldIdMenuTresUser);
+            entity.HasKey(e => e.FldIdMenuTresUser).HasFillFactor(80);
 
             entity.ToTable("tbl_menu_tres_user");
 
@@ -7073,7 +7168,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblMenuUser>(entity =>
         {
-            entity.HasKey(e => e.FldIdMenu);
+            entity.HasKey(e => e.FldIdMenu).HasFillFactor(80);
 
             entity.ToTable("tbl_menu_user");
 
@@ -7111,7 +7206,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblPermisosUser>(entity =>
         {
-            entity.HasKey(e => e.FldIdPermisosUser);
+            entity.HasKey(e => e.FldIdPermisosUser).HasFillFactor(80);
 
             entity.ToTable("tbl_permisos_user");
 
@@ -7148,9 +7243,39 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Plazo).HasColumnName("plazo");
         });
 
+        modelBuilder.Entity<TblPresupuesto>(entity =>
+        {
+            entity.HasKey(e => e.IdPresupuesto);
+
+            entity.ToTable("tbl_Presupuesto");
+
+            entity.Property(e => e.IdPresupuesto).HasColumnName("id_Presupuesto");
+            entity.Property(e => e.Codigo).HasMaxLength(20);
+            entity.Property(e => e.Cuenta).HasMaxLength(150);
+            entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.FechaCreacion)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_creacion");
+            entity.Property(e => e.Presupuesto).HasColumnType("decimal(18, 2)");
+        });
+
+        modelBuilder.Entity<TblPruebaAntidroga>(entity =>
+        {
+            entity.HasKey(e => e.IdControl);
+
+            entity.ToTable("tbl_PruebaAntidroga");
+
+            entity.Property(e => e.IdControl).ValueGeneratedNever();
+            entity.Property(e => e.Area).HasMaxLength(300);
+            entity.Property(e => e.Cargo).HasMaxLength(300);
+            entity.Property(e => e.FechaPrueba).HasColumnType("datetime");
+            entity.Property(e => e.Nombres).HasMaxLength(500);
+            entity.Property(e => e.Observaciones).HasMaxLength(500);
+        });
+
         modelBuilder.Entity<TblRolUser>(entity =>
         {
-            entity.HasKey(e => e.FldIdRol);
+            entity.HasKey(e => e.FldIdRol).HasFillFactor(80);
 
             entity.ToTable("tbl_rol_user");
 
@@ -7204,6 +7329,37 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Uniformes).HasColumnName("uniformes");
         });
 
+        modelBuilder.Entity<TblTipoArma>(entity =>
+        {
+            entity.HasKey(e => e.IdTipoArma).HasName("PK__tbl_TIPO__A1D856CE3DE2E26B");
+
+            entity.ToTable("tbl_TIPO_ARMA");
+
+            entity.Property(e => e.IdTipoArma).HasColumnName("ID_TIPO_ARMA");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true)
+                .HasColumnName("ACTIVO");
+            entity.Property(e => e.Calibre)
+                .HasMaxLength(50)
+                .HasColumnName("CALIBRE");
+            entity.Property(e => e.Categoria)
+                .HasMaxLength(50)
+                .HasColumnName("CATEGORIA");
+            entity.Property(e => e.Color).HasColumnName("COLOR");
+            entity.Property(e => e.Estado)
+                .HasMaxLength(50)
+                .HasDefaultValue("VIGENTE")
+                .HasColumnName("ESTADO");
+            entity.Property(e => e.IdPaisFabrica).HasColumnName("ID_PAIS_FABRICA");
+            entity.Property(e => e.IdSubactivo).HasColumnName("ID_SUBACTIVO");
+            entity.Property(e => e.Marca)
+                .HasMaxLength(100)
+                .HasColumnName("MARCA");
+            entity.Property(e => e.TipoUso)
+                .HasMaxLength(50)
+                .HasColumnName("TIPO_USO");
+        });
+
         modelBuilder.Entity<Terreno>(entity =>
         {
             entity
@@ -7224,7 +7380,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TicketsFarmaciaComecsa>(entity =>
         {
-            entity.HasKey(e => e.IdTicket).HasName("PK_ID_TICKET");
+            entity.HasKey(e => e.IdTicket)
+                .HasName("PK_ID_TICKET")
+                .HasFillFactor(80);
 
             entity.ToTable("TICKETS_FARMACIA_COMECSA");
 
@@ -7241,6 +7399,19 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("FECHA_REGISTRO");
             entity.Property(e => e.NumTicket).HasColumnName("NUM_TICKET");
             entity.Property(e => e.TipoTicket).HasColumnName("TIPO_TICKET");
+        });
+
+        modelBuilder.Entity<TipoActivoGeneral>(entity =>
+        {
+            entity.HasKey(e => e.IdTipoActivo).HasName("PK__TIPO_ACT__37212BCF613D88B4");
+
+            entity.ToTable("TIPO_ACTIVO_GENERAL");
+
+            entity.Property(e => e.IdTipoActivo).HasColumnName("ID_TIPO_ACTIVO");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .HasColumnName("DESCRIPCION");
+            entity.Property(e => e.Estado).HasColumnName("ESTADO");
         });
 
         modelBuilder.Entity<TiqueteMaquinaRegistradoraCompra>(entity =>
@@ -7290,11 +7461,15 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__users__096B112E");
+            entity.HasKey(e => e.Id)
+                .HasName("PK__users__096B112E")
+                .HasFillFactor(80);
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Email, "users_email_unique").IsUnique();
+            entity.HasIndex(e => e.Email, "users_email_unique")
+                .IsUnique()
+                .HasFillFactor(80);
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Active)
@@ -7329,7 +7504,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<UserProfile>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__user_profiles__110C32F6");
+            entity.HasKey(e => e.Id)
+                .HasName("PK__user_profiles__110C32F6")
+                .HasFillFactor(80);
 
             entity.ToTable("user_profiles");
 
@@ -7450,7 +7627,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<VehiculosOtro>(entity =>
         {
-            entity.HasKey(e => e.IdVehiculos);
+            entity.HasKey(e => e.IdVehiculos).HasFillFactor(80);
 
             entity.ToTable("VEHICULOS_OTROS");
 

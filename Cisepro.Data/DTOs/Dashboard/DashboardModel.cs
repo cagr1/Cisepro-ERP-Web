@@ -6,58 +6,31 @@ using System.Threading.Tasks;
 
 namespace Cisepro.Data.DTOs.Dashboard
 {
-    public class SalesData
+    public class TablaFinancieraDTO
     {
-
-        public decimal TotalSales { get; set; }
-    }
-    public class AccumulatedProfitLossEarnings
-    {
-        public long NumberMonth { get; set; }
-        public string NameMonth { get; set; }
-        public decimal TotalIncome { get; set; }
-        public decimal TotalExpenses { get; set; }
-        public decimal TotalEarnings { get; set; }
-
-    }
-
-    public class AnnualVariationRevenues
-    {
-
-        public decimal VariationPercentage { get; set; }
-    }
-    public class AnnualEarnings
-    {
-        public decimal TotalEarnings { get; set; }
+        public string? Partidas { get; set; }
+        public decimal Enero { get; set; }
+        public decimal Febrero { get; set; }
+        public decimal Marzo { get; set; }
+        public decimal Abril { get; set; }
+        public decimal Mayo { get; set; }
+        public decimal Junio { get; set; }
+        public decimal Julio { get; set; }
+        public decimal Agosto { get; set; }
+        public decimal Septiembre { get; set; }
+        public decimal Octubre { get; set; }
+        public decimal Noviembre { get; set; }
+        public decimal Diciembre { get; set; }
     }
 
-    public class EarningAccumulated
+    public class DashboardDataResponse
     {
-        public decimal TotalEarnings { get; set; }
+        public List<TablaFinancieraDTO> TablaPrimaria { get; set; }
+        public DateTime FechaInicial { get; set; }
+        public DateTime FechaFinal { get; set; }
+        public DateTime FechaGeneracion { get; set; }
     }
 
 
-    public class SalesbyCategory
-    {
-        public string Code { get; set; }
-        public string Description { get; set; }
-        public decimal Saldo { get; set; }
-        // public decimal SecurityServiceSales { get; set; } // 41020101
-        // public decimal MonitorServiceSales { get; set; }   // 41020102
-        // public decimal KitSales { get; set; }             // 41020103
-        // public decimal AlarmSales { get; set; }           // 41020104
-        // public decimal MaintenanceSales { get; set; }     // 41020105
-        // public decimal MaterialSales { get; set; }        // 41020106
 
-    }
-
-    public class MarginEarnings
-    {
-        public decimal TotalEarnings { get; set; }
-    }
-
-    public class LiquidityRatio
-    {
-        public decimal LiquidityLevel { get; set; }
-    }
 }

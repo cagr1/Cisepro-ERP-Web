@@ -1,11 +1,12 @@
 <template>
-    <div class="flex-1 flex flex-col ml-10 transition-all duration-300" id="mainContent">
+    <div class="flex-1 flex flex-col  transition-all duration-300 w-full" id="mainContent">
       <!-- <div class="w-full transition-all" id="mainContent"> -->
-        <main class="px-4">
-            <div class="mb-8 bg-white p-4 rounded-lg shadow-sm">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <main class="w-full">
+            <div class="mb-8 bg-white p-2 rounded-lg shadow-sm ">
+                <div class="flex flex-col lg:flex-row md:items-center lg:justify-between gap-6">
                     <div class="md:flex-1 ml-10">
                         <h1 class="text-xl font-bold text-gray-900">Panel Financiero</h1>
+                         <p class="text-gray-600 mt-1">Análisis mensual de partidas financieras</p>
                     </div>
                     <div class="flex flex-col md:flex-row gap-4 md:items-center md:flex-[2]">
                         <div class="flex-1 flex flex-col md:flex-row gap-3 items-start md:items-center">

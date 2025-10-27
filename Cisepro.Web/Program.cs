@@ -10,6 +10,13 @@ using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
+//configuracion de logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
+//configurarion JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secret = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]); 
 
@@ -22,7 +29,6 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-
 
 
 

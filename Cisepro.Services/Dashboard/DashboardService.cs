@@ -5,347 +5,91 @@ using Cisepro.Data.DTOs.Dashboard;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Cisepro.Data.Entities;
+using System.Reflection.PortableExecutable;
 
 
 namespace Cisepro.Services.Dashboard
 {
-    public class DashboardService
+    public class DashboardService : IDashboardService
     {
         private readonly Func<TipoConexion, AppDbContext> _contextFactory;
+        private readonly ILogger<DashboardService> _logger;
 
-        public DashboardService(Func<TipoConexion, AppDbContext> contextFactory)
+        public DashboardService(Func<TipoConexion, AppDbContext> contextFactory, ILogger<DashboardService> logger)
         {
             _contextFactory = contextFactory;
+            _logger = logger;
         }
 
-        public async Task<SalesData> GetSalesDataRangeAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
+        public async Task<DashboardDataResponse> GetTablaFinancieraAsync(TipoConexion tipoConexion, DateTime startDate, DateTime endDate)
         {
-            using var _context = _contextFactory(tipoCon);
+            using var _context = _contextFactory(tipoConexion);
 
-            var parameters = new SqlParameter[]
+            try
             {
-                new SqlParameter("@FECHA_INICIAL", startDate),
-                new SqlParameter("@FECHA_FINAL", endDate)
-            };
-
-            var result = new SalesData();
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-
-            command.CommandText = "sp_SalesDataByDateRange";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-
-            using var reader = await command.ExecuteReaderAsync();
-
-            if (await reader.ReadAsync())
-            {
-                result.TotalSales = reader.IsDBNull("TOTAL_VENTAS") ? 0 : reader.GetDecimal("TOTAL_VENTAS");
-            }
-
-            return result;            
-
-
-
-        }
-
-        public async Task<SalesData> GetAccumulatedSalesDataAsync(TipoConexion tipoCon, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-
-            var parameters = new SqlParameter[]
-            {
-
-                new SqlParameter("@FECHA_FINAL", endDate)
-            };
-
-            var result = new SalesData();
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-
-            command.CommandText = "sp_SalesAccumulatedByRange";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-            await _context.Database.OpenConnectionAsync();
-
-            using var reader = await command.ExecuteReaderAsync();
-
-            if (await reader.ReadAsync())
-            {
-                result.TotalSales = reader.IsDBNull("TOTAL_VENTAS") ? 0 : reader.GetDecimal("TOTAL_VENTAS");
-            }
-
-            return result;
-            
-            
-
-        }
-
-        public async Task<AnnualVariationRevenues> GetVariationIncomeAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
-        {
-
-            using var _context = _contextFactory(tipoCon);
-
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_INICIAL", startDate),
-                new SqlParameter("@FECHA_FINAL", endDate)
-            };
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_AnnualVariationRevenues";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new AnnualVariationRevenues();
-            if (await reader.ReadAsync())
-                result.VariationPercentage = reader.IsDBNull("VariacionPorcentual") ? 0 : reader.GetDecimal("VariacionPorcentual");
-
-            return result;
-
-
-
-
-
-        }
-
-        public async Task<AnnualEarnings> GetAnnualEarningsAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_INICIAL", startDate),
-                new SqlParameter("@FECHA_FINAL", endDate)
-            };
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_AnnualEarnings";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new AnnualEarnings();
-            if (await reader.ReadAsync())
-                result.TotalEarnings = reader.IsDBNull("Utilidad") ? 0 : reader.GetDecimal("Utilidad");
-
-            return result;
-
-
-
-        }
-
-        public async Task<EarningAccumulated> GetEarningAccumulatedAsync(TipoConexion tipoCon, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-            
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_FINAL", endDate)
-            };
-
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_EarningsAccumulated";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new EarningAccumulated();
-            if (await reader.ReadAsync())
-                result.TotalEarnings = reader.IsDBNull("Utilidad") ? 0 : reader.GetDecimal("Utilidad");
-
-            return result;
-
-        }
-
-        public async Task<AnnualVariationRevenues> GetVariationProfitAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-            
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_INICIAL", startDate),
-                new SqlParameter("@FECHA_FINAL", endDate)
-            };
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_AnnualVariationIncomes";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new AnnualVariationRevenues();
-            if (await reader.ReadAsync())
-                result.VariationPercentage = reader.IsDBNull("Variacion") ? 0 : reader.GetDecimal("Variacion");
-
-            return result;
-
-
-
-        }
-
-        public async Task<List<AccumulatedProfitLossEarnings>> GetAccumulatedProfitLossEarningsAsync(TipoConexion tipoCon, int year)
-        {
-            using var _context = _contextFactory(tipoCon);
-
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@anio", SqlDbType.Int)
+                _logger?.LogInformation("Retrieving financial table data. {TipoConexion}", tipoConexion);
+                var parameters = new[]
                 {
-                    Value = year
+                    new SqlParameter("@FECHA_INICIAL",  startDate ),
+                    new SqlParameter("@FECHA_FINAL",  endDate )
+                };
+
+                var tablaPrimaria = new List<TablaFinancieraDTO>();
+
+                using var command = _context.Database.GetDbConnection().CreateCommand();
+                command.CommandText = "sp_TablaFinanciera";
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddRange(parameters);
+
+                await _context.Database.OpenConnectionAsync();
+
+                using var reader = await command.ExecuteReaderAsync();
+                int recorCount = 0;
+                while (await reader.ReadAsync())
+                {
+                    recorCount++;
+                    var fila = new TablaFinancieraDTO
+                    {
+                        Partidas = reader["Partidas"]?.ToString() ?? string.Empty,
+                        Enero = reader.IsDBNull("Enero") ? 0 : reader.GetDecimal("Enero"),
+                        Febrero = reader.IsDBNull("Febrero") ? 0 : reader.GetDecimal("Febrero"),
+                        Marzo = reader.IsDBNull("Marzo") ? 0 : reader.GetDecimal("Marzo"),
+                        Abril = reader.IsDBNull("Abril") ? 0 : reader.GetDecimal("Abril"),
+                        Mayo = reader.IsDBNull("Mayo") ? 0 : reader.GetDecimal("Mayo"),
+                        Junio = reader.IsDBNull("Junio") ? 0 : reader.GetDecimal("Junio"),
+                        Julio = reader.IsDBNull("Julio") ? 0 : reader.GetDecimal("Julio"),
+                        Agosto = reader.IsDBNull("Agosto") ? 0 : reader.GetDecimal("Agosto"),
+                        Septiembre = reader.IsDBNull("Septiembre") ? 0 : reader.GetDecimal("Septiembre"),
+                        Octubre = reader.IsDBNull("Octubre") ? 0 : reader.GetDecimal("Octubre"),
+                        Noviembre = reader.IsDBNull("Noviembre") ? 0 : reader.GetDecimal("Noviembre"),
+                        Diciembre = reader.IsDBNull("Diciembre") ? 0 : reader.GetDecimal("Diciembre")
+                    };
+                    tablaPrimaria.Add(fila);
                 }
-            };
 
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_ReportProfitLossEarnings";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
+                _logger?.LogInformation("Retrieved {RecorCount} records from the database.", recorCount);
 
-            await _context.Database.OpenConnectionAsync();
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new List<AccumulatedProfitLossEarnings>();
-            while (await reader.ReadAsync())
-            {
-                result.Add(new AccumulatedProfitLossEarnings
+                return new DashboardDataResponse
                 {
-                    NumberMonth = reader.GetInt64("NumeroMes"),
-                    NameMonth = reader.GetString("NombreMes"),
-                    TotalIncome = reader.GetDecimal("Ingresos"),
-                    TotalExpenses = reader.GetDecimal("Egresos"),
-                    TotalEarnings = reader.GetDecimal("Utilidad")
-                });
+                    TablaPrimaria = tablaPrimaria,
+                    FechaInicial = startDate,
+                    FechaFinal = endDate,
+                };
+
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error retrieving financial table data.");
+                throw;
+
+
             }
 
-            return result;
-
         }
-
-        public async Task<AnnualVariationRevenues> GetAnnualVariationRevenuesAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-            
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_INICIAL", startDate ),
-                new SqlParameter("@FECHA_FINAL", endDate )
-            };
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_AnnualVariationRevenues";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new AnnualVariationRevenues();
-            if (await reader.ReadAsync())
-                result.VariationPercentage = reader.IsDBNull("VariacionPorcentual") ? 0 : reader.GetDecimal("VariacionPorcentual");
-
-            return result;
-        }
-
-
-
-        public async Task<List<SalesbyCategory>> GetSalesbyCategoriesAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-            
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_INICIAL", startDate ),
-                new SqlParameter("@FECHA_FINAL", endDate )
-            };
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_salesByCategory";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new List<SalesbyCategory>();
-            while (await reader.ReadAsync())
-            {
-                result.Add(new SalesbyCategory
-                {
-                    Code = reader.GetString("Codigo"),
-                    Description = reader.GetString("Cuenta"),
-                    Saldo = reader.GetDecimal("Saldo")
-                });
-            }
-
-            return result;
-
-        }
-
-
-        public async Task<MarginEarnings> GetMarginEarningsAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-            
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_INICIAL", startDate ),
-                new SqlParameter("@FECHA_FINAL", endDate )
-            };
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_MarginEarnings";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new MarginEarnings();
-            if (await reader.ReadAsync())
-                result.TotalEarnings = reader.IsDBNull("MargenUtilidadNeta") ? 0 : reader.GetDecimal("MargenUtilidadNeta");
-
-            return result;
-        }
-
-        public async Task<LiquidityRatio> GetLiquidityRatioAsync(TipoConexion tipoCon, DateTime startDate, DateTime endDate)
-        {
-            using var _context = _contextFactory(tipoCon);
-            
-            var parameters = new SqlParameter[]
-            {
-                new SqlParameter("@FECHA_INICIAL", startDate ),
-                new SqlParameter("@FECHA_FINAL", endDate )
-            };
-
-            using var command = _context.Database.GetDbConnection().CreateCommand();
-            command.CommandText = "sp_liquidityLevel";
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddRange(parameters);
-
-            await _context.Database.OpenConnectionAsync();
-            using var reader = await command.ExecuteReaderAsync();
-
-            var result = new LiquidityRatio();
-            if (await reader.ReadAsync())
-                result.LiquidityLevel = reader.IsDBNull("Liquidez") ? 0 : reader.GetDecimal("Liquidez");
-
-            return result;
-        }
-
-        //Metodo para obtener guardias por canton
 
         public async Task<List<CantonGuardiasDTO>> GetGuardiasPorCantonAsync(TipoConexion tipoCon)
         {
@@ -367,16 +111,12 @@ namespace Cisepro.Services.Dashboard
                     DPA_DESCAN = reader["DPA_DESCAN"].ToString(),
                     DPA_PRO = reader["DPA_PRO"].ToString().Trim(),
                     TotalGuardias = Convert.ToInt32(reader["TotalGuardias"].ToString())
-                    
+
                 });
             }
 
             return result;
         }
-
-
-
-
 
 
     }

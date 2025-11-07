@@ -16,28 +16,28 @@ const routes = [
     children: [
       {
         path: "",
-        redirect: "/Dashboard/Financiero",
+        redirect: "/Dashboard/partida",
       },
       {
         path: "/dashboard",
         name: "Dashboard",
-        redirect: "/dashboard/financiero",
+        redirect: "/dashboard/partida",
         component: () => import("../views/DashboardContainer.vue"),
         children: [
           {
-            path: "financiero",
-            name: "DashboardFinanciero",
-            component: () => import("../views/Dashboard/Financiero.vue"),
+            path: "partida",
+            name: "FinancieroPartida",
+            component: () => import("../views/Dashboard/Partida.vue"),
           },
           {
-            path: "operativo",
-            name: "DashboardOperativo",
-            component: () => import("../views/Dashboard/Operativo.vue"),
+            path: "ciclo-efectivo",
+            name: "FinancieroCicloEfectivo",
+            component: () => import("../views/Dashboard/CicloEfectivo.vue"),
           },
           {
-            path: "rrhh",
-            name: "DashboardRRHH",
-            component: () => import("../views/Dashboard/RRHH.vue"),
+            path: "analisis",
+            name: "FinancieroAnalisis",
+            component: () => import("../views/Dashboard/Analisis.vue"),
           },
         ]
 

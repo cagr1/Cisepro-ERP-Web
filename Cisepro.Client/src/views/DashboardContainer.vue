@@ -56,24 +56,24 @@ const currentIndex = ref(0);
 
 const tabs = [
   {
-    name: "Financiero",
+    name: "Partida",
     icon: "heroicons:currency-dollar",
     component: defineAsyncComponent(() =>
-      import("@/views/dashboard/Financiero.vue")
+      import("@/views/dashboard/Partida.vue")
     ),
   },
   {
-    name: "Operativo",
-    icon: "heroicons:map-pin",
+    name: "Ciclo Efectivo",
+    icon: "heroicons:banknotes",
     component: defineAsyncComponent(() =>
-      import("@/views/dashboard/Operativo.vue")
+      import("@/views/dashboard/CicloEfectivo.vue")
     ),
   },
   {
-    name: "RRHH",
-    icon: "heroicons:user-group",
+    name: "Analisis",
+    icon: "heroicons:chart-bar",
     component: defineAsyncComponent(() =>
-      import("@/views/dashboard/RRHH.vue")
+      import("@/views/dashboard/Analisis.vue")
     ),
   },
 ];

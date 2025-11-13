@@ -83,20 +83,19 @@
             </h2>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
             <!-- Ventas -->
             <div class="stat-card border-l-4 border-blue-500">
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Ventas</p>
-                  <p class="text-2xl font-bold text-blue-600 mt-1">
+                  <p class="text-xl font-bold text-blue-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.ultimoMes?.ventas) }}
                   </p>
                 </div>
                 <div class="bg-blue-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <!-- <Icon icon="solar:money-bag-bold-duotone" class="w-6 h-6 text-blue-600" /> -->
+                  <Icon icon="fluent:money-24-regular" class="w-6 h-6 text-blue-600" />
                 </div>
               </div>
               <div class="text-xs text-gray-500">Ingresos del período</div>
@@ -107,14 +106,13 @@
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Costo</p>
-                  <p class="text-2xl font-bold text-red-600 mt-1">
+                  <p class="text-xl font-bold text-red-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.ultimoMes?.costo) }}
                   </p>
                 </div>
                 <div class="bg-red-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
-                  </svg>
+                  
+                  <Icon icon="fluent:shopping-bag-dismiss-20-regular" class="w-6 h-6 text-red-600" />
                 </div>
               </div>
               <div class="text-xs text-gray-500">Costo de ventas</div>
@@ -125,14 +123,12 @@
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Gastos</p>
-                  <p class="text-2xl font-bold text-orange-600 mt-1">
+                  <p class="text-xl font-bold text-orange-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.ultimoMes?.gastos) }}
                   </p>
                 </div>
                 <div class="bg-orange-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+                  <Icon icon="fluent:wallet-credit-card-28-regular" class="w-6 h-6 text-orange-600" />
                 </div>
               </div>
               <div class="text-xs text-gray-500">Gastos operativos</div>
@@ -143,14 +139,12 @@
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Margen Bruto</p>
-                  <p class="text-2xl font-bold text-emerald-600 mt-1">
+                  <p class="text-xl font-bold text-emerald-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.ultimoMes?.margenBruto) }}
                   </p>
                 </div>
                 <div class="bg-emerald-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
+                  <Icon icon="fluent:chart-multiple-24-regular" class="w-6 h-6 text-emerald-600" />
                 </div>
               </div>
               <div class="flex items-center gap-2">
@@ -166,14 +160,12 @@
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Utilidad Operativa</p>
-                  <p class="text-2xl font-bold text-purple-600 mt-1">
+                  <p class="text-xl font-bold text-purple-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.ultimoMes?.utilidadOperativa) }}
                   </p>
                 </div>
                 <div class="bg-purple-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
+                  <Icon icon="fluent:data-trending-24-filled" class="w-6 h-6 text-purple-600" />
                 </div>
               </div>
               <div class="flex items-center gap-2">
@@ -188,30 +180,20 @@
 
         <!-- Sección: Promedios del Período -->
         <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="h-8 w-1 bg-indigo-600 rounded-full"></div>
-            <h2 class="text-xl font-bold text-gray-800">
-              Promedios del Período
-              <span v-if="datosFinancieros?.partidas?.promedios" class="text-indigo-600 ml-2">
-                ({{ datosFinancieros.partidas.promedios.numeroMeses }} meses)
-              </span>
-            </h2>
-          </div>
+          
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
             <!-- Venta Promedio -->
-            <div class="stat-card border-l-4 border-cyan-500">
+            <div class="stat-card border-l-4 border-blue-500">
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Venta Promedio</p>
-                  <p class="text-2xl font-bold text-cyan-600 mt-1">
+                  <p class="text-xl font-bold text-blue-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.promedios?.ventaPromedio) }}
                   </p>
                 </div>
                 <div class="bg-cyan-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                  </svg>
+                  <Icon icon="fluent:briefcase-24-regular" class="w-6 h-6 text-blue-600" />
                 </div>
               </div>
               <div class="text-xs text-gray-500">Promedio mensual</div>
@@ -222,14 +204,12 @@
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Costo Promedio</p>
-                  <p class="text-2xl font-bold text-rose-600 mt-1">
+                  <p class="text-xl font-bold text-rose-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.promedios?.costoPromedio) }}
                   </p>
                 </div>
                 <div class="bg-rose-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <Icon icon="fluent:money-calculator-24-filled" class="w-6 h-6 text-rose-600" />
                 </div>
               </div>
               <div class="text-xs text-gray-500">Promedio mensual</div>
@@ -245,9 +225,7 @@
                   </p>
                 </div>
                 <div class="bg-amber-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <Icon icon="fluent:arrow-trending-down-24-filled" class="w-6 h-6 text-amber-600" />
                 </div>
               </div>
               <div class="text-xs text-gray-500">Promedio mensual</div>
@@ -258,14 +236,12 @@
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Utilidad Bruta Prom.</p>
-                  <p class="text-2xl font-bold text-teal-600 mt-1">
+                  <p class="text-xl font-bold text-teal-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.promedios?.utilidadBrutaPromedio) }}
                   </p>
                 </div>
                 <div class="bg-teal-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+                  <Icon icon="fluent:arrow-trending-lines-24-regular" class="w-6 h-6 text-teal-600" />
                 </div>
               </div>
               <div class="text-xs text-gray-500">Margen bruto mensual</div>
@@ -276,14 +252,12 @@
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Util. Operativa Prom.</p>
-                  <p class="text-2xl font-bold text-violet-600 mt-1">
+                  <p class="text-xl font-bold text-violet-600 mt-1">
                     {{ formatCurrency(datosFinancieros?.partidas?.promedios?.utilidadOperativaPromedio) }}
                   </p>
                 </div>
                 <div class="bg-violet-100 p-2 rounded-lg">
-                  <svg class="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
+                  <Icon icon="fluent:data-bar-vertical-24-filled" class="w-6 h-6 text-violet-600" />
                 </div>
               </div>
               <div class="flex items-center gap-2">
@@ -330,6 +304,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { usePartidaCalculations } from '@/api/Dashboard/partidaCalculations';
+import { Icon } from '@iconify/vue';
 
 const {
   procesarData,

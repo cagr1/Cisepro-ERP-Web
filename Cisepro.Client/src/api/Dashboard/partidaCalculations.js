@@ -59,6 +59,7 @@ export const usePartidaCalculations = () => {
 
       return {
         mesesActivos: mesesActivos.value,
+        mensual: calcularValoresMensuales(),
         acumulados: calcularAcumulados(),
         cicloEfectivo: ciclo,
         promedioCapitalTrabajo: promedio,
@@ -162,6 +163,40 @@ export const usePartidaCalculations = () => {
 
     return acumulados;
   };
+
+  //Valores Mensuales mes a mes
+
+  const calcularValoresMensuales = () => {
+    const mensual = {
+      Clientes: {},
+      Proveedores: {},
+      Ventas: {},
+      Costo: {},
+      Gastos: {},
+      UtilidadOperativa: {},
+      MargenBruto: {},
+    };
+
+    mesesActivos.value.forEach((mes) => {
+      const ventasMes = obtenerValorPartida("Ventas", mes);
+      const costoMes = obtenerValorPartida("Costo", mes);
+      const gastosMes = obtenerValorPartida("Gastos", mes);
+
+      mensual.Clientes[mes] = obtenerValorPartida("Clientes", mes);
+      mensual.Proveedores[mes] = obtenerValorPartida("Proveedores", mes);
+      mensual.Ventas[mes] = ventasMes;
+      mensual.Costo[mes] = costoMes;
+      mensual.Gastos[mes] = gastosMes;
+      mensual.UtilidadOperativa[mes] = ventasMes - costoMes - gastosMes;
+      mensual.MargenBruto[mes] = ventasMes - costoMes;
+    });
+
+    return mensual;
+
+
+
+  };
+
 
   /**
    * Calcula los días transcurridos según el índice del mes (30, 60, 90, 120...)

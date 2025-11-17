@@ -1,9 +1,9 @@
 <template>
-  <div class="flex-1 flex flex-col transition-all duration-300 w-full">
-    <main class="w-full p-4">
+  
+    <div class="w-full ">
       <!-- Header con controles -->
       <div
-        class="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100"
+        class="mb-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100"
       >
         <div
           class="flex flex-col lg:flex-row md:items-center lg:justify-between gap-6"
@@ -12,9 +12,16 @@
             <h1 class="text-2xl font-bold text-gray-900">
               Análisis de Partidas Operativas
             </h1>
-            <p class="text-gray-500 mt-1">
-              Indicadores de productividad y desempeño económico
-            </p>
+            
+            <h2 class="text-sm font-bold text-gray-500">
+              Indicadores de productividad y desempeño económico 
+              <span
+                v-if="datosFinancieros?.partidas?.ultimoMes"
+                class="text-blue-600 ml-2 capitalize"
+              >
+                ({{ datosFinancieros.partidas.ultimoMes.mes }})
+              </span>
+            </h2>
           </div>
 
           <div class="flex flex-col md:flex-row gap-4 md:items-center">
@@ -109,18 +116,7 @@
       <div v-show="!isLoading && !error && datosFinancieros">
         <!-- Sección: Indicadores del Último Mes -->
         <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="h-8 w-1 bg-blue-600 rounded-full"></div>
-            <h2 class="text-xl font-bold text-gray-800">
-              Indicadores del Último Mes
-              <span
-                v-if="datosFinancieros?.partidas?.ultimoMes"
-                class="text-blue-600 ml-2 capitalize"
-              >
-                ({{ datosFinancieros.partidas.ultimoMes.mes }})
-              </span>
-            </h2>
-          </div>
+          
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
             <!-- Ventas -->
@@ -449,7 +445,8 @@
 
         <!-- Tarjeta Resumen Destacada -->
         <div
-          class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 shadow-2xl"
+          class="backdrop-blur-xl bg-white/5 border border-white/10 
+         rounded-2xl p-8 shadow-xl"
         >
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Total Acumulado -->
@@ -459,7 +456,7 @@
               >
                 Ventas Acumuladas
               </p>
-              <p class="text-white text-3xl font-bold">
+              <p class="text-blue-400 text-2xl font-bold">
                 {{
                   formatCurrency(datosFinancieros?.partidas?.acumulados?.ventas)
                 }}
@@ -472,7 +469,7 @@
               >
                 Utilidad Bruta Acum.
               </p>
-              <p class="text-emerald-400 text-3xl font-bold">
+              <p class="text-emerald-400 text-2xl font-bold">
                 {{
                   formatCurrency(
                     datosFinancieros?.partidas?.acumulados?.margenBruto
@@ -487,7 +484,7 @@
               >
                 Utilidad Operativa Acum.
               </p>
-              <p class="text-purple-400 text-3xl font-bold">
+              <p class="text-purple-400 text-2xl font-bold">
                 {{
                   formatCurrency(
                     datosFinancieros?.partidas?.acumulados?.utilidadOperativa
@@ -498,8 +495,8 @@
           </div>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  
 </template>
 
 <script setup>

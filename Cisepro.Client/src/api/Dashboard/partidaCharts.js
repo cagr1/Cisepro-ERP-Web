@@ -68,11 +68,11 @@ export const buildPartidaCharts = ({
       xAxis: {
         type: "category",
         data: meses,
-        axisLabel: { color: "#666666", margin: 18, fontWeight: "600" },
-        axisLine: { lineStyle: { color: "#666666" } },
+        axisLabel: { color: "#666666", fontWeight: "600" },
+        axisLine: { lineStyle: { color: "#666666" }, show: false },
+        axisTick: { show: false },
         splitLine: {
-          show: true,
-          lineStyle: { color: "#e5e7eb55" },
+          show: false,
         },
       },
 
@@ -80,11 +80,24 @@ export const buildPartidaCharts = ({
         type: "value",
         axisLabel: {
           color: "#cbd5e1",
-          fontWeight: "600",
-          formatter: (v) => `$${v}`,
+          fontWeight: "100",
+          formatter: (value) => {
+            // Formateador para mostrar K en miles
+            if (value >= 1000) {
+              return `$${(value / 1000).toFixed(0)}K`;
+            }
+            return `$${value}`;
+          },
         },
         axisLine: { show: false },
-        splitLine: { lineStyle: { color: "#697985" } },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: "#e5e7eb", // Gris claro para las líneas de fondo
+            width: 1,
+            type: "solid",
+          },
+        },
       },
 
       series: [
@@ -179,61 +192,122 @@ export const buildPartidaCharts = ({
   //   CHART 2: Margen Bruto / Utilidad Operativa
   // ============================
   const initChartUtilidad = () => {
-    if (!chartUtilidadRef.value) return;
+  if (!chartUtilidadRef.value) return;
 
-    const chart = echarts.init(chartUtilidadRef.value);
+  const chart = echarts.init(chartUtilidadRef.value);
+  const meses = mesesActivos.map((m) => m.toUpperCase());
 
-    chart.setOption({
-      backgroundColor: "transparent",
-      tooltip: { trigger: "axis" },
+  chart.setOption({
+    backgroundColor: "transparent",
 
-      legend: {
-        data: ["Margen Bruto", "Utilidad Operativa"],
-        top: 0,
-        textStyle: { color: "#a3aed0" },
-      },
-
-      grid: {
-        top: 50,
-        left: 50,
-        right: 30,
-        bottom: 40,
-      },
-
-      xAxis: {
-        type: "category",
-        data: mesesActivos.map((m) => m.toUpperCase()),
-        axisLabel: { color: "#CBD5E1", margin: 15 },
-        axisLine: { lineStyle: { color: "#334155" } },
-      },
-
-      yAxis: {
-        type: "value",
-        axisLabel: { color: "#94A3B8" },
-        axisLine: { show: false },
-        splitLine: { lineStyle: { color: "#1E293B" } },
-      },
-
-      series: [
-        {
-          name: "Margen Bruto",
-          type: "bar",
-          barWidth: "45%",
-          itemStyle: { color: palette.margenBruto, borderRadius: 6 },
-          data: mesesActivos.map((m) => mensual.MargenBruto[m]),
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "line",
+        lineStyle: {
+          color: "#94a3b8",
+          width: 1,
+          type: "dashed",
         },
-        {
-          name: "Utilidad Operativa",
-          type: "bar",
-          barWidth: "45%",
-          itemStyle: { color: palette.utilidadOperativa, borderRadius: 6 },
-          data: mesesActivos.map((m) => mensual.UtilidadOperativa[m]),
-        },
-      ],
-    });
+      },
+      formatter: (params) => {
+        let html = `<strong>${params[0].axisValue}</strong><br>`;
+        params.forEach((p) => {
+          const val = Number(p.value).toLocaleString("en-US");
+          html += `${p.marker} ${p.seriesName}: $${val}<br>`;
+        });
+        return html;
+      },
+    },
 
-    window.addEventListener("resize", chart.resize);
-  };
+    legend: {
+      data: ["Margen Bruto", "Utilidad Operativa"],
+      top: 0,
+      textStyle: { color: "#666666", fontWeight: "600" },
+    },
+
+    // Igual al chartVentas
+    grid: {
+      top: 50,
+      left: 50,
+      right: 30,
+      bottom: 40,
+    },
+
+    xAxis: {
+      type: "category",
+      data: meses,
+      axisLabel: { color: "#666666", fontWeight: "600" },
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: { show: false },
+    },
+
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        color: "#cbd5e1",
+        fontWeight: "100",
+        formatter: (value) => {
+          if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
+          return `$${value}`;
+        },
+      },
+      axisLine: { show: false },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: "#e5e7eb",
+          width: 1,
+          type: "solid",
+        },
+      },
+    },
+
+    series: [
+      {
+        name: "Margen Bruto",
+        type: "bar",
+        barWidth: 12, 
+        itemStyle: {
+          color: palette.margenBruto,
+          borderRadius: [6, 6, 0, 0],
+          shadowBlur: 8,
+          shadowColor: palette.margenBruto + "44",
+        },
+        emphasis: {
+          focus: "series",
+          itemStyle: {
+            shadowBlur: 15,
+            shadowColor: palette.margenBruto + "66",
+          },
+        },
+        data: mesesActivos.map((m) => mensual.MargenBruto[m]),
+      },
+      {
+        name: "Utilidad Operativa",
+        type: "bar",
+        barWidth: 12,
+        itemStyle: {
+          color: palette.utilidadOperativa,
+          borderRadius: [6, 6, 0, 0],
+          shadowBlur: 8,
+          shadowColor: palette.utilidadOperativa + "44",
+        },
+        emphasis: {
+          focus: "series",
+          itemStyle: {
+            shadowBlur: 15,
+            shadowColor: palette.utilidadOperativa + "66",
+          },
+        },
+        data: mesesActivos.map((m) => mensual.UtilidadOperativa[m]),
+      },
+    ],
+  });
+
+  window.addEventListener("resize", chart.resize);
+};
 
   // Inicializar ambos charts
   initChartVentas();

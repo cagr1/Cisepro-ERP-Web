@@ -501,12 +501,15 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-import { usePartidaCalculations } from "@/api/Dashboard/partidaCalculations";
-import { buildPartidaCharts } from "@/api/Dashboard/partidaCharts";
+import { useFinancialData } from "@/api/Dashboard/useFinancialData";
+import { usePartidaCalculations } from "@/composables/Dashboard/usePartidaCalculations";
+import { buildPartidaCharts } from "@/composables/Dashboard/Charts/partidaCharts";
+import { formatearMoneda } from "@/utils/formatters";
 import { Icon } from "@iconify/vue";
 
-const { procesarData, isLoading, error, formatearMoneda } =
-  usePartidaCalculations();
+
+
+const { fetchTablaFinanciera } = useFinancialData();
 
 const datosFinancieros = ref(null);
 const startDate = ref("");
@@ -538,9 +541,18 @@ const formatPercentage = (value) => {
 // Cargar datos
 const handleLoadData = async () => {
   try {
-    datosFinancieros.value = await procesarData(startDate.value, endDate.value);
+    const { tablaPrimaria }  = await fetchTablaFinanciera(
+      startDate.value,
+      endDate.value
+    );
+
+    
+   
+     
+    datosFinancieros.value = usePartidaCalculations(tablaPrimaria);
 
     const { mesesActivos, mensual } = datosFinancieros.value;
+    
     await nextTick();
 
     buildPartidaCharts({

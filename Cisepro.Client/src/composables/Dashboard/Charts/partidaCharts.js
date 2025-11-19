@@ -1,8 +1,49 @@
 // src/api/Dashboard/PartidaCharts.js
 import * as echarts from "echarts";
-import { AxisPointerComponent } from "echarts/components";
-import { split } from "lodash";
+
 // import { format } from "echarts/types/src/util/time.js";
+
+
+
+
+
+const waitForElementSize = (el) => {
+  return new Promise((resolve) => {
+    const check = () => {
+      if (el.clientWidth > 0 && el.clientHeight > 0) resolve();
+      else requestAnimationFrame(check);
+    };
+    check();
+  });
+};
+
+// Debounce simple (evitar resize spam)
+const debounce = (fn, delay = 200) => {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+};
+
+/* -------------------------------------------------------
+   CHART FACTORY
+------------------------------------------------------- */
+
+const createChart = async (elRef) => {
+  if (!elRef.value) return null;
+  await waitForElementSize(elRef.value);
+
+  let chart = echarts.getInstanceByDom(elRef.value);
+
+  if (!chart) {
+    chart = echarts.init(elRef.value);
+    window.addEventListener("resize", debounce(() => chart.resize()));
+  }
+
+  return chart;
+};
+
 
 export const buildPartidaCharts = ({
   mesesActivos,
@@ -23,12 +64,13 @@ export const buildPartidaCharts = ({
   // ============================
   //   CHART 1: Ventas, Costo, Gastos
   // ============================
-  const initChartVentas = () => {
+  const initChartVentas = async () => {
     if (!chartVentasRef.value) return;
 
-    const chart = echarts.init(chartVentasRef.value);
-
     const meses = mesesActivos.map((m) => m.toUpperCase());
+
+    const chart = await createChart(chartVentasRef);
+    
 
     chart.setOption({
       backgroundColor: "transparent",
@@ -188,13 +230,17 @@ export const buildPartidaCharts = ({
     window.addEventListener("resize", chart.resize);
   };
 
+  
+
   // ============================
   //   CHART 2: Margen Bruto / Utilidad Operativa
   // ============================
-  const initChartUtilidad = () => {
+  const initChartUtilidad = async () => {
   if (!chartUtilidadRef.value) return;
 
-  const chart = echarts.init(chartUtilidadRef.value);
+  await waitForElementSize(chartUtilidadRef.value);
+
+  const chart = await createChart(chartUtilidadRef);
   const meses = mesesActivos.map((m) => m.toUpperCase());
 
   chart.setOption({

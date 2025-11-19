@@ -506,10 +506,12 @@ import { usePartidaCalculations } from "@/composables/Dashboard/usePartidaCalcul
 import { buildPartidaCharts } from "@/composables/Dashboard/Charts/partidaCharts";
 import { formatearMoneda } from "@/utils/formatters";
 import { Icon } from "@iconify/vue";
+import { push } from "notivue";
 
 
 
-const { fetchTablaFinanciera } = useFinancialData();
+
+const { fetchTablaFinanciera , isLoading, error} = useFinancialData();
 
 const datosFinancieros = ref(null);
 const startDate = ref("");
@@ -541,6 +543,9 @@ const formatPercentage = (value) => {
 // Cargar datos
 const handleLoadData = async () => {
   try {
+    
+    isLoading.value = true;
+    
     const { tablaPrimaria }  = await fetchTablaFinanciera(
       startDate.value,
       endDate.value
@@ -562,15 +567,23 @@ const handleLoadData = async () => {
       chartUtilidadRef,
     });
 
-    console.log("Datos procesados:", datosFinancieros.value);
+    
   } catch (err) {
-    console.error("Error al cargar datos:", err);
+    push({
+      type: "error",
+      title: "Error al cargar datos financieros",
+      text: err.message || "Ocurrió un error al cargar partidas operativas.",
+      duration: 5000,
+    });
+    
+  } finally {
+    isLoading.value = false;
   }
 };
 
 onMounted(() => {
   initializeDates();
-  handleLoadData();
+  
 });
 </script>
 

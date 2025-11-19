@@ -50,7 +50,7 @@ import { Icon } from '@iconify/vue';
 import { useAuthStore } from "@/stores/auth.store";
 
 const authStore = useAuthStore();
-// const tipoConexion = computed(() => authStore.selectedCompany || "Cisepro");
+const tipoCon = computed(() => authStore.selectedCompany || "Cisepro");
 
 const currentIndex = ref(0);
 

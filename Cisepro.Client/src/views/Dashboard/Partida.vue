@@ -2,9 +2,7 @@
   
     <div class="w-full ">
       <!-- Header con controles -->
-      <div
-        class="mb-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100"
-      >
+      
         <div
           class="flex flex-col lg:flex-row md:items-center lg:justify-between gap-6"
         >
@@ -76,7 +74,7 @@
             </div>
           </div>
         </div>
-      </div>
+      
 
       <!-- Estado de carga -->
       <div
@@ -115,7 +113,7 @@
       <!-- Contenido Principal -->
       <div v-show="!isLoading && !error && datosFinancieros">
         <!-- Sección: Indicadores del Último Mes -->
-        <div class="mb-8">
+        <div class="mb-8 mt-8">
           
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
@@ -549,13 +547,9 @@ const handleLoadData = async () => {
     const { tablaPrimaria }  = await fetchTablaFinanciera(
       startDate.value,
       endDate.value
-    );
-
-    
-   
+    );  
      
     datosFinancieros.value = usePartidaCalculations(tablaPrimaria);
-
     const { mesesActivos, mensual } = datosFinancieros.value;
     
     await nextTick();

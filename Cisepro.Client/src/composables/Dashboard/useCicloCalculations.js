@@ -1,11 +1,62 @@
-/**
-   * Calcula la tabla de ciclo efectivo
-   */
-  const calcularCicloEfectivo = () => {
-    const acumulados = calcularAcumulados();
-    const resultados = [];
+import { obtenerMesesActivos,
+          obtenerValorPartida,
+          calcularValoresMensuales,
+          calcularAcumulados,
+          
+ } from "./shared/calculoBase";
 
-    mesesActivos.value.forEach((mes, index) => {
+
+ export const useCicloCalculations = (tabla) => {
+   
+    const tablaPrimaria = Array.isArray(tabla)
+     ? tabla
+     : (tabla && Array.isArray(tabla.tablaPrimaria) ? tabla.tablaPrimaria : []); ; 
+ 
+   if (!tablaPrimaria || tablaPrimaria.length === 0) {
+       return {
+         mesesActivos: [],
+         mensual: {},
+         acumulados: {},
+         diasTranscurridos: {},
+         ciclosMensual: {},
+         cicloFinal: {},        
+       };
+     }
+ 
+     const mesesActivos = obtenerMesesActivos(tablaPrimaria);
+     const mensual = calcularValoresMensuales(tablaPrimaria, mesesActivos);
+     const acumulados = calcularAcumulados(tablaPrimaria, mesesActivos);
+     const ciclosMensual = calcularCicloEfectivo(tablaPrimaria,mesesActivos,acumulados);
+ 
+ 
+     return {
+       mesesActivos,
+       mensual,
+       acumulados,
+       ciclos,      
+     };
+   };
+ 
+    
+//calcular dias transcurridos, dias CXC, dias CXP, ciclo efectivo, costo+gasto por dia
+
+const diasTranscurridos = (acumulados,meses) => {
+
+
+};
+
+ 
+   const calcularCicloEfectivo = (tablaPrimaria,mesesActivos,acumulados) => {
+    
+     if (meses.length === 0) {
+      return null;
+    }
+    
+    const ultimoMes = meses[meses.length - 1];
+    const numeroMeses = meses.length;
+    
+
+    mesesActivos.forEach((mes, index) => {
       const diasTranscurridos = calcularDiasTranscurridos(index);
 
       const clientesAcum = acumulados.Clientes[mes];

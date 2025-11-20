@@ -1,18 +1,76 @@
 <template>
   <div class="w-full">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Dashboard Operativo</h2>
-      <div v-if="loading" class="text-sm text-gray-500">Cargando...</div>
-    </div>
+    <div
+          class="flex flex-col lg:flex-row md:items-center lg:justify-between gap-6"
+        >
+          <div class="md:flex-1">
+            <h1 class="text-2xl font-bold text-gray-900">
+              Análisis de Ciclo Efectivo
+            </h1>
+            
+            <h2 class="text-sm font-bold text-gray-500">
+              Indicadores del mes: 
+              <span
+                v-if="datosFinancieros?.partidas?.ultimoMes"
+                class="text-blue-600 ml-2 capitalize"
+              >
+                ({{ datosFinancieros.partidas.ultimoMes.mes }})
+              </span>
+            </h2>
+          </div>
 
-    <div ref="chartRef" class="w-full h-[600px] rounded-md border border-gray-100"></div>
+          <div class="flex flex-col md:flex-row gap-4 md:items-center">
+            <div class="flex gap-3 items-center">
+              <!-- Fecha Inicio -->
+              <div class="flex flex-col">
+                <label class="text-xs font-semibold text-gray-600 mb-1.5"
+                  >Fecha Inicial</label
+                >
+                <input
+                  type="date"
+                  v-model="startDate"
+                  class="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
 
-    <!-- Modal o panel de detalle (muy simple) -->
-    <div v-if="detailVisible" class="mt-4 bg-white border rounded p-3 shadow">
-      <h3 class="font-medium mb-2">Detalle: {{ detailName }}</h3>
-      <pre class="text-sm text-gray-700">{{ detailData }}</pre>
-      <button class="mt-2 px-3 py-1 bg-gray-100 rounded" @click="detailVisible = false">Cerrar</button>
-    </div>
+              <!-- Fecha Fin -->
+              <div class="flex flex-col">
+                <label class="text-xs font-semibold text-gray-600 mb-1.5"
+                  >Fecha Final</label
+                >
+                <input
+                  type="date"
+                  v-model="endDate"
+                  class="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- Botón Actualizar -->
+            <div class="md:self-end">
+              <button
+                @click="handleLoadData"
+                :disabled="isLoading"
+                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 disabled:transform-none flex items-center gap-2 whitespace-nowrap"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                {{ isLoading ? "Cargando..." : "Actualizar" }}
+              </button>
+            </div>
+          </div>
+        </div>
   </div>
 </template>
 

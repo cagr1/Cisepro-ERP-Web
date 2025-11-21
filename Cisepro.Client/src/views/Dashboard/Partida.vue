@@ -500,7 +500,9 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import { useFinancialData } from "@/api/Dashboard/useFinancialData";
+import { useDashboardStore } from "@/stores/Composable/Dashboard.store";
 import { usePartidaCalculations } from "@/composables/Dashboard/usePartidaCalculations";
+import { useCicloCalculations } from "@/composables/Dashboard/useCicloCalculations";
 import { buildPartidaCharts } from "@/composables/Dashboard/Charts/partidaCharts";
 import { formatearMoneda } from "@/utils/formatters";
 import { Icon } from "@iconify/vue";
@@ -509,9 +511,13 @@ import { push } from "notivue";
 
 
 
+
+const store = useDashboardStore();
+
 const { fetchTablaFinanciera , isLoading, error} = useFinancialData();
 
 const datosFinancieros = ref(null);
+const partidas = ref(null);
 const startDate = ref("");
 const endDate = ref("");
 const chartVentasRef = ref(null);
@@ -519,11 +525,14 @@ const chartUtilidadRef = ref(null);
 
 // Inicializar fechas
 const initializeDates = () => {
-  const now = new Date();
-  const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
-
-  startDate.value = firstDayOfYear.toISOString().split("T")[0];
-  endDate.value = now.toISOString().split("T")[0];
+  
+  
+    const now = new Date();
+    const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
+    startDate.value = firstDayOfYear.toISOString().split("T")[0];
+    endDate.value = now.toISOString().split("T")[0];
+  
+  
 };
 
 // Formatear moneda
@@ -550,6 +559,17 @@ const handleLoadData = async () => {
     );  
      
     datosFinancieros.value = usePartidaCalculations(tablaPrimaria);
+    
+    partidas.value = useCicloCalculations(tablaPrimaria);
+    
+    console.log("Partidas calculadas:", partidas.value);
+
+    store.setAll({
+      partidas: datosFinancieros.value,
+      cicloEfectivo: partidas.value,
+      analisis: null,
+    });
+    
     const { mesesActivos, mensual } = datosFinancieros.value;
     
     await nextTick();
@@ -562,11 +582,14 @@ const handleLoadData = async () => {
     });
 
     
-  } catch (err) {
-    push({
+  } catch (err) 
+  
+  {
+    console.error(err);
+    push.error({
       type: "error",
       title: "Error al cargar datos financieros",
-      text: err.message || "Ocurrió un error al cargar partidas operativas.",
+      message: err.message || "Ocurrió un error al cargar partidas operativas.",
       duration: 5000,
     });
     
@@ -577,6 +600,26 @@ const handleLoadData = async () => {
 
 onMounted(() => {
   initializeDates();
+  const now = Date.now();
+  const MAX_TIME = 1000 * 60 * 3; 
+
+  if (store.timestamp && (now - store.timestamp) < MAX_TIME) {
+    datosFinancieros.value = store.partidasData;
+    partidas.value = store.cicloEfectivoData;
+   
+
+    nextTick(() => {
+      const { mesesActivos, mensual } = datosFinancieros.value;  
+      buildPartidaCharts({
+        mesesActivos,
+        mensual,
+        chartVentasRef,
+        chartUtilidadRef,
+      });
+    });
+  } else {
+    handleLoadData();
+  }
   
 });
 </script>

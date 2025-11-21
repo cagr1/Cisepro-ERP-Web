@@ -1,8 +1,6 @@
 <template>
   <div class="w-full">
-    <div
-          class="flex flex-col lg:flex-row md:items-center lg:justify-between gap-6"
-        >
+    <div class="flex flex-col lg:flex-row md:items-center lg:justify-between gap-6">
           <div class="md:flex-1">
             <h1 class="text-2xl font-bold text-gray-900">
               Análisis de Ciclo Efectivo
@@ -11,167 +9,301 @@
             <h2 class="text-sm font-bold text-gray-500">
               Indicadores del mes: 
               <span
-                v-if="datosFinancieros?.partidas?.ultimoMes"
+                v-if="datos?.cicloFinal?.ultimoMes"
                 class="text-blue-600 ml-2 capitalize"
               >
-                ({{ datosFinancieros.partidas.ultimoMes.mes }})
+                ({{ datos?.cicloFinal?.ultimoMes }})
               </span>
             </h2>
+          </div>          
+    </div>
+    <!-- LOADING -->
+    <div v-if="isLoading" class="flex flex-col items-center justify-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <p class="mt-4 text-gray-600 font-medium">Procesando datos...</p>
+    </div>
+
+    <!-- ERROR -->
+    <div v-if="error" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 mb-6 rounded-lg shadow-sm">
+      <p class="font-bold">Error</p>
+      <p class="text-sm">{{ error }}</p>
+    </div>
+
+
+    <!-- Contenido Principal  -->
+    <div v-show="!isLoading && !error && datos">
+
+      <!-- CARDS PRINCIPALES -->
+      <div class="mb-8 mt-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+
+          <!-- Días Cartera -->
+          <div class="stat-card border-l-4 border-blue-500">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Días de Cartera 
+                </p>
+                <p class="text-xl font-bold text-blue-600 mt-1">
+                  {{ datos?.cicloFinal?.diasCXC }}
+                </p>
+              </div>
+              <div class="bg-blue-50 p-1 rounded-lg">
+                <Icon icon="fluent:box-24-regular" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
           </div>
 
-          <div class="flex flex-col md:flex-row gap-4 md:items-center">
-            <div class="flex gap-3 items-center">
-              <!-- Fecha Inicio -->
-              <div class="flex flex-col">
-                <label class="text-xs font-semibold text-gray-600 mb-1.5"
-                  >Fecha Inicial</label
-                >
-                <input
-                  type="date"
-                  v-model="startDate"
-                  class="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
+          <!-- Días Proveedores -->
+          <div class="stat-card border-l-4 border-emerald-500">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Días Proveedores 
+                </p>
+                <p class="text-xl font-bold text-emerald-600 mt-1">
+                  {{ datos?.cicloFinal?.diasCXP }}
+                </p>
               </div>
-
-              <!-- Fecha Fin -->
-              <div class="flex flex-col">
-                <label class="text-xs font-semibold text-gray-600 mb-1.5"
-                  >Fecha Final</label
-                >
-                <input
-                  type="date"
-                  v-model="endDate"
-                  class="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
+              <div class="bg-emerald-100 p-1 rounded-lg">
+                <Icon icon="fluent:person-money-24-regular" class="w-6 h-6 text-emerald-600" />
               </div>
             </div>
+          </div>
 
-            <!-- Botón Actualizar -->
-            <div class="md:self-end">
-              <button
-                @click="handleLoadData"
-                :disabled="isLoading"
-                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 disabled:transform-none flex items-center gap-2 whitespace-nowrap"
-              >
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                {{ isLoading ? "Cargando..." : "Actualizar" }}
-              </button>
+          <!-- Días Ciclo Efectivo -->
+          <div class="stat-card border-l-4 border-orange-500">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Ciclo Efectivo
+                </p>
+                <p class="text-xl font-bold text-orange-600 mt-1">
+                  {{ datos?.cicloFinal?.cicloEfectivo }}
+                </p>
+              </div>
+              <div class="bg-red-100 p-1 rounded-lg">
+                <Icon icon="fluent:receipt-money-24-regular" class="w-6 h-6 text-orange-600" />
+              </div>
             </div>
+          </div>
+
+          <!-- Costo por dia -->
+          <div class="stat-card border-l-4 border-red-500">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Costo + Gasto x dia
+                </p>
+                <p class="text-xl font-bold text-red-600 mt-1">
+                  {{ formatCurrency(datos?.cicloFinal?.costoGastoPorDia) }} 
+                </p>
+              </div>
+              <div class="bg-red-100 p-1 rounded-lg">
+                <Icon icon="fluent:data-trending-24-filled" class="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Capital de Trabajo -->
+          <div class="stat-card border-l-4 border-purple-500">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Capital de Trabajo
+                </p>
+                <p class="text-xl font-bold text-purple-600 mt-1">
+                  {{ formatCurrency(datos?.cicloFinal?.capitalTrabajo) }} 
+                </p>
+              </div>
+              <div class="bg-purple-100 p-1 rounded-lg">
+                <Icon icon="fluent:money-hand-24-filled" class="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+         <!-- Seccion Charts -->
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-5 mb-8">
+          <div class="bg-white p-4 rounded-xl shadow-sm">
+            <h3 class="text-lg font-semibold mb-4 text-center">Conversion del Efectivo</h3>
+            <div ref="chartCicloRef" class="w-full h-[350px]"></div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl shadow-sm">
+            <h3 class="text-lg font-semibold mb-4 text-center">Capital de Trabajo</h3>
+            <div ref="chartCapitalRef" class="w-full h-[350px]"></div>
           </div>
         </div>
+
+
+
+
+      </div>
+
+      <!-- CHART -->
+      <div class="bg-white p-4 rounded-xl shadow-sm mt-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Ciclo Efectivo Histórico</h3>
+        <div ref="chartCiclo" class="w-full h-[350px]"></div>
+      </div>
+
+    </div>
+
+
+
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import * as echarts from "echarts";
-import api from "@/api";
+import { ref, watch , nextTick } from "vue";
+import { Icon } from "@iconify/vue";
+import { push } from "notivue";
+import { useDashboardStore } from "@/stores/Composable/dashboard.store";
+import { buildCicloCharts } from "@/composables/Dashboard/Charts/cicloCharts";
+import { formatearMoneda } from "@/utils/formatters";
+const store = useDashboardStore();
 
-const props = defineProps({
-  tipoCon: { type: String, default: "Produccion" },
-});
+const datos = ref(null);
+const isLoading = ref(false);
+const error = ref(null);
 
-const chartRef = ref(null);
-let chartInstance = null;
-const loading = ref(false);
-const geoJsonUrl = "https://raw.githubusercontent.com/.../ecuador-cantones.geojson"; // reemplaza por tu fuente ArcGIS
+const chartCicloRef = ref(null);
+const chartCapitalRef= ref(null);
 
 
-const detailVisible = ref(false);
-const detailName = ref("");
-const detailData = ref(null);
+const formatCurrency = (value) => {
+  if (value === null || value === undefined || value === "-") return "-";
+  return formatearMoneda(value);
+};
 
-async function loadDataAndMap() {
-  loading.value = true;
-  try {
-    // 1) GeoJSON
-    const geoRes = await fetch(geoJsonUrl);
-    const geoJson = await geoRes.json();
+watch(
+  () => store.cicloEfectivoData,
+  async (newVal) => {
+    if (!newVal) return; // 
 
-    // 2) API backend (normalizado)
-    const apiRes = await fetch(`${apiUrlBase}?tipoConexion=${encodeURIComponent(props.tipoCon)}`);
-    const apiData = await apiRes.json(); // asumiendo JSON puro: [{DPA_DESCAN, TotalGuardias}, ...]
+    isLoading.value = true;
+    error.value = null;
 
-    // normalizar y emparejar
-    const seriesData = geoJson.features.map((f) => {
-      const nombre = (f.properties.DPA_DESCAN || "").toString().trim().toUpperCase();
-      const found = apiData.find(d => (d.DPA_DESCAN || "").toString().trim().toUpperCase() === nombre);
-      return {
-        name: nombre,
-        value: found ? Number(found.TotalGuardias) || 0 : 0,
-        rawFeature: f
-      };
-    });
+    try {
+      datos.value = newVal; 
+      
+      await nextTick();
 
-    // registrar mapa
-    echarts.registerMap("EcuadorCantones", geoJson);
+      await buildCicloCharts({
+        mesesActivos: datos.value.mesesActivos,
+        mensual: datos.value.mensual,
+        chartCicloRef: chartCicloRef,
+        chartCapitalTrabajoRef: chartCapitalRef
+        ,});
 
-    // init chart
-    if (!chartInstance) {
-      chartInstance = echarts.init(chartRef.value);
-      window.addEventListener("resize", () => chartInstance && chartInstance.resize());
+  
+    } catch (err) {
+      console.error(err);
+
+      push({
+        type: "error",
+        title: "Error al cargar datos de Ciclo Efectivo",
+        text: err.message || "Ocurrió un error inesperado.",
+        duration: 5000,
+      });
+
+      error.value = err;
+    } finally {
+      isLoading.value = false;
     }
+  },
+  { immediate: true }
+);
 
-    const option = {
-      title: { text: "Guardias por Cantón", left: "center" },
-      tooltip: { trigger: "item", formatter: (p) => `${p.name}<br/>Guardias: ${p.value}` },
-      visualMap: {
-        min: 0,
-        max: Math.max(...seriesData.map(d => d.value)) || 10,
-        left: "left",
-        bottom: "10",
-        text: ["Alto", "Bajo"],
-        calculable: true
-      },
-      series: [{
-        type: "map",
-        map: "EcuadorCantones",
-        roam: true,
-        emphasis: { label: { show: false } },
-        data: seriesData
-      }]
-    };
 
-    chartInstance.setOption(option);
+// async function loadDataAndMap() {
+//   loading.value = true;
+//   try {
+//     // 1) GeoJSON
+//     const geoRes = await fetch(geoJsonUrl);
+//     const geoJson = await geoRes.json();
 
-    // click handler
-    chartInstance.off("click");
-    chartInstance.on("click", async (params) => {
-      if (!params || !params.name) return;
-      // puedes solicitar detalle por canton (si tienes endpoint)
-      detailName.value = params.name;
-      // ejemplo: buscar en apiData o llamar otro endpoint
-      detailData.value = apiData.find(d => (d.DPA_DESCAN || "").toString().trim().toUpperCase() === params.name) || { message: "Sin datos" };
-      detailVisible.value = true;
-    });
+//     // 2) API backend (normalizado)
+//     const apiRes = await fetch(`${apiUrlBase}?tipoConexion=${encodeURIComponent(props.tipoCon)}`);
+//     const apiData = await apiRes.json(); // asumiendo JSON puro: [{DPA_DESCAN, TotalGuardias}, ...]
 
-  } catch (err) {
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
-}
+//     // normalizar y emparejar
+//     const seriesData = geoJson.features.map((f) => {
+//       const nombre = (f.properties.DPA_DESCAN || "").toString().trim().toUpperCase();
+//       const found = apiData.find(d => (d.DPA_DESCAN || "").toString().trim().toUpperCase() === nombre);
+//       return {
+//         name: nombre,
+//         value: found ? Number(found.TotalGuardias) || 0 : 0,
+//         rawFeature: f
+//       };
+//     });
 
-onMounted(() => {
-  loadDataAndMap();
-});
+//     // registrar mapa
+//     echarts.registerMap("EcuadorCantones", geoJson);
 
-// si tipoCon cambia recargar
-watch(() => props.tipoCon, () => loadDataAndMap());
+//     // init chart
+//     if (!chartInstance) {
+//       chartInstance = echarts.init(chartRef.value);
+//       window.addEventListener("resize", () => chartInstance && chartInstance.resize());
+//     }
+
+//     const option = {
+//       title: { text: "Guardias por Cantón", left: "center" },
+//       tooltip: { trigger: "item", formatter: (p) => `${p.name}<br/>Guardias: ${p.value}` },
+//       visualMap: {
+//         min: 0,
+//         max: Math.max(...seriesData.map(d => d.value)) || 10,
+//         left: "left",
+//         bottom: "10",
+//         text: ["Alto", "Bajo"],
+//         calculable: true
+//       },
+//       series: [{
+//         type: "map",
+//         map: "EcuadorCantones",
+//         roam: true,
+//         emphasis: { label: { show: false } },
+//         data: seriesData
+//       }]
+//     };
+
+//     chartInstance.setOption(option);
+
+//     // click handler
+//     chartInstance.off("click");
+//     chartInstance.on("click", async (params) => {
+//       if (!params || !params.name) return;
+//       // puedes solicitar detalle por canton (si tienes endpoint)
+//       detailName.value = params.name;
+//       // ejemplo: buscar en apiData o llamar otro endpoint
+//       detailData.value = apiData.find(d => (d.DPA_DESCAN || "").toString().trim().toUpperCase() === params.name) || { message: "Sin datos" };
+//       detailVisible.value = true;
+//     });
+
+//   } catch (err) {
+//     console.error(err);
+//   } finally {
+//     loading.value = false;
+//   }
+// }
+
+
 </script>
 
 <style scoped>
-/* nada extra: usamos Tailwind */
+.stat-card {
+  @apply bg-white rounded-xl p-2 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100;
+}
+
+.stat-card:hover {
+  @apply transform -translate-y-1;
+}
+
+.percentage-badge {
+  @apply px-3 py-1 rounded-full text-xs font-bold;
+}
 </style>
+
+

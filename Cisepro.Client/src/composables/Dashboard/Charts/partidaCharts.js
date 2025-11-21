@@ -1,12 +1,6 @@
 // src/api/Dashboard/PartidaCharts.js
 import * as echarts from "echarts";
 
-// import { format } from "echarts/types/src/util/time.js";
-
-
-
-
-
 const waitForElementSize = (el) => {
   return new Promise((resolve) => {
     const check = () => {

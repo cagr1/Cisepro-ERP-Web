@@ -51,7 +51,7 @@ export const obtenerValorPartida = (tablaPrimaria, nombrePartida, mes) => {
       const bancoMes = obtenerValorPartida(tablaPrimaria, "Bancos", mes) ;
 
       mensual.Clientes[mes] = obtenerValorPartida(tablaPrimaria,"Clientes", mes);
-      mensual.Proveedores[mes] = obtenerValorPartida(tablaPrimaria,"Proveedores", mes)*-1;
+      mensual.Proveedores[mes] = obtenerValorPartida(tablaPrimaria,"Proveedores", mes);
       mensual.Ventas[mes] = ventasMes;
       mensual.Costo[mes] = costoMes;
       mensual.Gastos[mes] = gastosMes;
@@ -92,7 +92,7 @@ export const obtenerValorPartida = (tablaPrimaria, nombrePartida, mes) => {
 
       //calcular valores derivados del mes actual
       const clienteMes = obtenerValorPartida(tablaPrimaria,"Clientes", mes);
-      const proveedorMes = obtenerValorPartida(tablaPrimaria,"Proveedores", mes)*-1;
+      const proveedorMes = obtenerValorPartida(tablaPrimaria,"Proveedores", mes);
       const ventasMes = obtenerValorPartida(tablaPrimaria,"Ventas", mes)*-1;
       const costoMes = obtenerValorPartida(tablaPrimaria,"Costo", mes);
       const gastosMes = obtenerValorPartida(tablaPrimaria,"Gastos", mes);

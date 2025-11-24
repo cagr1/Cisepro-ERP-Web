@@ -503,6 +503,7 @@ import { useFinancialData } from "@/api/Dashboard/useFinancialData";
 import { useDashboardStore } from "@/stores/Composable/Dashboard.store";
 import { usePartidaCalculations } from "@/composables/Dashboard/usePartidaCalculations";
 import { useCicloCalculations } from "@/composables/Dashboard/useCicloCalculations";
+import { useCapitalCalculations } from "@/composables/Dashboard/useCapitalCalculations";
 import { buildPartidaCharts } from "@/composables/Dashboard/Charts/partidaCharts";
 import { formatearMoneda } from "@/utils/formatters";
 import { Icon } from "@iconify/vue";
@@ -518,6 +519,7 @@ const { fetchTablaFinanciera , isLoading, error} = useFinancialData();
 
 const datosFinancieros = ref(null);
 const partidas = ref(null);
+const analisis = ref(null);
 const startDate = ref("");
 const endDate = ref("");
 const chartVentasRef = ref(null);
@@ -562,12 +564,12 @@ const handleLoadData = async () => {
     
     partidas.value = useCicloCalculations(tablaPrimaria);
     
-    console.log("Partidas calculadas:", partidas.value);
-    
+    analisis.value = useCapitalCalculations(tablaPrimaria);
+    console.log("Datos analisis cargados:", analisis.value);
     store.setAll({
       partidas: datosFinancieros.value,
       cicloEfectivo: partidas.value,
-      analisis: null,
+      analisis: analisis.value,
     });
     
     const { mesesActivos, mensual } = datosFinancieros.value;
@@ -603,8 +605,7 @@ onMounted(async () => {
   
   if (store.isCacheValid && store.partidasData) {
     datosFinancieros.value = store.partidasData;
-    partidas.value = store.cicloEfectivoData;
-
+    
     await nextTick();
 
     const { mesesActivos, mensual } = datosFinancieros.value;
@@ -616,7 +617,7 @@ onMounted(async () => {
       chartUtilidadRef,
     });
 
-    return; // 👈 evita ejecutar handleLoadData()
+    return; // 
   }
 
   // cache expirada → recalcular

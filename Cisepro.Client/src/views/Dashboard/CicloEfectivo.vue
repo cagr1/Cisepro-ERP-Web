@@ -93,7 +93,7 @@
             <div class="flex justify-between items-start mb-3">
               <div>
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  Costo + Gasto x dia
+                  Costo + Gasto 
                 </p>
                 <p class="text-xl font-bold text-red-600 mt-1">
                   {{ formatCurrency(datos?.cicloFinal?.costoGastoPorDia) }} 
@@ -242,6 +242,7 @@ import { push } from "notivue";
 import { useDashboardStore } from "@/stores/Composable/dashboard.store";
 import { buildCicloCharts } from "@/composables/Dashboard/Charts/cicloCharts";
 import { formatearMoneda } from "@/utils/formatters";
+
 const store = useDashboardStore();
 
 const datos = ref(null);
@@ -264,7 +265,8 @@ onMounted(async () => {
 
   try {
     // Si la cache no es valida, recargar datos
-    if (!store.isCacheValid && store.cicloEfectivoData) {
+    if (store.isCacheValid && store.cicloEfectivoData) {
+      datos.value = store.cicloEfectivoData;  
       await nextTick();
       await buildCicloCharts({
         mesesActivos: datos.value.mesesActivos,
@@ -276,7 +278,7 @@ onMounted(async () => {
       return;
     }
 
-    datos.value = store.cicloEfectivoData;
+    
 
     await nextTick();
 

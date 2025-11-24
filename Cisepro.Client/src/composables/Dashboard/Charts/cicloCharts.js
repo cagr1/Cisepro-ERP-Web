@@ -99,7 +99,7 @@ const initChartCiclo = async () => {
         stack: "ciclo",
         barWidth: 40,
         itemStyle: { color: "#9B7FFF" },
-        data: mesesActivos.map(m => mensual.DiasCxC[m])
+        data: mesesActivos.map(m => mensual[m].diasCxc ?? 0)
       },
       {
         name: "Días CxP",
@@ -107,8 +107,8 @@ const initChartCiclo = async () => {
         stack: "ciclo",
         barWidth: 40,
         itemStyle: { color: "#56D364" },
-        // DCP normalmente se resta → valor negativo
-        data: mesesActivos.map(m => mensual.DiasCxP[m] * -1)
+        
+        data: mesesActivos.map(m => mensual[m]?.diasCxp )
       },
 
       // --- LINEA CICLO EFECTIVO ---
@@ -124,7 +124,7 @@ const initChartCiclo = async () => {
           width: 3,
           color: "#F7C04A"
         },
-        data: mesesActivos.map(m => mensual.CicloEfectivo[m])
+        data: mesesActivos.map(m => mensual[m].cicloEfectivo)
       }
     ]
   });
@@ -132,12 +132,122 @@ const initChartCiclo = async () => {
   window.addEventListener("resize", chart.resize);
 };
 
+const initChartCapitalTrabajo = async () => {
+  if (!chartCapitalTrabajoRef.value) return;
 
-//Chart Capital de trabajo
+  const meses = mesesActivos.map((m) => m.toUpperCase());
+  const chart = await createChart(chartCapitalTrabajoRef);
 
+  chart.setOption({
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "line" },
+      formatter: (params) => {
+        let html = `<strong>${params[0].axisValue}</strong><br>`;
+        params.forEach(p => {
+          const val = Number(p.value).toLocaleString("en-US");
+          html += `${p.marker} ${p.seriesName}: $${val}<br>`;
+        });
+        return html;
+      }
+    },
 
+    legend: {
+      top: 0,
+      textStyle: { color: "#64748b", fontWeight: 600 }
+    },
 
-initChartCiclo();
+    grid: { top: 50, left: 50, right: 50, bottom: 40 },
+
+    xAxis: {
+      type: "category",
+      data: meses,
+      axisLabel: { 
+        color: "#64748b", 
+        fontWeight: 600,
+        
+       },
+      axisTick: { show: false },
+      axisLine: { show: false }
+    },
+
+    yAxis: {
+      type: "value",
+      axisLabel: { 
+        color: "#94a3b8",
+        formatter: (value) => {
+            // Formateador para mostrar K en miles
+            if (value >= 1000 || value < 0) {
+              return `$${(value / 1000).toFixed(0)}K`;
+            }
+            return `$${value}`;
+          },
+
+       },
+      splitLine: {
+        show: true,
+        lineStyle: { color: "#e5e7eb" }
+      }
+    },
+
+    series: [
+      {
+        name: "Capital Trabajo",
+        type: "line",
+        smooth: true,
+        symbol: "circle",
+        symbolSize: 8,
+        yAxisIndex: 0,
+        itemStyle: { color: "#4F46E5" },
+        lineStyle: {
+          width: 3,
+          color: "#4F46E5"
+        },
+        data: mesesActivos.map(m => mensual[m]?.capitalTrabajo)
+      },
+
+      {
+        name: "Saldo Banco",
+        type: "line",
+        smooth: true,
+        symbol: "circle",
+        symbolSize: 8,
+        yAxisIndex: 0,
+        itemStyle: { color: "#0EA5E9" },
+        lineStyle: {
+          width: 3,
+          color: "#0EA5E9",
+          type: "dashed"
+        },
+        data: mesesActivos.map(m => mensual[m].saldoBanco)
+      },
+
+       {
+        name: "Caja mínima requerida",
+        type: "line",
+        smooth: true,
+        symbol: "circle",
+        symbolSize: 8,
+        lineStyle: {
+          width: 3,
+          color: "#F43F5E" // Rose
+        },
+        itemStyle: { color: "#F43F5E" },
+        data: mesesActivos.map(m => mensual[m]?.cajaMinimaRequerida ?? 0)
+      }
+
+    ]
+
+  });
+
+  window.addEventListener("resize", chart.resize);
 
 }
+  
+
+initChartCiclo();
+initChartCapitalTrabajo();
+}
+
 

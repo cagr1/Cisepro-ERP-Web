@@ -11,6 +11,14 @@ state: () => ({
     
   }),
 
+   getters: {
+    isCacheValid: (state) => {
+      if (!state.timestamp) return false;
+      const MAX_TIME = 1000 * 60 * 3; // 3 minutos
+      return (Date.now() - state.timestamp) < MAX_TIME;
+    }
+  },
+
   actions: {
     setAll(data) {
       this.partidasData = data.partidas;

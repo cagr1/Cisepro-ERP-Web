@@ -127,7 +127,7 @@ const calcularCicloMensual = (tablaPrimaria,meses,acumulados) => {
     const ventasAcum = acumulados.Ventas[ultimoMes];
     const costoAcum = acumulados.Costo[ultimoMes];
     const gastosAcum = acumulados.Gastos[ultimoMes];
-
+    const bancoPromedio = round2(acumulados.Bancos[ultimoMes] / numeroMeses);
     const ventasCredito = Math.abs(ventasAcum) * 0.9;
 
     // Cálculo de días CXC
@@ -157,7 +157,7 @@ const calcularCicloMensual = (tablaPrimaria,meses,acumulados) => {
     //saldo banco 
     const saldoBanco = obtenerValorPartida(tablaPrimaria, "Bancos", ultimoMes);
     //capacidad de pago
-    const capacidadPago = saldoBanco / capitalTrabajo;
+    const capacidadPago = round2(saldoBanco / capitalTrabajo);
     return {
       ultimoMes,
       diasCXC,
@@ -167,7 +167,8 @@ const calcularCicloMensual = (tablaPrimaria,meses,acumulados) => {
       capitalTrabajo,
       cajaMinimaRequerida,
       saldoBanco,
-      capacidadPago
+      capacidadPago,
+      bancoPromedio
     };
   };
 

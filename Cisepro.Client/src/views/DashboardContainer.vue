@@ -70,8 +70,8 @@ const tabs = [
     ),
   },
   {
-    name: "Analisis",
-    icon: "heroicons:chart-bar",
+    name: "Capital",
+    icon: "heroicons:briefcase",
     component: defineAsyncComponent(() =>
       import("@/views/dashboard/Analisis.vue")
     ),

@@ -563,7 +563,7 @@ const handleLoadData = async () => {
     partidas.value = useCicloCalculations(tablaPrimaria);
     
     console.log("Partidas calculadas:", partidas.value);
-
+    
     store.setAll({
       partidas: datosFinancieros.value,
       cicloEfectivo: partidas.value,
@@ -598,30 +598,31 @@ const handleLoadData = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   initializeDates();
-  const now = Date.now();
-  const MAX_TIME = 1000 * 60 * 3; 
-
-  if (store.timestamp && (now - store.timestamp) < MAX_TIME) {
+  
+  if (store.isCacheValid && store.partidasData) {
     datosFinancieros.value = store.partidasData;
     partidas.value = store.cicloEfectivoData;
-   
 
-    nextTick(() => {
-      const { mesesActivos, mensual } = datosFinancieros.value;  
-      buildPartidaCharts({
-        mesesActivos,
-        mensual,
-        chartVentasRef,
-        chartUtilidadRef,
-      });
+    await nextTick();
+
+    const { mesesActivos, mensual } = datosFinancieros.value;
+
+    buildPartidaCharts({
+      mesesActivos,
+      mensual,
+      chartVentasRef,
+      chartUtilidadRef,
     });
-  } else {
-    handleLoadData();
+
+    return; // 👈 evita ejecutar handleLoadData()
   }
-  
+
+  // cache expirada → recalcular
+  await handleLoadData();
 });
+
 </script>
 
 <style scoped>

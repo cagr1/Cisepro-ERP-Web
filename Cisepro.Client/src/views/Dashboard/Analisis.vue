@@ -35,7 +35,7 @@
 
       <!-- CARDS PRINCIPALES -->
       <div class="mb-8 mt-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-5">
 
           <!-- Días Cartera -->
           <div class="stat-card border-l-4 border-blue-500">
@@ -45,10 +45,10 @@
                   Cartera del mes  
                 </p>
                 <p class="text-xl font-bold text-blue-600 mt-1">
-                  {{ datos?.analisisFinal?.clientesUltimoMes }}
+                  {{ formatCurrency(datos?.analisisFinal?.clientesUltimoMes) }}
                 </p>
                 <p  class="text-sm text-gray-500 font-semibold mt-1">
-                  Promedio: {{ datos?.analisisFinal?.clientesPromedio }}
+                  Promedio: {{ formatCurrency(datos?.analisisFinal?.clientesPromedio) }}
                 </p>
               </div>
               <div class="bg-blue-50 p-1 rounded-lg">
@@ -65,10 +65,10 @@
                   Proveedores 
                 </p>
                 <p class="text-xl font-bold text-emerald-600 mt-1">
-                  {{ datos?.analisisFinal?.proveedoresUltimoMes }}
+                  {{ formatCurrency(datos?.analisisFinal?.proveedoresUltimoMes) }}
                 </p>
                 <p  class="text-sm text-gray-500 font-semibold mt-1">
-                  Promedio: {{ datos?.analisisFinal?.proveedoresPromedio }}
+                  Promedio: {{ formatCurrency(datos?.analisisFinal?.proveedoresPromedio) }}
                 </p>
               </div>
               <div class="bg-emerald-100 p-1 rounded-lg">
@@ -85,10 +85,10 @@
                   Banco
                 </p>
                 <p class="text-xl font-bold text-sky-600 mt-1">
-                  {{ datos?.analisisFinal?.bancoUltimoMes }}
+                  {{ formatCurrency(datos?.analisisFinal?.bancoUltimoMes) }}
                 </p>
                 <p  class="text-sm text-gray-500 font-semibold mt-1">
-                  Promedio: {{ datos?.analisisFinal?.bancoPromedio }}
+                  Promedio: {{ formatCurrency(datos?.analisisFinal?.bancoPromedio) }}
                 </p>
               </div>
               <div class="bg-sky-100 p-1 rounded-lg">
@@ -100,18 +100,21 @@
 
          <!-- Seccion Charts -->
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-5 mb-8">
-          <div class="bg-white p-4 rounded-xl shadow-sm">
-            <h3 class="text-lg font-semibold mb-4 text-center">Conversion del Efectivo</h3>
-            <div ref="chartAnalisisRef" class="w-full h-[350px]"></div>
-          </div>          
-        </div>
+         <div class="flex justify-center mt-8 mb-8">
+            <div class="w-full max-w-3xl px-4">
+              <div class="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center justify-center gap-3 mb-6">
+                  <div class="bg-indigo-100 p-2.5 rounded-lg">
+                    <Icon icon="fluent:data-bar-vertical-24-regular" class="w-6 h-6 text-indigo-600" />
+                  </div>
+                  <h3 class="text-xl font-bold text-gray-800">Conversión del Efectivo</h3>
+                </div>
+                <div ref="chartAnalisisRef" class="w-full h-[420px]"></div>
+              </div>
+            </div>
+          </div>
       </div>   
-
     </div>
-
-
-
   </div>
 </template>
 
@@ -158,7 +161,7 @@ onMounted(async () => {
         proveedorUltimoMes: datos.value.analisisFinal.proveedoresUltimoMes,
         ventasUltimoMes : datos.value.analisisFinal.ventasUltimoMes,
         costoUltimoMes: datos.value.analisisFinal.costoUltimoMes,
-        gastoUltimoMes : datos.value.analisisFinal.gastoUltimoMes,
+        gastosUltimoMes : datos.value.analisisFinal.gastosUltimoMes,
         utilidadOperativa : datos.value.analisisFinal.utilidadOperativa  
       });
 
@@ -180,7 +183,7 @@ onMounted(async () => {
         proveedorUltimoMes: datos.value.analisisFinal.proveedoresUltimoMes,
         ventasUltimoMes : datos.value.analisisFinal.ventasUltimoMes,
         costoUltimoMes: datos.value.analisisFinal.costoUltimoMes,
-        gastoUltimoMes : datos.value.analisisFinal.gastoUltimoMes,
+        gastosUltimoMes : datos.value.analisisFinal.gastosUltimoMes,
         utilidadOperativa : datos.value.analisisFinal.utilidadOperativa          
       });
 

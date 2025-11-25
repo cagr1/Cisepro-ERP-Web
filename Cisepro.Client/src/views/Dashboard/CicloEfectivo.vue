@@ -148,7 +148,7 @@
                   Caja Minima
                 </p>
                 <p class="text-xl font-bold text-rose-600 mt-1">
-                  {{ datos?.cicloFinal?.cajaMinimaRequerida }}
+                  {{ formatCurrency(datos?.cicloFinal?.cajaMinimaRequerida) }}
                 </p>
               </div>
               <div class="bg-rose-100 p-1 rounded-lg">
@@ -165,7 +165,7 @@
                   Saldo Banco
                 </p>
                 <p class="text-xl font-bold text-sky-600 mt-1">
-                  {{ datos?.cicloFinal?.saldoBanco }}
+                  {{ formatCurrency(datos?.cicloFinal?.saldoBanco) }}
                 </p>
               </div>
               <div class="bg-emerald-100 p-1 rounded-lg">
@@ -205,7 +205,7 @@
             <div class="flex justify-between items-start mb-3">
               <div>
                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  Costo + Gasto x dia
+                  Saldo Banco Promedio
                 </p>
                 <p class="text-xl font-bold text-indigo-600 mt-1">
                   {{ formatCurrency(datos?.cicloFinal?.bancoPromedio) }} 

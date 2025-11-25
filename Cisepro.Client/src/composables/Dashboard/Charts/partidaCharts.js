@@ -288,10 +288,13 @@ export const buildPartidaCharts = ({
       axisLabel: {
         color: "#cbd5e1",
         fontWeight: "100",
-        formatter: (value) => {
-          if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-          return `$${value}`;
-        },
+         formatter: (value) => {
+            // Formateador para mostrar K en miles
+            if (value >= 1000 || value < 0) {
+              return `$${(value / 1000).toFixed(0)}K`;
+            }
+            return `$${value}`;
+          },
       },
       axisLine: { show: false },
       splitLine: {

@@ -94,15 +94,15 @@ const initChartCiclo = async () => {
       // --- STACKED BARS ---
       
       {
-        name: "Días CxC",
+        name: "Días Cartera",
         type: "bar",
         stack: "ciclo",
         barWidth: 40,
-        itemStyle: { color: "#9B7FFF" },
+        itemStyle: { color: "#4F9BFF" },
         data: mesesActivos.map(m => mensual[m].diasCxc ?? 0)
       },
       {
-        name: "Días CxP",
+        name: "Días Proveedores",
         type: "bar",
         stack: "ciclo",
         barWidth: 40,
